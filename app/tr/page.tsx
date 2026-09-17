@@ -11,12 +11,12 @@ const photos = {
   moment: "/images/home/8.jpg",
 };
 
-export default function Home() {
+export default function TurkishHome() {
   return (
-    <main>
+    <main className="tr-page">
       {/* HEADER */}
       <header className="site-header">
-        <a href="#" className="brand" aria-label="La Lara home">
+        <a href="/tr" className="brand" aria-label="La Lara ana sayfa">
           <Image
             src="/lalara-logo.png"
             alt="La Lara Restaurant & Bar"
@@ -27,23 +27,23 @@ export default function Home() {
           />
         </a>
 
-        <nav className="desktop-nav" aria-label="Main navigation">
-          <a href="#story">Our Story</a>
-          <a href="#menu">Menus</a>
-          <a href="#experience">Experience</a>
-          <a href="#moments">Gallery</a>
-          <a href="contact">Contact</a>
+        <nav className="desktop-nav" aria-label="Ana menü">
+          <a href="#story">Hikayemiz</a>
+          <a href="#menu">Menüler</a>
+          <a href="#experience">Deneyim</a>
+          <a href="#moments">Galeri</a>
+      <a href="/tr/iletisim">İletişim</a>
         </nav>
 
         <div className="header-actions">
-          <div className="language" aria-label="Language selector">
-            <span>EN</span>
+          <div className="language" aria-label="Dil seçimi">
+            <a href="/">EN</a>
             <span className="language-divider">/</span>
-            <a href="/tr">TR</a>
+            <span>TR</span>
           </div>
 
           <a href="#reserve" className="reserve-small">
-            Book a table
+            Masa Ayırt
           </a>
         </div>
       </header>
@@ -52,7 +52,7 @@ export default function Home() {
       <section className="hero">
         <Image
           src={photos.hero}
-          alt="La Lara Restaurant overlooking Yalıkavak Bay in Bodrum"
+          alt="La Lara Restaurant Yalıkavak Bodrum"
           fill
           priority
           sizes="100vw"
@@ -65,24 +65,24 @@ export default function Home() {
           <p className="eyebrow light">Yalıkavak · Bodrum</p>
 
           <h1>
-            Good food tastes better
+            İyi yemek,
             <br />
-            when it is shared.
+            sevdiklerinle daha güzel.
           </h1>
 
           <p className="hero-copy">
-            Mediterranean flavours, long conversations
+            Akdeniz lezzetleri, uzun sohbetler
             <br className="desktop-break" />
-            and evenings made to remember.
+            ve hatırlanmaya değer akşamlar.
           </p>
 
           <div className="hero-actions">
             <a href="#reserve" className="hero-button">
-              Reserve a table
+              Masa Ayırt
             </a>
 
             <a href="#menu" className="hero-text-link">
-              Explore our menus
+              Menülerimizi Keşfet
             </a>
           </div>
         </div>
@@ -90,9 +90,9 @@ export default function Home() {
         <a
           href="#intro"
           className="scroll-indicator"
-          aria-label="Scroll to discover La Lara"
+          aria-label="La Lara'yı keşfet"
         >
-          <span>Discover La Lara</span>
+          <span>La Lara&apos;yı Keşfet</span>
           <i />
         </a>
       </section>
@@ -102,20 +102,21 @@ export default function Home() {
         <p className="eyebrow">La Lara · Restaurant &amp; Bar</p>
 
         <h2>
-          Created around
+          Her şey basit
           <br />
-          a simple idea.
+          bir fikirle başladı.
         </h2>
 
         <p className="intro-statement">
-          Good food tastes better when it is shared
+          İyi yemek, sevdiğiniz insanlarla
           <br className="desktop-break" />
-          with the people you love.
+          paylaşıldığında daha güzeldir.
         </p>
 
         <p className="intro-text">
-          With panoramic views over Yalıkavak Bay, La Lara is a place to
-          gather, eat well, talk for hours and enjoy the people around you.
+          Yalıkavak Körfezi&apos;nin panoramik manzarasına karşı La Lara;
+          bir araya gelmek, güzel yemekler yemek, uzun sohbetler etmek ve
+          sevdiklerinizle zaman geçirmek için tasarlanmış bir buluşma noktası.
         </p>
       </section>
 
@@ -124,7 +125,7 @@ export default function Home() {
         <div className="editorial-image">
           <Image
             src={photos.philosophy}
-            alt="Dining atmosphere at La Lara Restaurant in Yalıkavak"
+            alt="La Lara Restaurant Yalıkavak yemek ve restoran atmosferi"
             fill
             sizes="(max-width: 900px) 100vw, 58vw"
             className="cover-image"
@@ -132,26 +133,27 @@ export default function Home() {
         </div>
 
         <div className="editorial-copy">
-          <p className="eyebrow">At the table</p>
+          <p className="eyebrow">Sofrada</p>
 
           <h2>
-            Made for
+            Paylaşmak
             <br />
-            sharing.
+            için hazırlandı.
           </h2>
 
           <p>
-            Inspired by Mediterranean hospitality, our table brings together
-            food, conversation and the effortless rhythm of Yalıkavak.
+            Akdeniz misafirperverliğinden ilham alan soframız; lezzeti,
+            sohbeti ve Yalıkavak&apos;ın kendine özgü ritmini bir araya
+            getiriyor.
           </p>
 
           <p>
-            Come for the food. Stay for the sunset, the stories and the
-            moments that last a little longer.
+            Yemek için gelin. Gün batımı, hikâyeler ve biraz daha uzun
+            sürmesini isteyeceğiniz anlar için kalın.
           </p>
 
           <a href="#menu" className="text-link">
-            Discover our menus <span>→</span>
+            Menülerimizi Keşfet <span>→</span>
           </a>
         </div>
       </section>
@@ -160,14 +162,13 @@ export default function Home() {
       <section id="menu" className="menu-section section-pad">
         <div className="section-heading menu-heading">
           <div>
-            <p className="eyebrow">The Menus</p>
-          
+            <p className="eyebrow">Menüler</p>
           </div>
 
           <h2>
-            Food made
+            Paylaşmak için
             <br />
-            to be shared.
+            hazırlanan lezzetler.
           </h2>
         </div>
 
@@ -177,24 +178,32 @@ export default function Home() {
             <div className="menu-photo menu-photo-large">
               <Image
                 src={photos.food}
-                alt="Mediterranean food at La Lara Restaurant Yalıkavak"
+                alt="La Lara Yalıkavak yemek menüsü ve Akdeniz lezzetleri"
                 fill
                 sizes="(max-width: 900px) 100vw, 58vw"
                 className="cover-image"
               />
-        
             </div>
 
             <div className="menu-copy">
-              <p className="menu-kicker">Mediterranean · Seasonal · Sharing</p>
-              <h3>Food</h3>
-              <p>
-                Mediterranean flavours, fresh ingredients and plates created
-                to bring everyone around the table.
+              <p className="menu-kicker">
+                Akdeniz · Mevsimsel · Paylaşım
               </p>
 
-              <a href="/lalara-menu.pdf" className="text-link">
-                View food menu <span>↗</span>
+              <h3>Yemek</h3>
+
+              <p>
+                Akdeniz lezzetleri, taze malzemeler ve sofradaki herkesi bir
+                araya getirmek için hazırlanan tabaklar.
+              </p>
+
+              <a
+                href="/lalara-menu.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link"
+              >
+                Yemek Menüsünü Gör <span>↗</span>
               </a>
             </div>
           </article>
@@ -204,24 +213,32 @@ export default function Home() {
             <div className="menu-photo menu-photo-portrait">
               <Image
                 src={photos.drinks}
-                alt="Cocktails and drinks at La Lara Restaurant and Bar"
+                alt="La Lara Yalıkavak kokteyl ve içecekler"
                 fill
                 sizes="(max-width: 900px) 100vw, 36vw"
                 className="cover-image"
               />
-            
             </div>
 
             <div className="menu-copy">
-              <p className="menu-kicker">Cocktails · Wine · Sunset</p>
-              <h3>Drinks</h3>
-              <p>
-                Cocktails, wine and carefully chosen drinks made for golden
-                hour and long Yalıkavak nights.
+              <p className="menu-kicker">
+                Kokteyller · Şarap · Gün Batımı
               </p>
 
-              <a href="/lalara-drinks.pdf" className="text-link">
-                View drinks menu <span>↗</span>
+              <h3>İçecek</h3>
+
+              <p>
+                Gün batımından Yalıkavak gecelerine uzanan anlara eşlik eden
+                kokteyller, şaraplar ve özenle seçilmiş içecekler.
+              </p>
+
+              <a
+                href="/lalara-drinks.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link"
+              >
+                İçecek Menüsünü Gör <span>↗</span>
               </a>
             </div>
           </article>
@@ -231,24 +248,32 @@ export default function Home() {
             <div className="menu-photo menu-photo-breakfast">
               <Image
                 src={photos.breakfast}
-                alt="Breakfast at La Lara Restaurant overlooking Yalıkavak"
+                alt="La Lara Yalıkavak kahvaltı"
                 fill
                 sizes="(max-width: 900px) 100vw, 48vw"
                 className="cover-image"
               />
-        
             </div>
 
             <div className="menu-copy">
-              <p className="menu-kicker">Morning · Coffee · Sea View</p>
-              <h3>Breakfast</h3>
-              <p>
-                Slow mornings, breakfast by the sea and the first light over
-                Yalıkavak Bay.
+              <p className="menu-kicker">
+                Sabah · Kahve · Deniz Manzarası
               </p>
 
-              <a href="/lalara-breakfast.pdf" className="text-link">
-                View breakfast menu <span>↗</span>
+              <h3>Kahvaltı</h3>
+
+              <p>
+                Yavaş başlayan sabahlar, deniz manzarasına karşı kahvaltı ve
+                Yalıkavak Körfezi&apos;nin ilk ışıkları.
+              </p>
+
+              <a
+                href="/lalara-breakfast.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-link"
+              >
+                Kahvaltı Menüsünü Gör <span>↗</span>
               </a>
             </div>
           </article>
@@ -259,7 +284,7 @@ export default function Home() {
       <section id="experience" className="golden-hour">
         <Image
           src={photos.goldenHour}
-          alt="Golden hour and sunset at La Lara Yalıkavak"
+          alt="La Lara Yalıkavak gün batımı"
           fill
           sizes="100vw"
           className="cover-image"
@@ -268,18 +293,18 @@ export default function Home() {
         <div className="golden-overlay" />
 
         <div className="golden-content">
-          <p className="eyebrow light">The La Lara Experience</p>
+          <p className="eyebrow light">La Lara Deneyimi</p>
 
           <h2>
-            From golden hour
+            Gün batımından
             <br />
-            to late-night dining.
+            gecenin ilerleyen saatlerine.
           </h2>
 
           <p>
-            Breakfast. Lunch. Sunset drinks. Dinner.
+            Kahvaltı. Öğle yemeği. Gün batımı kokteylleri. Akşam yemeği.
             <br />
-            And no reason to rush.
+            Ve acele etmek için hiçbir sebep yok.
           </p>
         </div>
       </section>
@@ -288,14 +313,14 @@ export default function Home() {
       <section id="story" className="story section-pad">
         <div className="story-heading">
           <div>
-            <p className="eyebrow">Our Story</p>
-            <span className="section-number">A family story</span>
+            <p className="eyebrow">Hikayemiz</p>
+            <span className="section-number">Bir aile hikayesi</span>
           </div>
 
           <h2>
-            A table
+            Lara&apos;dan ilham
             <br />
-            inspired by Lara.
+            alan bir sofra.
           </h2>
         </div>
 
@@ -303,7 +328,7 @@ export default function Home() {
           <div className="story-image">
             <Image
               src={photos.story}
-              alt="The warm atmosphere of La Lara Restaurant in Yalıkavak"
+              alt="La Lara Restaurant Yalıkavak atmosferi"
               fill
               sizes="(max-width: 900px) 100vw, 57vw"
               className="cover-image"
@@ -312,87 +337,92 @@ export default function Home() {
 
           <div className="story-copy">
             <p className="story-lead">
-              Warm. Elegant.
+              Sıcak. Zarif.
               <br />
-              Full of personality.
+              Ve karakter dolu.
             </p>
 
             <p>
-              The feeling we wanted to capture at La Lara has its roots in
-              our own family. The restaurant is named after our grandmother,
-              Lara.
+              La Lara&apos;da yaratmak istediğimiz hissin kökleri kendi aile
+              hikayemize uzanıyor. Restoranımız adını büyükannemiz Lara&apos;dan
+              alıyor.
             </p>
 
             <p>
-              She wasn&apos;t quite the traditional grandmother you might
-              imagine. She was a career woman with a big personality and,
-              admittedly, a touch of diva in her.
+              Lara, aklınıza gelebilecek geleneksel büyükannelerden değildi.
+              Kariyer sahibi, güçlü bir kişiliğe ve kabul etmek gerekir ki
+              biraz da diva ruhuna sahipti.
             </p>
 
             <p>
-              She loved to cook, but even more than that, she loved to host.
-              Her kitchen table was a place for long conversations, stories,
-              laughter and lots of food to share.
+              Yemek yapmayı severdi ama misafir ağırlamayı daha da çok
+              severdi. Mutfağındaki masa; uzun sohbetlerin, hikâyelerin,
+              kahkahaların ve elbette paylaşılacak bolca yemeğin olduğu bir
+              yerdi.
             </p>
 
-            <a href="/our-story" className="text-link">
-              Discover our story <span>→</span>
-            </a>
+            <p>
+              Bize gerçek misafirperverliğin ne olduğunu o gösterdi:
+              İnsanların kendilerini rahat, değerli ve evlerinde
+              hissetmelerini sağlamak.
+            </p>
           </div>
         </div>
       </section>
-
-            {/* THE PINK ELEPHANT */}
+            {/* PEMBE FİL */}
       <section className="elephant-section">
         <div className="elephant-orbit" aria-hidden="true">
           <span>LA LARA</span>
-          <div className="elephant-symbol">🐘</div>
+          <Image
+  src="/pink-elephant.ico"
+  alt=""
+  width={52}
+  height={52}
+  className="pink-elephant-icon"
+/>
         </div>
 
-        <p className="eyebrow">The Pink Elephant</p>
+        <p className="eyebrow">Pembe Fil</p>
 
         <h2>
-          “May you dream
+          “Rüyanda pembe
           <br />
-          of pink elephants.”
+          filler gör.”
         </h2>
 
         <p className="elephant-text">
-          When we were children, our grandmother always said these words
-          before we went to bed.
+          Çocukken büyükannemiz yatmadan önce bize hep bu sözleri söylerdi.
         </p>
 
         <p className="elephant-text elephant-text-secondary">
-          We never really thought about what they meant. They were simply one
-          of those slightly strange, affectionate things that belonged to her —
-          personal, playful and a little mysterious.
+          Ne anlama geldiğini pek düşünmezdik. Bu, sadece ona ait olan biraz
+          tuhaf, sevgi dolu ve gizemli sözlerden biriydi.
         </p>
 
         <p className="elephant-text elephant-text-secondary">
-          Today, we like to give her words a new meaning. A reminder to stay
-          curious, think beyond the obvious and dream a little bigger.
+          Bugün onun sözlerine yeni bir anlam vermeyi seviyoruz: Meraklı kal,
+          alışılmışın ötesini düşün ve biraz daha büyük hayaller kur.
         </p>
 
         <p className="elephant-note">
-          A little piece of home.
+          Evimizden küçük bir parça.
         </p>
       </section>
-
 
       {/* MOMENTS */}
       <section id="moments" className="moments section-pad">
         <div className="moments-heading">
           <div>
-            <p className="eyebrow">La Lara Moments</p>
+            <p className="eyebrow">La Lara Anları</p>
             <span className="section-number">Yalıkavak · Bodrum</span>
           </div>
 
           <h2>
-            Eat.
+            Ye.
             <br />
-            Drink.
+            İç.
             <br />
-            Share.
+            Paylaş.
           </h2>
         </div>
 
@@ -400,7 +430,7 @@ export default function Home() {
           <div className="moment moment-main">
             <Image
               src={photos.moment}
-              alt="A La Lara moment in Yalıkavak Bodrum"
+              alt="La Lara Yalıkavak"
               fill
               sizes="(max-width: 900px) 100vw, 62vw"
               className="cover-image"
@@ -410,7 +440,7 @@ export default function Home() {
           <div className="moment moment-food">
             <Image
               src={photos.food}
-              alt="Food made for sharing at La Lara"
+              alt="La Lara paylaşım yemekleri"
               fill
               sizes="(max-width: 900px) 75vw, 28vw"
               className="cover-image"
@@ -420,7 +450,7 @@ export default function Home() {
           <div className="moment moment-space">
             <Image
               src={photos.philosophy}
-              alt="La Lara Restaurant atmosphere"
+              alt="La Lara Restaurant Yalıkavak"
               fill
               sizes="(max-width: 900px) 85vw, 38vw"
               className="cover-image"
@@ -430,11 +460,11 @@ export default function Home() {
           <div className="moment-quote">
             <span>LA LARA</span>
             <p>
-              Gather.
+              Buluş.
               <br />
-              Savor.
+              Tadını çıkar.
               <br />
-              Stay a little longer.
+              Biraz daha kal.
             </p>
           </div>
         </div>
@@ -446,24 +476,24 @@ export default function Home() {
           <p className="eyebrow light">Yalıkavak · Bodrum</p>
 
           <h2>
-            Your table
+            Masanız
             <br />
-            awaits.
+            sizi bekliyor.
           </h2>
 
           <p>
-            Come for the view. Stay for the food,
+            Manzara için gelin. Yemek, insanlar
             <br />
-            the people and the night.
+            ve gece için kalın.
           </p>
 
           <a href="#" className="reservation-button">
-            Book a table
+            Masa Ayırt
           </a>
         </div>
       </section>
 
-              {/* FOOTER */}
+            {/* FOOTER */}
       <footer id="contact" className="footer">
         <div className="footer-top">
           {/* LOGO */}
@@ -475,12 +505,12 @@ export default function Home() {
               height={70}
               className="footer-logo-image"
             />
-           
+            
           </div>
 
-          {/* VISIT */}
+          {/* ADRES */}
           <div className="footer-column">
-            <span>Visit</span>
+            <span>Adres</span>
 
             <p>
               Geriş Mah., 2026. Sokak No:5
@@ -499,19 +529,19 @@ export default function Home() {
             </a>
           </div>
 
-          {/* EXPLORE */}
+          {/* KEŞFET */}
           <div className="footer-column">
-            <span>Explore</span>
+            <span>Keşfet</span>
 
-            <a href="#story">Our Story</a>
-            <a href="#menu">Menus</a>
-            <a href="#experience">Experience</a>
-            <a href="#moments">Gallery</a>
+            <a href="#story">Hikayemiz</a>
+            <a href="#menu">Menüler</a>
+            <a href="#experience">Deneyim</a>
+            <a href="#moments">Galeri</a>
           </div>
 
-          {/* SOCIAL */}
+          {/* SOSYAL MEDYA */}
           <div className="footer-column footer-social">
-            <span>Follow La Lara</span>
+            <span>La Lara&apos;yı Takip Edin</span>
 
             <div className="footer-social-icons">
               {/* FACEBOOK */}
@@ -519,7 +549,7 @@ export default function Home() {
                 href="https://www.facebook.com/lalararestaurant"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="La Lara on Facebook"
+                aria-label="La Lara Facebook"
                 className="social-button"
               >
                 <svg
@@ -539,7 +569,7 @@ export default function Home() {
                 href="https://www.instagram.com/lalara.bodrum/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="La Lara on Instagram"
+                aria-label="La Lara Instagram"
                 className="social-button"
               >
                 <svg
@@ -557,6 +587,7 @@ export default function Home() {
                     stroke="currentColor"
                     strokeWidth="2"
                   />
+
                   <circle
                     cx="12"
                     cy="12"
@@ -565,6 +596,7 @@ export default function Home() {
                     stroke="currentColor"
                     strokeWidth="2"
                   />
+
                   <circle
                     cx="17.4"
                     cy="6.7"
@@ -579,7 +611,7 @@ export default function Home() {
                 href="https://www.tripadvisor.com/Restaurant_Review-g312738-d24780161-Reviews-La_Lara_Restaurant_Bar-Yalikavak_Bodrum_District_Mugla_Province_Turkish_Aegean_C.html"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="La Lara on Tripadvisor"
+                aria-label="La Lara Tripadvisor"
                 className="social-button"
               >
                 <svg
@@ -595,6 +627,7 @@ export default function Home() {
                     stroke="currentColor"
                     strokeWidth="1.8"
                   />
+
                   <circle
                     cx="16.8"
                     cy="12.5"
@@ -603,18 +636,21 @@ export default function Home() {
                     stroke="currentColor"
                     strokeWidth="1.8"
                   />
+
                   <circle
                     cx="7.2"
                     cy="12.5"
                     r="1"
                     fill="currentColor"
                   />
+
                   <circle
                     cx="16.8"
                     cy="12.5"
                     r="1"
                     fill="currentColor"
                   />
+
                   <path
                     d="M4.2 8.9 2.6 7.2h4.2M19.8 8.9l1.6-1.7h-4.2M9.9 13.5 12 16l2.1-2.5M8.8 8.9c1-.65 2.05-.95 3.2-.95s2.2.3 3.2.95"
                     fill="none"
@@ -632,6 +668,7 @@ export default function Home() {
         {/* FOOTER BOTTOM */}
         <div className="footer-bottom">
           <span>© 2026 La Lara Restaurant &amp; Bar</span>
+
           <span>Yalıkavak · Bodrum</span>
 
           <span>
@@ -644,15 +681,18 @@ export default function Home() {
 
       {/* MOBILE ACTION BAR */}
       <div className="mobile-actions">
-        <a href="#menu">Menus</a>
-        <a href="#reserve">Reserve</a>
+        <a href="#menu">Menüler</a>
+
+        <a href="#reserve">
+          Rezervasyon
+        </a>
 
         <a
           href="https://www.google.com/maps/search/?api=1&query=La+Lara+Restaurant+Yalikavak+Bodrum"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Directions
+          Yol Tarifi
         </a>
       </div>
     </main>
