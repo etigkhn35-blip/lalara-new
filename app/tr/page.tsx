@@ -22,9 +22,18 @@ type CmsRecord = {
   eyebrow?: string;
   heading?: string;
   body?: string;
+  buttonLabel?: string;
+
+  eyebrowSize?: number;
   headingSize?: number;
   textSize?: number;
-  buttonLabel?: string;
+  buttonSize?: number;
+
+  fontFamily?: "display" | "sans";
+  fontWeight?: number;
+  lineHeight?: number;
+  letterSpacing?: number;
+
   status?: string;
 };
 
@@ -103,6 +112,40 @@ export default function HomeTR() {
   const telHref = `tel:${settings.phone.replace(/[^+\d]/g, "")}`;
   const emailHref = `mailto:${settings.email}`;
 
+  function cmsStyle(
+    key: string,
+    kind: "eyebrow" | "heading" | "text" | "button"
+  ) {
+    const item = cms[key];
+    if (!item) return undefined;
+
+    const size =
+      kind === "eyebrow"
+        ? item.eyebrowSize
+        : kind === "heading"
+          ? item.headingSize
+          : kind === "button"
+            ? item.buttonSize
+            : item.textSize;
+
+    return {
+      ...(size ? { fontSize: `${size}px` } : {}),
+      ...(item.fontFamily
+        ? {
+            fontFamily:
+              item.fontFamily === "sans"
+                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
+                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+          }
+        : {}),
+      ...(item.fontWeight ? { fontWeight: item.fontWeight } : {}),
+      ...(item.lineHeight ? { lineHeight: item.lineHeight } : {}),
+      ...(item.letterSpacing !== undefined
+        ? { letterSpacing: `${item.letterSpacing}px` }
+        : {}),
+    };
+  }
+
   return (
     <main className="home-page">
       <div className="opening" aria-hidden="true">
@@ -140,7 +183,7 @@ export default function HomeTR() {
             <a className="active" href="/tr">TR</a>
           </div>
 
-          <a href="#reserve" className="header-reserve">
+          <a  className="contact-header-button"href="https://wa.me/905458941838" target="_blank" rel="noopener noreferrer">
             Masa Ayırt
           </a>
 
@@ -193,25 +236,25 @@ export default function HomeTR() {
         <Image src={photos.hero} alt="La Lara Restaurant & Bar in Yalıkavak Bodrum" fill priority sizes="100vw" className="cover" />
         <div className="image-overlay" />
         <div className="hero-content">
-          <p className="eyebrow light">{cms.hero?.eyebrow || "Yalıkavak · Bodrum"}</p>
-          <h1 style={cms.hero?.headingSize ? { fontSize: `${cms.hero.headingSize}px` } : undefined}>{cms.hero?.heading ? renderLines(cms.hero.heading) : <>İyi yemek,<br />sevdiklerinle daha güzel.</>}</h1>
-          <p style={cms.hero?.textSize ? { fontSize: `${cms.hero.textSize}px` } : undefined}>{cms.hero?.body ? renderLines(cms.hero.body) : <>Akdeniz lezzetleri, uzun sohbetler<br />ve hatırlanmaya değer akşamlar.</>}</p>
+          <p className="eyebrow light" style={cmsStyle("hero", "eyebrow")}>{cms.hero?.eyebrow || "Yalıkavak · Bodrum"}</p>
+          <h1 style={cmsStyle("hero", "heading")}>{cms.hero?.heading ? renderLines(cms.hero.heading) : <>İyi yemek,<br />sevdiklerinle daha güzel.</>}</h1>
+          <p style={cmsStyle("hero", "text")}>{cms.hero?.body ? renderLines(cms.hero.body) : <>Akdeniz lezzetleri, uzun sohbetler<br />ve hatırlanmaya değer akşamlar.</>}</p>
           <div className="hero-actions"><a href="#reserve" className="outline-button">Masa ayırt</a><a href="#menus" className="line-link light-link">Menülerimizi keşfet</a></div>
         </div>
         <a className="scroll-cue" href="#intro">La Lara’yı keşfet <i /></a>
       </section>
 
       <section id="intro" className="intro transparent-section">
-        <p className="eyebrow">{cms.intro?.eyebrow || "La Lara · Restaurant & Bar"}</p>
-        <h2 style={cms.intro?.headingSize ? { fontSize: `${cms.intro.headingSize}px` } : undefined}>{cms.intro?.heading ? renderLines(cms.intro.heading) : <>Her şey basit<br />bir fikirle başladı.</>}</h2>
-        <p className="display-copy">{cms.intro?.body || <>İyi yemek, sevdiğiniz insanlarla<br />paylaşıldığında daha güzeldir.</>}</p>
+        <p className="eyebrow" style={cmsStyle("intro", "eyebrow")}>{cms.intro?.eyebrow || "La Lara · Restaurant & Bar"}</p>
+        <h2 style={cmsStyle("intro", "heading")}>{cms.intro?.heading ? renderLines(cms.intro.heading) : <>Her şey basit<br />bir fikirle başladı.</>}</h2>
+        <p className="display-copy">{cms.intro?.body || <>İyi yemek, sevdiğiniz insanlarla<br /> paylaşıldığında daha güzeldir.</>}</p>
         <p className="body-copy">Yalıkavak Körfezi’nin panoramik manzarasına karşı La Lara; bir araya gelmek, güzel yemekler yemek, uzun sohbetler etmek ve sevdiklerinizle zaman geçirmek için tasarlanmış bir buluşma noktası.</p>
       </section>
 
       <section className="split-section opaque-section">
         <div className="split-image"><Image src={photos.atmosphere} alt="Dining atmosphere at La Lara Restaurant" fill sizes="(max-width:900px) 100vw,58vw" className="cover" /></div>
         <div className="split-copy">
-          <p className="eyebrow">{cms["at-the-table"]?.eyebrow || "Sofrada"}</p><h2 style={cms["at-the-table"]?.headingSize ? { fontSize: `${cms["at-the-table"].headingSize}px` } : undefined}>{cms["at-the-table"]?.heading ? renderLines(cms["at-the-table"].heading) : <>Paylaşmak<br />için.</>}</h2>
+          <p className="eyebrow" style={cmsStyle("at-the-table", "eyebrow")}>{cms["at-the-table"]?.eyebrow || "Sofrada"}</p><h2 style={cmsStyle("at-the-table", "heading")}>{cms["at-the-table"]?.heading ? renderLines(cms["at-the-table"].heading) : <>Paylaşmak<br />için.</>}</h2>
           <p>{cms["at-the-table"]?.body || "Akdeniz misafirperverliğinden ilham alan soframız; lezzeti, sohbeti ve Yalıkavak’ın kendine özgü ritmini bir araya getiriyor."}</p>
           <p>Yemek için gelin. Gün batımı, hikâyeler ve biraz daha uzun sürmesini isteyeceğiniz anlar için kalın.</p>
           <a href="#menus" className="line-link">Menülerimizi keşfet <span>→</span></a>
@@ -228,7 +271,7 @@ export default function HomeTR() {
     />
   </div>
 
-  <p className="eyebrow">{cms["pink-elephant"]?.eyebrow || "Pembe Fil"}</p>
+  <p className="eyebrow" style={cmsStyle("pink-elephant", "eyebrow")}>{cms["pink-elephant"]?.eyebrow || "Pembe Fil"}</p>
 
   <h2>
     “Pembe filler görmen
@@ -262,7 +305,7 @@ export default function HomeTR() {
 </section>
 
 <section className="people-behind transparent-section">
-  <p className="eyebrow">{cms["people-behind-it"]?.eyebrow || "Emeği Geçenler"}</p>
+  <p className="eyebrow" style={cmsStyle("people-behind-it", "eyebrow")}>{cms["people-behind-it"]?.eyebrow || "Emeği Geçenler"}</p>
 
   <h2>
     Bir aileden,
@@ -306,7 +349,7 @@ export default function HomeTR() {
       </section>
 
       <section id="story" className="story transparent-section">
-        <div className="section-title"><div><p className="eyebrow">{cms["our-story"]?.eyebrow || "Hikayemiz"}</p><span>Bir aile hikayesi</span></div><h2 style={cms["our-story"]?.headingSize ? { fontSize: `${cms["our-story"].headingSize}px` } : undefined}>{cms["our-story"]?.heading ? renderLines(cms["our-story"].heading) : <>Lara’dan ilham<br />alan bir sofra.</>}</h2></div>
+        <div className="section-title"><div><p className="eyebrow" style={cmsStyle("our-story", "eyebrow")}>{cms["our-story"]?.eyebrow || "Hikayemiz"}</p><span>Bir aile hikayesi</span></div><h2 style={cmsStyle("our-story", "heading")}>{cms["our-story"]?.heading ? renderLines(cms["our-story"].heading) : <>Lara’dan ilham<br />alan bir sofra.</>}</h2></div>
         <div className="story-grid">
           <div className="story-image"><Image src={photos.story} alt="La Lara Restaurant atmosphere" fill sizes="(max-width:900px) 100vw,56vw" className="cover" /></div>
           <div className="story-copy"><h3>Sıcak. Zarif.<br />Ve karakter dolu.</h3><p>La Lara’da yaratmak istediğimiz hissin kökleri kendi aile hikayemize uzanıyor. Restoranımız adını büyükannemiz Lara’dan alıyor.</p><p>Lara, kariyer sahibi, güçlü bir kişiliğe ve kabul etmek gerekir ki biraz da diva ruhuna sahipti.</p><p>Yemek yapmayı severdi ama misafir ağırlamayı daha da çok severdi. Mutfağındaki masa; uzun sohbetlerin, hikâyelerin, kahkahaların ve paylaşılacak bolca yemeğin olduğu bir yerdi.</p><p>La Lara; onun sıcak, zarif ve kendine has karakterinden ilham alıyor. Restorana onun adını vermek, bize en doğru karar gibi hissettirdi.</p></div>

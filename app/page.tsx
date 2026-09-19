@@ -22,12 +22,20 @@ type CmsRecord = {
   eyebrow?: string;
   heading?: string;
   body?: string;
+  buttonLabel?: string;
+
+  eyebrowSize?: number;
   headingSize?: number;
   textSize?: number;
-  buttonLabel?: string;
+  buttonSize?: number;
+
+  fontFamily?: "display" | "sans";
+  fontWeight?: number;
+  lineHeight?: number;
+  letterSpacing?: number;
+
   status?: string;
 };
-
 type SiteSettings = {
   phone: string;
   email: string;
@@ -103,6 +111,40 @@ export default function Home() {
   const telHref = `tel:${settings.phone.replace(/[^+\d]/g, "")}`;
   const emailHref = `mailto:${settings.email}`;
 
+  function cmsStyle(
+    key: string,
+    kind: "eyebrow" | "heading" | "text" | "button"
+  ) {
+    const item = cms[key];
+    if (!item) return undefined;
+
+    const size =
+      kind === "eyebrow"
+        ? item.eyebrowSize
+        : kind === "heading"
+          ? item.headingSize
+          : kind === "button"
+            ? item.buttonSize
+            : item.textSize;
+
+    return {
+      ...(size ? { fontSize: `${size}px` } : {}),
+      ...(item.fontFamily
+        ? {
+            fontFamily:
+              item.fontFamily === "sans"
+                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
+                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+          }
+        : {}),
+      ...(item.fontWeight ? { fontWeight: item.fontWeight } : {}),
+      ...(item.lineHeight ? { lineHeight: item.lineHeight } : {}),
+      ...(item.letterSpacing !== undefined
+        ? { letterSpacing: `${item.letterSpacing}px` }
+        : {}),
+    };
+  }
+
   return (
     <main className="home-page">
       <div className="opening" aria-hidden="true">
@@ -140,7 +182,7 @@ export default function Home() {
             <a href="/tr">TR</a>
           </div>
 
-          <a href="#reserve" className="header-reserve">
+          <a  className="contact-header-button"href="https://wa.me/905458941838" target="_blank" rel="noopener noreferrer">
             Book a Table
           </a>
 
@@ -193,17 +235,17 @@ export default function Home() {
         <Image src={photos.hero} alt="La Lara Restaurant & Bar in Yalıkavak Bodrum" fill priority sizes="100vw" className="cover" />
         <div className="image-overlay" />
         <div className="hero-content">
-          <p className="eyebrow light">{cms.hero?.eyebrow || "Yalıkavak · Bodrum"}</p>
-          <h1 style={cms.hero?.headingSize ? { fontSize: `${cms.hero.headingSize}px` } : undefined}>{cms.hero?.heading ? renderLines(cms.hero.heading) : <>Good food tastes better<br />when it is shared.</>}</h1>
-          <p style={cms.hero?.textSize ? { fontSize: `${cms.hero.textSize}px` } : undefined}>{cms.hero?.body ? renderLines(cms.hero.body) : <>Mediterranean flavours, long conversations<br />and evenings made to remember.</>}</p>
+          <p className="eyebrow light" style={cmsStyle("hero", "eyebrow")}>{cms.hero?.eyebrow || "Yalıkavak · Bodrum"}</p>
+          <h1 style={cmsStyle("hero", "heading")}>{cms.hero?.heading ? renderLines(cms.hero.heading) : <>Good food tastes better<br />when it is shared.</>}</h1>
+          <p style={cmsStyle("hero", "text")}>{cms.hero?.body ? renderLines(cms.hero.body) : <>Mediterranean flavours, long conversations<br />and evenings made to remember.</>}</p>
           <div className="hero-actions"><a href="#reserve" className="outline-button">Reserve a table</a><a href="#menus" className="line-link light-link">Explore our menus</a></div>
         </div>
         <a className="scroll-cue" href="#intro">Discover La Lara <i /></a>
       </section>
 
       <section id="intro" className="intro transparent-section">
-        <p className="eyebrow">{cms.intro?.eyebrow || "La Lara · Restaurant & Bar"}</p>
-        <h2 style={cms.intro?.headingSize ? { fontSize: `${cms.intro.headingSize}px` } : undefined}>{cms.intro?.heading ? renderLines(cms.intro.heading) : <>Created around<br />a simple idea.</>}</h2>
+        <p className="eyebrow" style={cmsStyle("intro", "eyebrow")}>{cms.intro?.eyebrow || "La Lara · Restaurant & Bar"}</p>
+        <h2 style={cmsStyle("intro", "heading")}>{cms.intro?.heading ? renderLines(cms.intro.heading) : <>Created around<br />a simple idea.</>}</h2>
         <p className="display-copy">{cms.intro?.body || <>Good food tastes better when it is shared<br />with the people you love.</>}</p>
         <p className="body-copy">With panoramic views over Yalıkavak Bay, La Lara is a place to gather, eat well, talk for hours and enjoy the people around you.</p>
       </section>
@@ -211,7 +253,7 @@ export default function Home() {
       <section className="split-section opaque-section">
         <div className="split-image"><Image src={photos.atmosphere} alt="Dining atmosphere at La Lara Restaurant" fill sizes="(max-width:900px) 100vw,58vw" className="cover" /></div>
         <div className="split-copy">
-          <p className="eyebrow">{cms["at-the-table"]?.eyebrow || "At the table"}</p><h2 style={cms["at-the-table"]?.headingSize ? { fontSize: `${cms["at-the-table"].headingSize}px` } : undefined}>{cms["at-the-table"]?.heading ? renderLines(cms["at-the-table"].heading) : <>Made for<br />sharing.</>}</h2>
+          <p className="eyebrow" style={cmsStyle("at-the-table", "eyebrow")}>{cms["at-the-table"]?.eyebrow || "At the table"}</p><h2 style={cmsStyle("at-the-table", "heading")}>{cms["at-the-table"]?.heading ? renderLines(cms["at-the-table"].heading) : <>Made for<br />sharing.</>}</h2>
           <p>{cms["at-the-table"]?.body || "Inspired by Mediterranean hospitality, our table brings together food, conversation and the effortless rhythm of Yalıkavak."}</p>
           <p>Come for the food. Stay for the sunset, the stories and the moments that last a little longer.</p>
           <a href="#menus" className="line-link">Discover our menus <span>→</span></a>
@@ -229,7 +271,7 @@ export default function Home() {
     />
   </div>
 
-  <p className="eyebrow">{cms["pink-elephant"]?.eyebrow || "The Pink Elephant"}</p>
+  <p className="eyebrow" style={cmsStyle("pink-elephant", "eyebrow")}>{cms["pink-elephant"]?.eyebrow || "The Pink Elephant"}</p>
 
   <h2>
     “May you dream
@@ -263,7 +305,7 @@ export default function Home() {
 
  {/* THE PEOPLE BEHIND IT */}
 <section className="people-behind transparent-section">
-  <p className="eyebrow">{cms["people-behind-it"]?.eyebrow || "The People Behind It"}</p>
+  <p className="eyebrow" style={cmsStyle("people-behind-it", "eyebrow")}>{cms["people-behind-it"]?.eyebrow || "The People Behind It"}</p>
 
   <h2>
     From a family,
@@ -307,7 +349,7 @@ export default function Home() {
       </section>
 
       <section id="story" className="story transparent-section">
-        <div className="section-title"><div><p className="eyebrow">{cms["our-story"]?.eyebrow || "Our Story"}</p><span>A family story</span></div><h2 style={cms["our-story"]?.headingSize ? { fontSize: `${cms["our-story"].headingSize}px` } : undefined}>{cms["our-story"]?.heading ? renderLines(cms["our-story"].heading) : <>A table<br />inspired by Lara.</>}</h2></div>
+        <div className="section-title"><div><p className="eyebrow" style={cmsStyle("our-story", "eyebrow")}>{cms["our-story"]?.eyebrow || "Our Story"}</p><span>A family story</span></div><h2 style={cmsStyle("our-story", "heading")}>{cms["our-story"]?.heading ? renderLines(cms["our-story"].heading) : <>A table<br />inspired by Lara.</>}</h2></div>
         <div className="story-grid">
           <div className="story-image"><Image src={photos.story} alt="La Lara Restaurant atmosphere" fill sizes="(max-width:900px) 100vw,56vw" className="cover" /></div>
           <div className="story-copy"><h3>Warm. Elegant.<br />Full of personality.</h3><p>The feeling we wanted to capture at La Lara has its roots in our own family. The restaurant is named after our grandmother, Lara.</p><p>She was a career woman with a big personality and, admittedly, a touch of diva in her.</p><p>She loved to cook, but even more than that, she loved to host. Her kitchen table was a place for long conversations, stories, laughter and lots of food to share.</p></div>
