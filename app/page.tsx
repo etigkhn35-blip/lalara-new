@@ -434,8 +434,25 @@ export default function Home() {
 
       <section id="reserve" className="reservation opaque-section">
         <p className="eyebrow light">{cms.reservation?.eyebrow || "Yalıkavak · Bodrum"}</p><h2 style={cms.reservation?.headingSize ? { fontSize: `${cms.reservation.headingSize}px` } : undefined}>{cms.reservation?.heading ? renderLines(cms.reservation.heading) : <>Your table<br />awaits.</>}</h2><p>{cms.reservation?.body ? renderLines(cms.reservation.body) : <>Come for the view. Stay for the food,<br />the people and the night.</>}</p>
-        <div className="reservation-actions reservation-actions-stacked"><a className="line-link light-link" href={emailHref}>Email us</a><a className="outline-button" href={telHref}>Call to reserve</a></div>
-      </section>
+<div className="reservation-actions reservation-actions-stacked">
+  <a
+    className="line-link light-link"
+    href={emailHref}
+  >
+    EMAIL US
+  </a>
+
+
+
+  <a
+    className="outline-button"
+    href="https://wa.me/905458941838"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    RESERVE VIA WHATSAPP
+  </a>
+</div>      </section>
 
      <footer id="contact" className="site-footer opaque-section">
   <div className="footer-grid">
