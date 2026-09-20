@@ -6,7 +6,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-const photos = {
+const defaultPhotos = {
   hero: "/images/home/1.jpg",
   atmosphere: "/images/home/2.jpg",
   food: "/images/home/3.jpg",
@@ -15,6 +15,16 @@ const photos = {
   sunset: "/images/home/6.jpg",
   story: "/images/home/7.jpg",
   moments: "/images/home/8.jpg",
+  event1: "/images/home/8.jpg",
+  event2: "/images/home/7.jpg",
+  event3: "/images/home/3.jpg",
+  contactHero: "/images/home/6.jpg",
+};
+
+const defaultDocuments = {
+  food: "/lalara-menu.pdf",
+  drinks: "/lalara-drinks.pdf",
+  breakfast: "/lalara-breakfast.pdf",
 };
 
 
@@ -68,6 +78,9 @@ export default function HomeTR() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cms, setCms] = useState<Record<string, CmsRecord>>({});
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [photos, setPhotos] = useState(defaultPhotos);
+  const [gallery, setGallery] = useState<string[]>([]);
+  const [documents, setDocuments] = useState(defaultDocuments);
 
   useEffect(() => {
     async function loadCms() {
@@ -88,9 +101,11 @@ export default function HomeTR() {
 
         setCms(nextCms);
 
-        const [contactSnapshot, socialSnapshot] = await Promise.all([
+        const [contactSnapshot, socialSnapshot, mediaSnapshot, documentsSnapshot] = await Promise.all([
           getDoc(doc(db, "siteSettings", "contact")),
           getDoc(doc(db, "siteSettings", "social")),
+          getDoc(doc(db, "siteSettings", "media")),
+          getDoc(doc(db, "siteSettings", "documents")),
         ]);
 
         setSettings({
@@ -100,6 +115,33 @@ export default function HomeTR() {
           instagram: socialSnapshot.data()?.instagram ?? defaultSettings.instagram,
           facebook: socialSnapshot.data()?.facebook ?? defaultSettings.facebook,
           tripadvisor: socialSnapshot.data()?.tripadvisor ?? defaultSettings.tripadvisor,
+        });
+
+        const savedImages = mediaSnapshot.data()?.images || {};
+        setPhotos({
+          hero: savedImages.hero?.url || defaultPhotos.hero,
+          atmosphere: savedImages.atmosphere?.url || defaultPhotos.atmosphere,
+          food: savedImages.food?.url || defaultPhotos.food,
+          drinks: savedImages.drinks?.url || defaultPhotos.drinks,
+          breakfast: savedImages.breakfast?.url || defaultPhotos.breakfast,
+          sunset: savedImages.sunset?.url || defaultPhotos.sunset,
+          story: savedImages.story?.url || defaultPhotos.story,
+          moments: savedImages.moments?.url || defaultPhotos.moments,
+          event1: savedImages.event1?.url || savedImages.moments?.url || defaultPhotos.event1,
+          event2: savedImages.event2?.url || defaultPhotos.event2,
+          event3: savedImages.event3?.url || defaultPhotos.event3,
+          contactHero: savedImages.contactHero?.url || defaultPhotos.contactHero,
+        });
+        setGallery(
+          Array.isArray(mediaSnapshot.data()?.gallery)
+            ? mediaSnapshot.data()!.gallery.map((item: { url?: string }) => item.url).filter(Boolean)
+            : []
+        );
+
+        setDocuments({
+          food: documentsSnapshot.data()?.food?.url || defaultDocuments.food,
+          drinks: documentsSnapshot.data()?.drinks?.url || defaultDocuments.drinks,
+          breakfast: documentsSnapshot.data()?.breakfast?.url || defaultDocuments.breakfast,
         });
       } catch (error) {
         console.error("La Lara CMS load error:", error);
@@ -169,11 +211,12 @@ export default function HomeTR() {
         </a>
 
         <nav className="desktop-nav" aria-label="Ana menü">
-          <a href="#story">Hikayemiz</a>
-          <a href="#menus">Menüler</a>
-          <a href="#experience">Deneyim</a>
-          <a href="#moments">Galeri</a>
-          <a href="/tr/iletisim">İletişim</a>
+          <a href="#story">HİKAYEMİZ</a>
+          <a href="#menus">MENÜLER</a>
+          <a href="#experience">DENEYİM</a>
+          <a href="#events">ETKİNLİKLER</a>
+          <a href="#moments">GALERİ</a>
+          <a href="/tr/iletisim">İLETİŞİM</a>
         </nav>
 
         <div className="header-right">
@@ -184,7 +227,7 @@ export default function HomeTR() {
           </div>
 
           <a  className="contact-header-button"href="https://wa.me/905458941838" target="_blank" rel="noopener noreferrer">
-            Masa Ayırt
+            Rezervasyon Yap
           </a>
 
           <button
@@ -208,11 +251,12 @@ export default function HomeTR() {
         aria-hidden={!menuOpen}
       >
         <nav className="mobile-menu-nav" aria-label="Mobil menü">
-          <a href="#story" onClick={() => setMenuOpen(false)}>Hikayemiz</a>
-          <a href="#menus" onClick={() => setMenuOpen(false)}>Menüler</a>
-          <a href="#experience" onClick={() => setMenuOpen(false)}>Deneyim</a>
-          <a href="#moments" onClick={() => setMenuOpen(false)}>Galeri</a>
-          <a href="/tr/iletisim" onClick={() => setMenuOpen(false)}>İletişim</a>
+          <a href="#story" onClick={() => setMenuOpen(false)}>HİKAYEMİZ</a>
+          <a href="#menus" onClick={() => setMenuOpen(false)}>MENÜLER</a>
+          <a href="#experience" onClick={() => setMenuOpen(false)}>DENEYİM</a>
+          <a href="#events" onClick={() => setMenuOpen(false)}>ETKİNLİKLER</a>
+          <a href="#moments" onClick={() => setMenuOpen(false)}>GALERİ</a>
+          <a href="/tr/iletisim" onClick={() => setMenuOpen(false)}>İLETİŞİM</a>
         </nav>
 
         <div className="mobile-menu-bottom">
@@ -227,7 +271,7 @@ export default function HomeTR() {
             className="mobile-menu-reserve"
             onClick={() => setMenuOpen(false)}
           >
-            Masa Ayırt
+            Rezervasyon Yap
           </a>
         </div>
       </div>
@@ -238,8 +282,8 @@ export default function HomeTR() {
         <div className="hero-content">
           <p className="eyebrow light" style={cmsStyle("hero", "eyebrow")}>{cms.hero?.eyebrow || "Yalıkavak · Bodrum"}</p>
           <h1 style={cmsStyle("hero", "heading")}>{cms.hero?.heading ? renderLines(cms.hero.heading) : <>İyi yemek,<br />sevdiklerinle daha güzel.</>}</h1>
-          <p style={cmsStyle("hero", "text")}>{cms.hero?.body ? renderLines(cms.hero.body) : <>Akdeniz lezzetleri, uzun sohbetler<br />ve hatırlanmaya değer akşamlar.</>}</p>
-          <div className="hero-actions"><a href="#reserve" className="outline-button">Masa ayırt</a><a href="#menus" className="line-link light-link">Menülerimizi keşfet</a></div>
+          <p className="hero-description" style={cmsStyle("hero", "text")}>{cms.hero?.body ? renderLines(cms.hero.body) : <>Akdeniz lezzetleri, uzun sohbetler<br />ve hatırlanmaya değer akşamlar.</>}</p>
+          <div className="hero-actions"><a href="#reserve" className="outline-button">Rezervasyon Yap</a><a href="#menus" className="outline-button">MENÜLERİMİZİ KEŞFET</a></div>
         </div>
         <a className="scroll-cue" href="#intro">La Lara’yı keşfet <i /></a>
       </section>
@@ -337,9 +381,9 @@ export default function HomeTR() {
       <section id="menus" className="menus transparent-section">
         <div className="section-title"><div><p className="eyebrow">Menüler</p><span>Yalıkavak · Bodrum</span></div><h2>Paylaşmak için<br />hazırlanan lezzetler.</h2></div>
         <div className="menu-grid">
-          <article><div className="menu-image"><Image src={photos.food} alt="Mediterranean food at La Lara" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div><p className="kicker">Akdeniz · Mevsimsel · Paylaşım</p><h3>Yemek</h3><p>Akdeniz lezzetleri, taze malzemeler ve sofradaki herkesi bir araya getirmek için hazırlanan tabaklar.</p><a className="line-link" href="/lalara-menu.pdf" target="_blank" rel="noopener noreferrer">Yemek menüsünü gör ↗</a></article>
-          <article><div className="menu-image"><Image src={photos.drinks} alt="Cocktails and drinks at La Lara" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div><p className="kicker">Kokteyller · Şarap · Gün Batımı</p><h3>İçecek</h3><p>Gün batımından Yalıkavak gecelerine uzanan anlara eşlik eden kokteyller, şaraplar ve özenle seçilmiş içecekler.</p><a className="line-link" href="/lalara-drinks.pdf" target="_blank" rel="noopener noreferrer">İçecek menüsünü gör ↗</a></article>
-          <article><div className="menu-image"><Image src={photos.breakfast} alt="Breakfast at La Lara overlooking Yalıkavak" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div><p className="kicker">Sabah · Kahve · Deniz Manzarası</p><h3>Kahvaltı</h3><p>Yavaş başlayan sabahlar, deniz manzarasına karşı kahvaltı ve Yalıkavak Körfezi’nin ilk ışıkları.</p><a className="line-link" href="/lalara-breakfast.pdf" target="_blank" rel="noopener noreferrer">Kahvaltı menüsünü gör ↗</a></article>
+          <article><div className="menu-image"><Image src={photos.food} alt="Mediterranean food at La Lara" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div><p className="kicker">Akdeniz · Mevsimsel · Paylaşım</p><h3>Yemek</h3><p>Akdeniz lezzetleri, taze malzemeler ve sofradaki herkesi bir araya getirmek için hazırlanan tabaklar.</p><a className="line-link" href={documents.food} target="_blank" rel="noopener noreferrer">Yemek menüsünü gör ↗</a></article>
+          <article><div className="menu-image"><Image src={photos.drinks} alt="Cocktails and drinks at La Lara" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div><p className="kicker">Kokteyller · Şarap · Gün Batımı</p><h3>İçecek</h3><p>Gün batımından Yalıkavak gecelerine uzanan anlara eşlik eden kokteyller, şaraplar ve özenle seçilmiş içecekler.</p><a className="line-link" href={documents.drinks} target="_blank" rel="noopener noreferrer">İçecek menüsünü gör ↗</a></article>
+          <article><div className="menu-image"><Image src={photos.breakfast} alt="Breakfast at La Lara overlooking Yalıkavak" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div><p className="kicker">Sabah · Kahve · Deniz Manzarası</p><h3>Kahvaltı</h3><p>Yavaş başlayan sabahlar, deniz manzarasına karşı kahvaltı ve Yalıkavak Körfezi’nin ilk ışıkları.</p><a className="line-link" href={documents.breakfast} target="_blank" rel="noopener noreferrer">Kahvaltı menüsünü gör ↗</a></article>
         </div>
       </section>
 
@@ -356,14 +400,41 @@ export default function HomeTR() {
         </div>
       </section>
 
-      <section id="moments" className="moments transparent-section">
-        <div className="section-title"><div><p className="eyebrow">La Lara Anları</p><span>Ye · İç · Paylaş</span></div><h2>Biraz daha<br />kal.</h2></div>
-        <div className="moments-grid"><div className="moment-large"><Image src={photos.moments} alt="A La Lara moment in Yalıkavak" fill sizes="(max-width:900px) 100vw,62vw" className="cover" /></div><div className="moment-small"><Image src={photos.food} alt="Food made for sharing at La Lara" fill sizes="(max-width:900px) 100vw,38vw" className="cover" /></div><blockquote>Buluş.<br />Tadını çıkar.<br />Paylaş.</blockquote></div>
+      <section id="events" className="events transparent-section">
+        <div className="section-title">
+          <div>
+            <p className="eyebrow">Etkinlikler</p>
+            <span>Yalıkavak · Bodrum</span>
+          </div>
+          <h2>Özel anlar,<br />La Lara’da.</h2>
+        </div>
+        <div className="events-grid">
+          <article className="event-card">
+            <div className="event-image"><Image src={photos.event1} alt="La Lara düğün ve kutlama etkinlikleri" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div>
+            <p className="kicker">Kutlama · Sofra · Gün Batımı</p>
+            <h3>Düğünler</h3>
+            <p>Deniz manzarası, özenli sofralar ve size özel bir atmosferle unutulmaz kutlamalar.</p>
+          </article>
+          <article className="event-card">
+            <div className="event-image"><Image src={photos.event2} alt="La Lara özel davetler" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div>
+            <p className="kicker">Özel · Zarif · Kişisel</p>
+            <h3>Özel Davetler</h3>
+            <p>Doğum günlerinden özel akşam yemeklerine, size ve misafirlerinize göre şekillenen davetler.</p>
+          </article>
+          <article className="event-card">
+            <div className="event-image"><Image src={photos.event3} alt="La Lara samimi etkinlikler" fill sizes="(max-width:900px) 100vw,33vw" className="cover" /></div>
+            <p className="kicker">Yakın · Sıcak · Paylaşımlı</p>
+            <h3>Samimi Etkinlikler</h3>
+            <p>Daha küçük gruplar için uzun sofralar, iyi yemek ve birlikte geçirilen zamana odaklanan buluşmalar.</p>
+          </article>
+        </div>
       </section>
+
+    
 
       <section id="reserve" className="reservation opaque-section">
         <p className="eyebrow light">{cms.reservation?.eyebrow || "Yalıkavak · Bodrum"}</p><h2 style={cms.reservation?.headingSize ? { fontSize: `${cms.reservation.headingSize}px` } : undefined}>{cms.reservation?.heading ? renderLines(cms.reservation.heading) : <>Masanız<br />sizi bekliyor.</>}</h2><p>{cms.reservation?.body ? renderLines(cms.reservation.body) : <>Manzara için gelin. Yemek, insanlar<br />ve gece için kalın.</>}</p>
-        <div className="reservation-actions"><a className="outline-button" href={telHref}>Rezervasyon için ara</a><a className="line-link light-link" href={emailHref}>E-posta gönder</a></div>
+        <div className="reservation-actions reservation-actions-stacked"><a className="line-link light-link" href={emailHref}>E-POSTA GÖNDER</a><a className="outline-button tr-uppercase" href={telHref}>REZERVASYON İÇİN ARA</a></div>
       </section>
 
       <footer id="contact" className="site-footer opaque-section">
@@ -396,6 +467,7 @@ export default function HomeTR() {
             <a href="#story">Hikayemiz</a>
             <a href="#menus">Menüler</a>
             <a href="#experience">Deneyim</a>
+            <a href="#events">Etkinlikler</a>
             <a href="#moments">Galeri</a>
           </div>
 

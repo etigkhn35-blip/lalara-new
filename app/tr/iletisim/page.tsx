@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Image from "next/image";
 
@@ -23,6 +23,7 @@ export default function IletisimPage() {
   };
 
   const [cms, setCms] = useState<Record<string, CmsRecord>>({});
+  const [contactHero, setContactHero] = useState("/images/home/6.jpg");
 
   useEffect(() => {
     async function loadCms() {
@@ -38,6 +39,8 @@ export default function IletisimPage() {
         });
 
         setCms(next);
+        const mediaSnapshot = await getDoc(doc(db, "siteSettings", "media"));
+        setContactHero(mediaSnapshot.data()?.images?.contactHero?.url || "/images/home/6.jpg");
       } catch (error) {
         console.error("Contact CMS load error:", error);
       }
@@ -128,7 +131,7 @@ export default function IletisimPage() {
       {/* HERO */}
       <section className="contact-hero">
         <Image
-          src="/images/home/6.jpg"
+          src={contactHero}
           alt="La Lara Restaurant & Bar Yalıkavak Bodrum"
           fill
           priority
