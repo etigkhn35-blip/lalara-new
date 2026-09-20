@@ -211,7 +211,7 @@ export default function Home() {
 
         <nav className="desktop-nav" aria-label="Main navigation">
           <a href="#story">Our Story</a>
-          <a href="#menus">Menus</a>
+          <a href="#menus">Menu</a>
           <a href="#experience">Experience</a>
           <a href="#events">Private Events</a>
           <a href="#moments">Gallery</a>
@@ -251,7 +251,7 @@ export default function Home() {
       >
         <nav className="mobile-menu-nav" aria-label="Mobile navigation">
           <a href="#story" onClick={() => setMenuOpen(false)}>Our Story</a>
-          <a href="#menus" onClick={() => setMenuOpen(false)}>Menus</a>
+          <a href="#menus" onClick={() => setMenuOpen(false)}>Menu</a>
           <a href="#experience" onClick={() => setMenuOpen(false)}>Experience</a>
           <a href="#events" onClick={() => setMenuOpen(false)}>Private Events</a>
           <a href="#moments" onClick={() => setMenuOpen(false)}>Gallery</a>
@@ -282,7 +282,7 @@ export default function Home() {
           <p className="eyebrow light" style={cmsStyle("hero", "eyebrow")}>{cms.hero?.eyebrow || "Yalıkavak · Bodrum"}</p>
           <h1 style={cmsStyle("hero", "heading")}>{cms.hero?.heading ? renderLines(cms.hero.heading) : <>Good food tastes better<br />when it is shared.</>}</h1>
           <p style={cmsStyle("hero", "text")}>{cms.hero?.body ? renderLines(cms.hero.body) : <>Mediterranean flavours, long conversations<br />and evenings made to remember.</>}</p>
-          <div className="hero-actions"><a href="#reserve" className="outline-button">Reserve a table</a><a href="#menus" className="outline-button">Explore our menus</a></div>
+          <div className="hero-actions"><a href="#reserve" className="outline-button">Reserve a table</a><a href="#menus" className="outline-button">Explore our menu</a></div>
         </div>
         <a className="scroll-cue" href="#intro">Discover La Lara <i /></a>
       </section>
@@ -473,7 +473,7 @@ export default function Home() {
       <span>Explore</span>
 
       <a href="#story">Our Story</a>
-      <a href="#menus">Menus</a>
+      <a href="#menus">Menu</a>
       <a href="#experience">Experience</a>
       <a href="#events">Private Events</a>
       <a href="#moments">Gallery</a>
