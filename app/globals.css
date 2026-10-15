@@ -7034,9 +7034,14 @@ h1,h2,h3,blockquote {
   text-transform: none;
 }
 
-/* Menu — immediately after hero, no long descriptions */
+/* =========================================================
+   HOME — MENUS
+   ========================================================= */
+
 .home-page .menus {
-  padding: 92px 6vw 100px;
+  position: relative;
+  padding: 75px 6vw 90px;
+
   background: linear-gradient(
     180deg,
     #faf8f4 0%,
@@ -7045,42 +7050,244 @@ h1,h2,h3,blockquote {
     #e9d2d0 58%,
     #e4c7c5 100%
   );
+
+  overflow: hidden;
 }
 
-.home-page .section-title {
-  margin-bottom: 52px;
-  grid-template-columns: 28% 72%;
+
+/* =========================================================
+   MENU HEADING
+   ========================================================= */
+
+.home-page .menus .section-title {
+  position: relative;
+
+  display: flex;
+  width: 100%;
+  min-height: 115px;
+
+  margin: 0 0 35px;
+
+  align-items: flex-start;
+  justify-content: center;
+
+  grid-template-columns: none;
 }
 
-.home-page .section-title > div > span {
+
+/* THE MENUS — LEFT */
+
+.home-page .menus .section-title > div {
+  position: absolute;
+  top: 8px;
+  left: 0;
+
+  width: auto;
+  margin: 0;
+}
+
+.home-page .menus .section-title > div > span {
+  color: var(--ink);
+
   font-size: 13px;
+  font-weight: 600;
   line-height: 1.4;
-  letter-spacing: .1em;
+
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.home-page .section-title h2 {
-  font-size: clamp(32px, 3.7vw, 40px);
-  line-height: 1.04;
-  letter-spacing: -.03em;
+
+/* MEDITERRANEAN FOOD & DRINKS — TRUE CENTER */
+
+.home-page .menus .section-title > h2 {
+  position: static;
+
+  width: auto;
+  max-width: 620px;
+
+  margin: 0 auto;
+
+  font-size: clamp(48px, 4vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+
+  text-align: left;
+
+  transform: none;
 }
+
+
+/* =========================================================
+   MENU GRID
+   ========================================================= */
 
 .home-page .menu-grid {
-  gap: clamp(20px, 2.2vw, 34px);
+  display: grid;
+
+  width: 100%;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: clamp(22px, 2.2vw, 34px);
 }
 
-.home-page .menu-image {
-  height: clamp(360px, 34vw, 520px);
+.home-page .menu-grid article {
+  min-width: 0;
+
+  text-align: center;
 }
+
+
+/* MENU IMAGES */
+
+.home-page .menu-image {
+  position: relative;
+
+  width: 100%;
+  height: auto;
+
+  aspect-ratio: 1.38 / 1;
+
+  overflow: hidden;
+}
+
+.home-page .menu-image img {
+  object-fit: cover;
+}
+
+
+/* MENU TITLES */
 
 .home-page .menu-grid h3 {
   margin-top: 20px;
+
   font-size: clamp(32px, 3vw, 40px);
   line-height: 1;
 }
 
+
+/* VIEW MENU */
+
 .home-page .menu-grid article .line-link {
   margin-top: 9px;
 }
+
+
+/* =========================================================
+   LARGE / ULTRA WIDE SCREENS
+   ========================================================= */
+
+@media (min-width: 1800px) {
+
+  .home-page .menus {
+    padding-left: max(
+      6vw,
+      calc((100vw - 1720px) / 2)
+    );
+
+    padding-right: max(
+      6vw,
+      calc((100vw - 1720px) / 2)
+    );
+  }
+
+  .home-page .menus .section-title,
+  .home-page .menu-grid {
+    width: 100%;
+    max-width: 1720px;
+
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .home-page .menus .section-title {
+    margin-bottom: 35px;
+  }
+
+  .home-page .menus .section-title > h2 {
+    font-size: 60px;
+  }
+}
+
+
+/* =========================================================
+   TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .home-page .menus {
+    padding: 75px 22px 85px;
+  }
+
+  .home-page .menus .section-title {
+    display: block;
+
+    min-height: 0;
+
+    margin-bottom: 45px;
+  }
+
+  .home-page .menus .section-title > div {
+    position: static;
+
+    margin-bottom: 24px;
+  }
+
+  .home-page .menus .section-title > h2 {
+    width: 100%;
+    max-width: none;
+
+    margin: 0;
+
+    font-size: 42px;
+    line-height: 1;
+
+    text-align: left;
+  }
+
+  .home-page .menu-grid {
+    grid-template-columns: 1fr;
+
+    gap: 50px;
+  }
+
+  .home-page .menu-image {
+    height: auto;
+
+    aspect-ratio: 4 / 3;
+  }
+
+  .home-page .menu-grid h3 {
+    font-size: 36px;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 560px) {
+
+  .home-page .menus {
+    padding: 65px 20px 75px;
+  }
+
+  .home-page .menus .section-title {
+    margin-bottom: 38px;
+  }
+
+  .home-page .menus .section-title > h2 {
+    font-size: 36px;
+  }
+
+  .home-page .menu-grid {
+    gap: 42px;
+  }
+}
+
 
 /* Story — one coherent family story teaser */
 .home-page .story {
@@ -9752,15 +9959,7 @@ h1,h2,h3,blockquote {
 }
 .home-page .hero-actions .outline-button {
   font-weight: 400;
-}
-.home-page .menus .section-title h2 {
-  position: relative;
-  left: 180px;
-}
-@media (max-width: 900px) {
-  .home-page .menus .section-title h2 {
-    left: 0;
-  }
+
 }
 .site-header .brand {
   width: 270px;
