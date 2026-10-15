@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Image from "next/image";
-
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 export default function ContactPage() {
   type CmsRecord = {
     eyebrow?: string;
@@ -92,42 +93,7 @@ export default function ContactPage() {
   return (
     <main className="contact-page">
       {/* HEADER */}
-      <header className="contact-header">
-        <a href="/" className="brand" aria-label="La Lara home">
-          <Image
-            src="/lalara-logo.png"
-            alt="La Lara Restaurant & Bar"
-            width={190}
-            height={70}
-            priority
-          />
-        </a>
-
-        <nav className="contact-nav" aria-label="Main navigation">
-          <a href="/#story">Our Story</a>
-          <a href="/#menus">Menus</a>
-          <a href="/#experience">Experience</a>
-          <a href="/#moments">Gallery</a>
-          <a href="/contact" className="active">
-            Contact
-          </a>
-        </nav>
-
-        <div className="contact-header-right">
-          <div className="contact-language">
-            <a href="/contact" className="active">
-              EN
-            </a>
-            <span>/</span>
-            <a href="/tr/iletisim">TR</a>
-          </div>
-
-          <a  className="contact-header-button"href="https://wa.me/905458941838" target="_blank" rel="noopener noreferrer">
-            Book a Table
-          </a>
-        </div>
-      </header>
-
+<Header locale="en" />
       {/* HERO */}
       <section className="contact-hero">
         <Image
@@ -296,12 +262,19 @@ export default function ContactPage() {
           </p>
 
           <div className="contact-actions">
-            <a
-              
-              className="outline-button"
-            href="https://wa.me/905458941838" target="_blank" rel="noopener noreferrer">
-              Call to reserve
-            </a>
+         <a
+  className="outline-button"
+  href={
+    "https://wa.me/905458941838?text=" +
+    encodeURIComponent(
+      "Hello La Lara, I would like to request a reservation.\n\nDate:\nTime:\nNumber of guests:"
+    )
+  }
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  REQUEST A RESERVATION
+</a>
 
             <a
               href="mailto:reservation.bodrum@lalara.com.tr"
@@ -345,98 +318,8 @@ export default function ContactPage() {
   </div>
 </section>
 
-      <footer id="contact" className="site-footer opaque-section">
-        <div className="footer-grid">
-          <div className="footer-brand">
-            <Image
-              src="/lalara-logo.png"
-              alt="La Lara Restaurant & Bar"
-              width={260}
-              height={96}
-            />
-            <p>Restaurant &amp; Bar · Yalıkavak</p>
-          </div>
-
-          <div>
-            <span>Visit</span>
-            <p>
-              Geriş Mah., 2026. Sokak No:5
-              <br />
-              Yalıkavak, 48990 Bodrum
-              <br />
-              Muğla · Türkiye
-            </p>
-            <a href="tel:+905458941838">+90 545 894 18 38</a>
-            <a href="mailto:reservation.bodrum@lalara.com.tr">
-              reservation.bodrum@lalara.com.tr
-            </a>
-          </div>
-
-          <div>
-            <span>Explore</span>
-            <a href="#story">Our Story</a>
-            <a href="#menus">Menus</a>
-            <a href="#experience">Experience</a>
-            <a href="#moments">Gallery</a>
-          </div>
-
-          <div className="footer-social">
-            <span>Follow</span>
-            <a
-              href="https://www.instagram.com/lalara.bodrum/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="La Lara on Instagram"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle className="social-fill" cx="17.5" cy="6.5" r="1" />
-              </svg>
-              <span className="social-name">Instagram</span>
-            </a>
-
-            <a
-              href="https://www.facebook.com/lalararestaurant"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="La Lara on Facebook"
-            >
-              <svg className="facebook-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M14 8h3V4.5c-.6-.1-1.8-.2-3.2-.2-3.1 0-5.2 1.9-5.2 5.4V12H5v4h3.6v8H13v-8h3.5l.6-4H13V10c0-1.2.3-2 1-2Z" />
-              </svg>
-              <span className="social-name">Facebook</span>
-            </a>
-
-            <a
-              href="https://www.tripadvisor.com/Restaurant_Review-g312738-d24780161-Reviews-La_Lara_Restaurant_Bar-Yalikavak_Bodrum_District_Mugla_Province_Turkish_Aegean_C.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="La Lara on Tripadvisor"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="7" cy="13" r="4" />
-                <circle cx="17" cy="13" r="4" />
-                <circle className="social-fill" cx="7" cy="13" r="1.3" />
-                <circle className="social-fill" cx="17" cy="13" r="1.3" />
-                <path d="M10.5 13 12 15l1.5-2" />
-                <path d="M3.5 8.5C6 7 8.8 6.5 12 6.5s6 .5 8.5 2" />
-              </svg>
-              <span className="social-name">Tripadvisor</span>
-            </a>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <span>© 2026 La Lara Restaurant &amp; Bar</span>
-          <span>Yalıkavak · Bodrum</span>
-          <div>
-            <a href="/">EN</a>
-            <span> / </span>
-            <a href="/tr">TR</a>
-          </div>
-        </div>
-      </footer>
+      {/* FOOTER */}
+<Footer locale="en" />
     </main>
   );
 }
