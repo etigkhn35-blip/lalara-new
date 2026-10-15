@@ -45,6 +45,13 @@ export default function Footer({
   const [settings, setSettings] =
     useState<SiteSettings>(defaultSettings);
 
+  const [showBackToTop, setShowBackToTop] =
+    useState(false);
+
+  /* =========================================================
+     FIREBASE SETTINGS
+     ========================================================= */
+
   useEffect(() => {
     async function loadSettings() {
       try {
@@ -80,11 +87,39 @@ export default function Footer({
             defaultSettings.tripadvisor,
         });
       } catch (error) {
-        console.error("Footer settings load error:", error);
+        console.error(
+          "Footer settings load error:",
+          error
+        );
       }
     }
 
     loadSettings();
+  }, []);
+
+  /* =========================================================
+     BACK TO TOP VISIBILITY
+     ========================================================= */
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 500);
+    };
+
+    handleScroll();
+
+    window.addEventListener(
+      "scroll",
+      handleScroll,
+      { passive: true }
+    );
+
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+    };
   }, []);
 
   const isTR = locale === "tr";
@@ -98,17 +133,27 @@ export default function Footer({
 
   const mapsHref =
     "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent(settings.address.replace(/\n/g, ", "));
+    encodeURIComponent(
+      settings.address.replace(/\n/g, ", ")
+    );
 
   const homeHref = isTR ? "/tr" : "/";
   const menuHref = isTR ? "/tr#menus" : "/#menus";
-  const storyHref = isTR ? "/tr/hikayemiz" : "/our-story";
-  const galleryHref = isTR ? "/tr/galeri" : "/gallery";
+  const storyHref = isTR
+    ? "/tr/hikayemiz"
+    : "/our-story";
+  const galleryHref = isTR
+    ? "/tr/galeri"
+    : "/gallery";
   const eventsHref = isTR
     ? "/tr/ozel-etkinlikler"
     : "/private-events";
-  const reservationHref = isTR ? "/tr#reserve" : "/#reserve";
-  const contactHref = isTR ? "/tr/iletisim" : "/contact";
+  const reservationHref = isTR
+    ? "/tr#reserve"
+    : "/#reserve";
+  const contactHref = isTR
+    ? "/tr/iletisim"
+    : "/contact";
 
   function scrollToTop() {
     window.scrollTo({
@@ -127,12 +172,12 @@ export default function Footer({
 
         <div className="footer-brand">
           <Link href={homeHref}>
-            <Image
-              src="/lalara-logo.png"
-              alt="La Lara Restaurant & Bar"
-              width={260}
-              height={96}
-            />
+          <Image
+  src="/lalara-logo.png"
+  alt="La Lara Restaurant & Bar"
+  width={320}
+  height={118}
+/>
           </Link>
 
           <p>Restaurant &amp; Bar · Yalıkavak</p>
@@ -150,18 +195,26 @@ export default function Footer({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {isTR ? "YOL TARİFİ AL ↗" : "GET DIRECTIONS ↗"}
+            {isTR
+              ? "YOL TARİFİ AL ↗"
+              : "GET DIRECTIONS ↗"}
           </a>
 
-          <a href={telHref}>{settings.phone}</a>
+          <a href={telHref}>
+            {settings.phone}
+          </a>
 
-          <a href={emailHref}>{settings.email}</a>
+          <a href={emailHref}>
+            {settings.email}
+          </a>
         </div>
 
         {/* EXPLORE */}
 
         <div>
-          <span>{isTR ? "Keşfet" : "Explore"}</span>
+          <span>
+            {isTR ? "Keşfet" : "Explore"}
+          </span>
 
           <Link href={menuHref}>
             {isTR ? "Menüler" : "Menus"}
@@ -176,30 +229,28 @@ export default function Footer({
           </Link>
 
           <Link href={eventsHref}>
-            {isTR ? "Özel Davetler" : "Private Events"}
+            {isTR
+              ? "Özel Davetler"
+              : "Private Events"}
           </Link>
 
           <Link href={reservationHref}>
-            {isTR ? "Rezervasyon" : "Reservations"}
+            {isTR
+              ? "Rezervasyon"
+              : "Reservations"}
           </Link>
 
           <Link href={contactHref}>
             {isTR ? "İletişim" : "Contact"}
           </Link>
-
-          <button
-            type="button"
-            className="footer-back-to-top"
-            onClick={scrollToTop}
-          >
-            {isTR ? "YUKARI DÖN ↑" : "BACK TO TOP ↑"}
-          </button>
         </div>
 
         {/* SOCIAL */}
 
         <div className="footer-social">
-          <span>{isTR ? "Takip Et" : "Follow"}</span>
+          <span>
+            {isTR ? "Takip Et" : "Follow"}
+          </span>
 
           {/* INSTAGRAM */}
 
@@ -209,7 +260,10 @@ export default function Footer({
             rel="noopener noreferrer"
             aria-label="La Lara Instagram"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <rect
                 x="3"
                 y="3"
@@ -218,7 +272,11 @@ export default function Footer({
                 rx="5"
               />
 
-              <circle cx="12" cy="12" r="4" />
+              <circle
+                cx="12"
+                cy="12"
+                r="4"
+              />
 
               <circle
                 className="social-fill"
@@ -228,7 +286,9 @@ export default function Footer({
               />
             </svg>
 
-            <span className="social-name">Instagram</span>
+            <span className="social-name">
+              Instagram
+            </span>
           </a>
 
           {/* FACEBOOK */}
@@ -247,7 +307,9 @@ export default function Footer({
               <path d="M14 8h3V4.5c-.6-.1-1.8-.2-3.2-.2-3.1 0-5.2 1.9-5.2 5.4V12H5v4h3.6v8H13v-8h3.5l.6-4H13V10c0-1.2.3-2 1-2Z" />
             </svg>
 
-            <span className="social-name">Facebook</span>
+            <span className="social-name">
+              Facebook
+            </span>
           </a>
 
           {/* TRIPADVISOR */}
@@ -258,9 +320,21 @@ export default function Footer({
             rel="noopener noreferrer"
             aria-label="La Lara Tripadvisor"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="7" cy="13" r="4" />
-              <circle cx="17" cy="13" r="4" />
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <circle
+                cx="7"
+                cy="13"
+                r="4"
+              />
+
+              <circle
+                cx="17"
+                cy="13"
+                r="4"
+              />
 
               <circle
                 className="social-fill"
@@ -281,7 +355,9 @@ export default function Footer({
               <path d="M3.5 8.5C6 7 8.8 6.5 12 6.5s6 .5 8.5 2" />
             </svg>
 
-            <span className="social-name">Tripadvisor</span>
+            <span className="social-name">
+              Tripadvisor
+            </span>
           </a>
         </div>
       </div>
@@ -289,7 +365,9 @@ export default function Footer({
       {/* FOOTER BOTTOM */}
 
       <div className="footer-bottom">
-        <span>© 2026 La Lara Restaurant &amp; Bar</span>
+        <span>
+          © 2026 La Lara Restaurant &amp; Bar
+        </span>
 
         <span>Yalıkavak · Bodrum</span>
 
@@ -299,6 +377,21 @@ export default function Footer({
           <Link href="/tr">TR</Link>
         </div>
       </div>
+
+      {/* BACK TO TOP */}
+
+      <button
+        type="button"
+        className={`back-to-top ${
+          showBackToTop ? "is-visible" : ""
+        }`}
+        onClick={scrollToTop}
+        aria-label={
+          isTR ? "Yukarı dön" : "Back to top"
+        }
+      >
+        ↑
+      </button>
     </footer>
   );
 }

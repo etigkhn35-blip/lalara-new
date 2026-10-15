@@ -72,7 +72,7 @@ export default function OurStoryPage() {
         </div>
 
         <div className="story-page-copy">
-          <p className="eyebrow">01 · Lara</p>
+       
 
           <h2>
             Warm, spirited

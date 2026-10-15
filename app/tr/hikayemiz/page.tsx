@@ -72,7 +72,7 @@ export default function HikayemizPage() {
         </div>
 
         <div className="story-page-copy">
-          <p className="eyebrow">01 · Lara</p>
+          
 
           <h2>
             Sıcak, zarif
