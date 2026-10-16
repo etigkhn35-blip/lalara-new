@@ -2,110 +2,299 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode, useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import {
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
+import {
+  usePathname,
+  useRouter,
+} from "next/navigation";
+import {
+  onAuthStateChanged,
+  signOut,
+  User,
+} from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
-const nav = [
-  ["Overview", "/admin/dashboard"],
-  ["Site Editor", "/admin/content"],
-  ["Media Library", "/admin/media"],
-  ["Menus & PDFs", "/admin/menus"],
-  ["Analytics", "/admin/analytics"],
-  ["SEO", "/admin/seo"],
-  ["Settings", "/admin/settings"],
+type AdminShellProps = {
+  title: string;
+  eyebrow?: string;
+  children: ReactNode;
+};
+
+type NavItem = {
+  label: string;
+  href: string;
+  icon: string;
+};
+
+const navigation: NavItem[] = [
+  {
+    label: "Overview",
+    href: "/admin/dashboard",
+    icon: "⌂",
+  },
+  {
+    label: "Website",
+    href: "/admin/content",
+    icon: "✦",
+  },
+  {
+    label: "Menus",
+    href: "/admin/menus",
+    icon: "≡",
+  },
+  {
+    label: "Gallery",
+    href: "/admin/media",
+    icon: "▧",
+  },
+  {
+    label: "Private Events",
+    href: "/admin/events",
+    icon: "◇",
+  },
+  {
+    label: "Analytics",
+    href: "/admin/analytics",
+    icon: "↗",
+  },
+  {
+    label: "Google Search",
+    href: "/admin/search",
+    icon: "◎",
+  },
+  {
+    label: "SEO",
+    href: "/admin/seo",
+    icon: "◉",
+  },
+  {
+    label: "Settings",
+    href: "/admin/settings",
+    icon: "⚙",
+  },
 ];
 
 export default function AdminShell({
   title,
-  eyebrow,
+  eyebrow = "La Lara",
   children,
-}: {
-  title: string;
-  eyebrow: string;
-  children: ReactNode;
-}) {
+}: AdminShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [ready, setReady] = useState(false);
-  const [menu, setMenu] = useState(false);
+
+  const [user, setUser] =
+    useState<User | null>(null);
+
+  const [checkingAuth, setCheckingAuth] =
+    useState(true);
+
+  const [sidebarOpen, setSidebarOpen] =
+    useState(false);
 
   useEffect(() => {
-    return onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        router.replace("/admin");
-        return;
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (firebaseUser) => {
+        if (!firebaseUser) {
+          router.replace("/admin");
+          return;
+        }
+
+        setUser(firebaseUser);
+        setCheckingAuth(false);
       }
-      setReady(true);
-    });
+    );
+
+    return unsubscribe;
   }, [router]);
 
-  if (!ready) {
-    return <main className="admin-loading">Loading Management Studio</main>;
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
+  async function handleLogout() {
+    await signOut(auth);
+    router.replace("/admin");
+  }
+
+  function isActive(href: string) {
+    if (href === "/admin/dashboard") {
+      return pathname === href;
+    }
+
+    return pathname.startsWith(href);
+  }
+
+  if (checkingAuth) {
+    return (
+      <main className="admin-loading">
+        <Image
+          src="/lalara-logo.png"
+          alt="La Lara"
+          width={220}
+          height={82}
+          priority
+        />
+
+        <span>
+          Loading Management Studio
+        </span>
+      </main>
+    );
   }
 
   return (
     <main className="admin-shell">
-      <aside className={`admin-sidebar ${menu ? "is-open" : ""}`}>
+      {/* SIDEBAR */}
+
+      <aside
+        className={`admin-sidebar ${
+          sidebarOpen ? "is-open" : ""
+        }`}
+      >
         <div className="admin-sidebar-top">
-          <Link href="/admin/dashboard" className="admin-sidebar-brand">
-            <Image src="/lalara-logo.png" alt="La Lara" width={210} height={78} />
+          <Link
+            href="/admin/dashboard"
+            className="admin-sidebar-brand"
+          >
+            <Image
+              src="/lalara-logo.png"
+              alt="La Lara Restaurant & Bar"
+              width={230}
+              height={85}
+              priority
+            />
           </Link>
-          <button className="admin-sidebar-close" onClick={() => setMenu(false)}>×</button>
+
+          <button
+            type="button"
+            className="admin-sidebar-close"
+            onClick={() =>
+              setSidebarOpen(false)
+            }
+            aria-label="Close navigation"
+          >
+            ×
+          </button>
         </div>
 
-        <div className="admin-sidebar-label">Management Studio</div>
+        <div className="admin-sidebar-label">
+          Management Studio
+        </div>
 
         <nav className="admin-navigation">
-          {nav.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setMenu(false)}
-              className={`admin-nav-item ${pathname === href ? "active" : ""}`}
-            >
-              {label}
-            </Link>
-          ))}
+          {navigation.map((item) => {
+            const active =
+              isActive(item.href);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`admin-nav-item ${
+                  active ? "active" : ""
+                }`}
+              >
+                <span className="admin-nav-icon">
+                  {item.icon}
+                </span>
+
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="admin-sidebar-bottom">
+          <div className="admin-sidebar-user">
+            <div className="admin-user-avatar">
+              {user?.email
+                ?.charAt(0)
+                .toUpperCase() || "A"}
+            </div>
+
+            <div>
+              <strong>
+                Administrator
+              </strong>
+
+              <span>
+                {user?.email}
+              </span>
+            </div>
+          </div>
+
           <button
+            type="button"
             className="admin-logout"
-            onClick={async () => {
-              await signOut(auth);
-              router.replace("/admin");
-            }}
+            onClick={handleLogout}
           >
             Sign out
           </button>
         </div>
       </aside>
 
-      {menu && <button className="admin-sidebar-overlay" onClick={() => setMenu(false)} />}
+      {/* MOBILE OVERLAY */}
+
+      {sidebarOpen && (
+        <button
+          type="button"
+          className="admin-sidebar-overlay"
+          onClick={() =>
+            setSidebarOpen(false)
+          }
+          aria-label="Close navigation"
+        />
+      )}
+
+      {/* MAIN */}
 
       <section className="admin-main">
         <header className="admin-topbar">
           <div className="admin-topbar-left">
-            <button className="admin-mobile-menu" onClick={() => setMenu(true)}>
+            <button
+              type="button"
+              className="admin-mobile-menu"
+              onClick={() =>
+                setSidebarOpen(true)
+              }
+              aria-label="Open navigation"
+            >
               <span />
               <span />
             </button>
+
             <div>
               <span>{eyebrow}</span>
+
               <strong>{title}</strong>
             </div>
           </div>
+
           <div className="admin-topbar-actions">
-            <a href="/" target="_blank" rel="noreferrer" className="admin-view-site">
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-view-site"
+            >
               View website ↗
             </a>
-            <div className="admin-status"><i /> Live</div>
+
+            <div className="admin-status">
+              <i />
+              Live
+            </div>
           </div>
         </header>
 
-        <div className="admin-content admin-page-content">{children}</div>
+        <div className="admin-content admin-page-content">
+          {children}
+        </div>
       </section>
     </main>
   );

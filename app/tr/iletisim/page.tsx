@@ -1,66 +1,204 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+} from "firebase/firestore";
 import Image from "next/image";
+
+import { db } from "@/lib/firebase";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-export default function IletisimPage() {
-  type CmsRecord = {
-    eyebrow?: string;
-    heading?: string;
-    body?: string;
-    buttonLabel?: string;
-    eyebrowSize?: number;
-    headingSize?: number;
-    textSize?: number;
-    buttonSize?: number;
-    fontFamily?: "display" | "sans";
-    fontWeight?: number;
-    lineHeight?: number;
-    letterSpacing?: number;
-    status?: string;
-  };
 
-  const [cms, setCms] = useState<Record<string, CmsRecord>>({});
-  const [contactHero, setContactHero] = useState("/images/home/6.jpg");
+type CmsRecord = {
+  eyebrow?: string;
+  heading?: string;
+  body?: string;
+  buttonLabel?: string;
+  buttonLink?: string;
+
+  eyebrowSize?: number;
+  headingSize?: number;
+  textSize?: number;
+  buttonSize?: number;
+
+  fontFamily?: "display" | "sans";
+  fontWeight?: number;
+  lineHeight?: number;
+  letterSpacing?: number;
+
+  visible?: boolean;
+  status?: string;
+};
+
+type ContactSettings = {
+  address?: string;
+  city?: string;
+  phone?: string;
+  email?: string;
+  whatsapp?: string;
+  instagram?: string;
+  facebook?: string;
+  tripadvisor?: string;
+  mapsUrl?: string;
+  mapEmbedUrl?: string;
+};
+
+type MediaSettings = {
+  images?: {
+    contactHero?: {
+      url?: string;
+    };
+    contactReservation?: {
+      url?: string;
+    };
+  };
+};
+
+const DEFAULT_CONTACT: ContactSettings = {
+  address: "Geriş Mah., 2026. Sokak No:5",
+  city: "Yalıkavak, 48990 Bodrum\nMuğla · Türkiye",
+  phone: "+90 545 894 18 38",
+  email: "reservation.bodrum@lalara.com.tr",
+  whatsapp: "905458941838",
+  instagram: "https://www.instagram.com/lalara.bodrum/",
+  facebook: "https://www.facebook.com/lalararestaurant",
+  tripadvisor:
+    "https://www.tripadvisor.com/Restaurant_Review-g312738-d24780161-Reviews-La_Lara_Restaurant_Bar-Yalikavak_Bodrum_District_Mugla_Province_Turkish_Aegean_C.html",
+  mapsUrl:
+    "https://www.google.com/maps/search/?api=1&query=La+Lara+Restaurant+Yalikavak+Bodrum",
+  mapEmbedUrl:
+    "https://www.google.com/maps?q=La+Lara+Restaurant+Yalikavak+Bodrum&output=embed",
+};
+
+function normalizePhoneForTel(value: string) {
+  return value.replace(/[^\d+]/g, "");
+}
+
+function normalizeWhatsApp(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+function renderLines(value: string) {
+  return value.split("\n").map((line, index, all) => (
+    <span key={`${line}-${index}`}>
+      {line}
+      {index < all.length - 1 && <br />}
+    </span>
+  ));
+}
+
+export default function IletisimPage() {
+  const [cms, setCms] =
+    useState<Record<string, CmsRecord>>({});
+
+  const [contact, setContact] =
+    useState<ContactSettings>(DEFAULT_CONTACT);
+
+  const [contactHero, setContactHero] =
+    useState("/images/home/6.jpg");
+
+  const [reservationImage, setReservationImage] =
+    useState("/images/home/1.jpg");
 
   useEffect(() => {
     async function loadCms() {
       try {
-        const snapshot = await getDocs(collection(db, "siteContent"));
+        /* =====================================================
+           WEBSITE CONTENT
+           ===================================================== */
+
+        const snapshot = await getDocs(
+          collection(db, "siteContent")
+        );
+
         const next: Record<string, CmsRecord> = {};
 
         snapshot.forEach((item) => {
           const data = item.data() as CmsRecord;
-          if (item.id.startsWith("tr-contact-") && data.status === "published") {
+
+          if (
+            item.id.startsWith("tr-") &&
+            data.status === "published"
+          ) {
             next[item.id.replace("tr-", "")] = data;
           }
         });
 
         setCms(next);
-        const mediaSnapshot = await getDoc(doc(db, "siteSettings", "media"));
-        setContactHero(mediaSnapshot.data()?.images?.contactHero?.url || "/images/home/6.jpg");
+
+        /* =====================================================
+           CONTACT SETTINGS
+           ===================================================== */
+
+        const contactSnapshot = await getDoc(
+          doc(db, "siteSettings", "contact")
+        );
+
+        if (contactSnapshot.exists()) {
+          const data =
+            contactSnapshot.data() as ContactSettings;
+
+          setContact({
+            ...DEFAULT_CONTACT,
+            ...data,
+          });
+        }
+
+        /* =====================================================
+           MEDIA SETTINGS
+           ===================================================== */
+
+        const mediaSnapshot = await getDoc(
+          doc(db, "siteSettings", "media")
+        );
+
+        if (mediaSnapshot.exists()) {
+          const media =
+            mediaSnapshot.data() as MediaSettings;
+
+          setContactHero(
+            media.images?.contactHero?.url ||
+              "/images/home/6.jpg"
+          );
+
+          setReservationImage(
+            media.images?.contactReservation?.url ||
+              "/images/home/1.jpg"
+          );
+        }
       } catch (error) {
-        console.error("Contact CMS load error:", error);
+        console.error(
+          "TR Contact CMS load error:",
+          error
+        );
       }
     }
 
     loadCms();
   }, []);
 
-  function lines(value: string) {
-    return value.split("\n").map((line, index, all) => (
-      <span key={`${line}-${index}`}>
-        {line}
-        {index < all.length - 1 && <br />}
-      </span>
-    ));
+  function content(key: string) {
+    return cms[key];
   }
 
-  function styleFor(key: string, kind: "eyebrow" | "heading" | "text" | "button") {
+  function isVisible(key: string) {
+    return cms[key]?.visible !== false;
+  }
+
+  function styleFor(
+    key: string,
+    kind:
+      | "eyebrow"
+      | "heading"
+      | "text"
+      | "button"
+  ) {
     const item = cms[key];
+
     if (!item) return undefined;
 
     const size =
@@ -73,7 +211,12 @@ export default function IletisimPage() {
             : item.textSize;
 
     return {
-      ...(size ? { fontSize: `${size}px` } : {}),
+      ...(size
+        ? {
+            fontSize: `${size}px`,
+          }
+        : {}),
+
       ...(item.fontFamily
         ? {
             fontFamily:
@@ -82,247 +225,622 @@ export default function IletisimPage() {
                 : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
           }
         : {}),
-      ...(item.fontWeight ? { fontWeight: item.fontWeight } : {}),
-      ...(item.lineHeight ? { lineHeight: item.lineHeight } : {}),
+
+      ...(item.fontWeight
+        ? {
+            fontWeight: item.fontWeight,
+          }
+        : {}),
+
+      ...(item.lineHeight
+        ? {
+            lineHeight: item.lineHeight,
+          }
+        : {}),
+
       ...(item.letterSpacing !== undefined
-        ? { letterSpacing: `${item.letterSpacing}px` }
+        ? {
+            letterSpacing: `${item.letterSpacing}px`,
+          }
         : {}),
     };
   }
 
+  /*
+   * Admin → Website → Contact → TR
+   *
+   * Contact Hero
+   * → tr-contact-hero
+   *
+   * Contact Information
+   * → tr-contact-information
+   *
+   * Reservations
+   * → tr-reservations
+   *
+   * Social
+   * → tr-social
+   *
+   * Contact Map
+   * → tr-contact-map
+   *
+   * Reservation CTA
+   * → tr-reservation-cta
+   */
+
+  
+  const information = content("contact-information");
+  const reservations = content("reservations");
+  const social = content("social");
+  const map = content("contact-map");
+  const reservationCta = content("reservation-cta");
+
+  const phone =
+    contact.phone || DEFAULT_CONTACT.phone!;
+
+  const email =
+    contact.email || DEFAULT_CONTACT.email!;
+
+  const whatsapp =
+    normalizeWhatsApp(
+      contact.whatsapp ||
+        DEFAULT_CONTACT.whatsapp!
+    ) || "905458941838";
+
+  const mapsUrl =
+    contact.mapsUrl ||
+    DEFAULT_CONTACT.mapsUrl!;
+
+  const mapEmbedUrl =
+    contact.mapEmbedUrl ||
+    DEFAULT_CONTACT.mapEmbedUrl!;
+
+  const reservationMessage =
+    "Merhaba La Lara, rezervasyon talebinde bulunmak istiyorum.\n\nTarih:\nSaat:\nKişi sayısı:";
+
+  const whatsappReservationUrl =
+    `https://wa.me/${whatsapp}?text=` +
+    encodeURIComponent(reservationMessage);
+
   return (
     <main className="contact-page">
-      {/* HEADER */}
-<Header locale="tr" />
+      <Header locale="tr" />
 
-      {/* HERO */}
-      <section className="contact-hero">
-        <Image
-          src={contactHero}
-          alt="La Lara Restaurant & Bar Yalıkavak Bodrum"
-          fill
-          priority
-          sizes="100vw"
-          className="cover"
-        />
+     {/* =====================================================
+    HERO
+    ===================================================== */}
 
-        <div className="contact-hero-overlay" />
+<section className="contact-hero">
+  <Image
+    src={contactHero}
+    alt="La Lara Restaurant & Bar Yalıkavak Bodrum"
+    fill
+    priority
+    sizes="100vw"
+    className="cover"
+  />
 
-        <div className="contact-hero-content">
-          
+  <div className="contact-hero-overlay" />
 
-          <h1 style={styleFor("contact-hero", "heading")}>
-            {cms["contact-hero"]?.heading ? lines(cms["contact-hero"].heading!) : <>Sofranız<br />sizi bekliyor.</>}
-          </h1>
+  <div className="contact-hero-content">
+    <p className="eyebrow light">
+      La Lara · Yalıkavak
+    </p>
 
-          <p style={styleFor("contact-hero", "text")}>
-            {cms["contact-hero"]?.body ? lines(cms["contact-hero"].body!) : <>İyi yemekler, uzun sohbetler<br />ve Yalıkavak akşamları.</>}
-          </p>
-        </div>
-      </section>
+    <h1>
+      Sofranız
+      <br />
+      sizi bekliyor.
+    </h1>
 
-      {/* CONTACT */}
-      <section className="contact-main">
-        <div className="contact-heading">
-          <div>
-            <p className="eyebrow" style={styleFor("contact-heading", "eyebrow")}>{cms["contact-heading"]?.eyebrow || "İletişim"}</p>
-            <span style={styleFor("contact-heading", "text")}>{cms["contact-heading"]?.body || "Yalıkavak · Bodrum"}</span>
-          </div>
-
-          <h2 style={styleFor("contact-heading", "heading")}>
-            {cms["contact-heading"]?.heading ? lines(cms["contact-heading"].heading!) : <>Sizi La Lara&apos;da<br />görmek isteriz.</>}
-          </h2>
-        </div>
-
-        <div className="contact-columns">
-          <div className="contact-column">
-            <span className="contact-label" style={styleFor("contact-visit", "eyebrow")}>{cms["contact-visit"]?.eyebrow || "Adres"}</span>
-
-            <h3 style={styleFor("contact-visit", "heading")}>{cms["contact-visit"]?.heading || "La Lara"}</h3>
-
-            <p>
-              Geriş Mah., 2026. Sokak No:5
-              <br />
-              Yalıkavak, 48990 Bodrum
-              <br />
-              Muğla · Türkiye
-            </p>
-
-            <a
-              className="contact-text-link"
-              href="https://www.google.com/maps/search/?api=1&query=La+Lara+Restaurant+Yalikavak+Bodrum"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Yol tarifi al ↗
-            </a>
-          </div>
-
-          <div className="contact-column">
-            <span className="contact-label" style={styleFor("contact-reservations", "eyebrow")}>{cms["contact-reservations"]?.eyebrow || "Rezervasyon"}</span>
-
-            <h3 style={styleFor("contact-reservations", "heading")}>{cms["contact-reservations"]?.heading || "Masa ayırtın"}</h3>
-
-            <p style={styleFor("contact-reservations", "text")}>
-              {cms["contact-reservations"]?.body ? lines(cms["contact-reservations"].body!) : <>Rezervasyon ve bilgi için<br />bizi arayabilir veya e-posta gönderebilirsiniz.</>}
-            </p>
-
-            <a
-              className="contact-primary-link"
-              href="tel:+905458941838"
-            >
-              +90 545 894 18 38
-            </a>
-
-            <a
-              className="contact-text-link"
-              href="mailto:reservation.bodrum@lalara.com.tr"
-            >
-              reservation.bodrum@lalara.com.tr
-            </a>
-          </div>
-
-          <div className="contact-column">
-            <span className="contact-label" style={styleFor("contact-follow", "eyebrow")}>{cms["contact-follow"]?.eyebrow || "Takip Et"}</span>
-
-            <h3 style={styleFor("contact-follow", "heading")}>{cms["contact-follow"]?.heading || "Bağlantıda kalın"}</h3>
-
-            <p style={styleFor("contact-follow", "text")}>
-              {cms["contact-follow"]?.body ? lines(cms["contact-follow"].body!) : <>La Lara&apos;dan lezzetler, gün batımları<br />ve Yalıkavak&apos;tan anlar.</>}
-            </p>
-
-                      <div className="footer-social contact-follow-social">
-            <a
-              href="https://www.instagram.com/lalara.bodrum/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="La Lara on Instagram"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5" />
-                <circle cx="12" cy="12" r="4" />
-                <circle className="social-fill" cx="17.5" cy="6.5" r="1" />
-              </svg>
-              <span className="social-name">Instagram</span>
-            </a>
-
-            <a
-              href="https://www.facebook.com/lalararestaurant"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="La Lara on Facebook"
-            >
-              <svg className="facebook-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M14 8h3V4.5c-.6-.1-1.8-.2-3.2-.2-3.1 0-5.2 1.9-5.2 5.4V12H5v4h3.6v8H13v-8h3.5l.6-4H13V10c0-1.2.3-2 1-2Z" />
-              </svg>
-              <span className="social-name">Facebook</span>
-            </a>
-
-            <a
-              href="https://www.tripadvisor.com/Restaurant_Review-g312738-d24780161-Reviews-La_Lara_Restaurant_Bar-Yalikavak_Bodrum_District_Mugla_Province_Turkish_Aegean_C.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="La Lara on Tripadvisor"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="7" cy="13" r="4" />
-                <circle cx="17" cy="13" r="4" />
-                <circle className="social-fill" cx="7" cy="13" r="1.3" />
-                <circle className="social-fill" cx="17" cy="13" r="1.3" />
-                <path d="M10.5 13 12 15l1.5-2" />
-                <path d="M3.5 8.5C6 7 8.8 6.5 12 6.5s6 .5 8.5 2" />
-              </svg>
-              <span className="social-name">Tripadvisor</span>
-            </a>
-          </div>
-          </div>
-        </div>
-      </section>
-
-      
-{/* HARİTA */}
-<section className="contact-map">
-  <div className="contact-map-heading">
-    <p className="eyebrow" style={styleFor("contact-map", "eyebrow")}>{cms["contact-map"]?.eyebrow || "Konum"}</p>
-
-    <h2 style={styleFor("contact-map", "heading")}>
-      {cms["contact-map"]?.heading ? lines(cms["contact-map"].heading!) : <>Yalıkavak&apos;ın<br />kalbinde.</>}
-    </h2>
-
-    <a
-      href="https://www.google.com/maps/search/?api=1&query=La+Lara+Restaurant+Yalikavak+Bodrum"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="line-link"
-    >
-      Google Maps&apos;te Aç ↗
-    </a>
-  </div>
-
-  <div className="contact-map-frame">
-    <iframe
-      src="https://www.google.com/maps?q=La+Lara+Restaurant+Yalikavak+Bodrum&output=embed"
-      width="100%"
-      height="100%"
-      style={{ border: 0 }}
-      allowFullScreen
-      loading="lazy"
-      referrerPolicy="no-referrer-when-downgrade"
-      title="La Lara Restaurant & Bar Yalıkavak Bodrum konumu"
-    />
+    <p>
+      İyi yemekler, uzun sohbetler
+      <br />
+      ve Yalıkavak akşamları.
+    </p>
   </div>
 </section>
 
-      {/* RESERVATION */}
-      <section className="contact-reservation">
-        <Image
-          src="/images/home/1.jpg"
-          alt="La Lara Restaurant Yalıkavak'ta yemek deneyimi"
-          fill
-          sizes="100vw"
-          className="cover"
-        />
+      {/* =====================================================
+          CONTACT INFORMATION
+          ===================================================== */}
 
-        <div className="contact-reservation-overlay" />
+      {isVisible("contact-information") && (
+        <section className="contact-main">
+          <div className="contact-heading">
+            <div>
+              <p
+                className="eyebrow"
+                style={styleFor(
+                  "contact-information",
+                  "eyebrow"
+                )}
+              >
+                {information?.eyebrow ||
+                  "İletişim"}
+              </p>
 
-        <div className="contact-reservation-content">
-          <p className="eyebrow light" style={styleFor("contact-reservation", "eyebrow")}>{cms["contact-reservation"]?.eyebrow || "Rezervasyon"}</p>
+              <span
+                style={styleFor(
+                  "contact-information",
+                  "text"
+                )}
+              >
+                Yalıkavak · Bodrum
+              </span>
+            </div>
 
-          <h2 style={styleFor("contact-reservation", "heading")}>
-            {cms["contact-reservation"]?.heading ? lines(cms["contact-reservation"].heading!) : <>Masanız<br />sizi bekliyor.</>}
-          </h2>
+            <h2
+              style={styleFor(
+                "contact-information",
+                "heading"
+              )}
+            >
+              {information?.heading
+                ? renderLines(
+                    information.heading
+                  )
+                : (
+                  <>
+                    Sizi La Lara&apos;da
+                    <br />
+                    görmek isteriz.
+                  </>
+                )}
+            </h2>
+          </div>
 
-          <p style={styleFor("contact-reservation", "text")}>
-            {cms["contact-reservation"]?.body ? lines(cms["contact-reservation"].body!) : <>Manzara için gelin. Yemek, insanlar<br />ve gece için kalın.</>}
-          </p>
+          {information?.body && (
+            <div
+              style={{
+                ...styleFor(
+                  "contact-information",
+                  "text"
+                ),
+                whiteSpace: "pre-line",
+                marginBottom: "48px",
+              }}
+            >
+              {information.body}
+            </div>
+          )}
 
-          <div className="contact-actions">
-           <a
-  className="outline-button"
-  href={
-    "https://wa.me/905458941838?text=" +
-    encodeURIComponent(
-      "Merhaba La Lara, rezervasyon talebinde bulunmak istiyorum.\n\nTarih:\nSaat:\nKişi sayısı:"
-    )
-  }
-  target="_blank"
-  rel="noopener noreferrer"
->
-  REZERVASYON TALEBİ
-</a>
+          <div className="contact-columns">
+            {/* ADDRESS */}
+
+            <div className="contact-column">
+              <span className="contact-label">
+                Adres
+              </span>
+
+              <h3>La Lara</h3>
+
+              <p>
+                {contact.address ||
+                  DEFAULT_CONTACT.address}
+
+                <br />
+
+                {renderLines(
+                  contact.city ||
+                    DEFAULT_CONTACT.city!
+                )}
+              </p>
+
+              <a
+                className="contact-text-link"
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Yol tarifi al ↗
+              </a>
+            </div>
+
+            {/* RESERVATIONS */}
+
+            {isVisible("reservations") && (
+              <div className="contact-column">
+                <span
+                  className="contact-label"
+                  style={styleFor(
+                    "reservations",
+                    "eyebrow"
+                  )}
+                >
+                  {reservations?.eyebrow ||
+                    "Rezervasyon"}
+                </span>
+
+                <h3
+                  style={styleFor(
+                    "reservations",
+                    "heading"
+                  )}
+                >
+                  {reservations?.heading ||
+                    "Masa ayırtın"}
+                </h3>
+
+                <p
+                  style={styleFor(
+                    "reservations",
+                    "text"
+                  )}
+                >
+                  {reservations?.body
+                    ? renderLines(
+                        reservations.body
+                      )
+                    : (
+                      <>
+                        Rezervasyon ve bilgi için
+                        <br />
+                        bizi arayabilir veya
+                        e-posta gönderebilirsiniz.
+                      </>
+                    )}
+                </p>
+
+                <a
+                  className="contact-primary-link"
+                  href={`tel:${normalizePhoneForTel(
+                    phone
+                  )}`}
+                >
+                  {phone}
+                </a>
+
+                <a
+                  className="contact-text-link"
+                  href={`mailto:${email}`}
+                >
+                  {email}
+                </a>
+              </div>
+            )}
+
+            {/* SOCIAL */}
+
+            {isVisible("social") && (
+              <div className="contact-column">
+                <span
+                  className="contact-label"
+                  style={styleFor(
+                    "social",
+                    "eyebrow"
+                  )}
+                >
+                  {social?.eyebrow ||
+                    "Takip Et"}
+                </span>
+
+                <h3
+                  style={styleFor(
+                    "social",
+                    "heading"
+                  )}
+                >
+                  {social?.heading ||
+                    "Bağlantıda kalın"}
+                </h3>
+
+                <p
+                  style={styleFor(
+                    "social",
+                    "text"
+                  )}
+                >
+                  {social?.body
+                    ? renderLines(social.body)
+                    : (
+                      <>
+                        La Lara&apos;dan lezzetler,
+                        gün batımları
+                        <br />
+                        ve Yalıkavak&apos;tan anlar.
+                      </>
+                    )}
+                </p>
+
+                <div className="footer-social contact-follow-social">
+                  {/* INSTAGRAM */}
+
+                  {contact.instagram && (
+                    <a
+                      href={contact.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="La Lara Instagram"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <rect
+                          x="3"
+                          y="3"
+                          width="18"
+                          height="18"
+                          rx="5"
+                        />
+
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="4"
+                        />
+
+                        <circle
+                          className="social-fill"
+                          cx="17.5"
+                          cy="6.5"
+                          r="1"
+                        />
+                      </svg>
+
+                      <span className="social-name">
+                        Instagram
+                      </span>
+                    </a>
+                  )}
+
+                  {/* FACEBOOK */}
+
+                  {contact.facebook && (
+                    <a
+                      href={contact.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="La Lara Facebook"
+                    >
+                      <svg
+                        className="facebook-icon"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M14 8h3V4.5c-.6-.1-1.8-.2-3.2-.2-3.1 0-5.2 1.9-5.2 5.4V12H5v4h3.6v8H13v-8h3.5l.6-4H13V10c0-1.2.3-2 1-2Z" />
+                      </svg>
+
+                      <span className="social-name">
+                        Facebook
+                      </span>
+                    </a>
+                  )}
+
+                  {/* TRIPADVISOR */}
+
+                  {contact.tripadvisor && (
+                    <a
+                      href={
+                        contact.tripadvisor
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="La Lara Tripadvisor"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <circle
+                          cx="7"
+                          cy="13"
+                          r="4"
+                        />
+
+                        <circle
+                          cx="17"
+                          cy="13"
+                          r="4"
+                        />
+
+                        <circle
+                          className="social-fill"
+                          cx="7"
+                          cy="13"
+                          r="1.3"
+                        />
+
+                        <circle
+                          className="social-fill"
+                          cx="17"
+                          cy="13"
+                          r="1.3"
+                        />
+
+                        <path d="M10.5 13 12 15l1.5-2" />
+
+                        <path d="M3.5 8.5C6 7 8.8 6.5 12 6.5s6 .5 8.5 2" />
+                      </svg>
+
+                      <span className="social-name">
+                        Tripadvisor
+                      </span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* =====================================================
+          MAP
+          ===================================================== */}
+
+      {isVisible("contact-map") && (
+        <section className="contact-map">
+          <div className="contact-map-heading">
+            <p
+              className="eyebrow"
+              style={styleFor(
+                "contact-map",
+                "eyebrow"
+              )}
+            >
+              {map?.eyebrow || "Konum"}
+            </p>
+
+            <h2
+              style={styleFor(
+                "contact-map",
+                "heading"
+              )}
+            >
+              {map?.heading
+                ? renderLines(map.heading)
+                : (
+                  <>
+                    Yalıkavak&apos;ın
+                    <br />
+                    kalbinde.
+                  </>
+                )}
+            </h2>
+
+            {map?.body && (
+              <p
+                style={styleFor(
+                  "contact-map",
+                  "text"
+                )}
+              >
+                {renderLines(map.body)}
+              </p>
+            )}
 
             <a
-              href="mailto:reservation.bodrum@lalara.com.tr"
-              className="line-link light-link"
+              href={
+                map?.buttonLink ||
+                mapsUrl
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="line-link"
+              style={styleFor(
+                "contact-map",
+                "button"
+              )}
             >
-              E-posta gönder
+              {map?.buttonLabel ||
+                "Google Maps'te Aç ↗"}
             </a>
           </div>
-        </div>
-      </section>
 
-      {/* FOOTER */}
-<Footer locale="tr" />
+          <div className="contact-map-frame">
+            <iframe
+              src={mapEmbedUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="La Lara Restaurant & Bar Yalıkavak Bodrum konumu"
+            />
+          </div>
+        </section>
+      )}
+
+      {/* =====================================================
+          RESERVATION CTA
+          ===================================================== */}
+
+      {isVisible("reservation-cta") && (
+        <section className="contact-reservation">
+          <Image
+            src={reservationImage}
+            alt="La Lara Restaurant Yalıkavak'ta yemek deneyimi"
+            fill
+            sizes="100vw"
+            className="cover"
+          />
+
+          <div className="contact-reservation-overlay" />
+
+          <div className="contact-reservation-content">
+            <p
+              className="eyebrow light"
+              style={styleFor(
+                "reservation-cta",
+                "eyebrow"
+              )}
+            >
+              {reservationCta?.eyebrow ||
+                "Rezervasyon"}
+            </p>
+
+            <h2
+              style={styleFor(
+                "reservation-cta",
+                "heading"
+              )}
+            >
+              {reservationCta?.heading
+                ? renderLines(
+                    reservationCta.heading
+                  )
+                : (
+                  <>
+                    Masanız
+                    <br />
+                    sizi bekliyor.
+                  </>
+                )}
+            </h2>
+
+            <p
+              style={styleFor(
+                "reservation-cta",
+                "text"
+              )}
+            >
+              {reservationCta?.body
+                ? renderLines(
+                    reservationCta.body
+                  )
+                : (
+                  <>
+                    Manzara için gelin. Yemek,
+                    insanlar
+                    <br />
+                    ve gece için kalın.
+                  </>
+                )}
+            </p>
+
+            <div className="contact-actions">
+              <a
+                className="outline-button"
+                href={
+                  reservationCta?.buttonLink ||
+                  whatsappReservationUrl
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styleFor(
+                  "reservation-cta",
+                  "button"
+                )}
+              >
+                {reservationCta?.buttonLabel ||
+                  "REZERVASYON TALEBİ"}
+              </a>
+
+              <a
+                href={`mailto:${email}`}
+                className="line-link light-link"
+              >
+                E-posta gönder
+              </a>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <Footer locale="tr" />
     </main>
   );
 }

@@ -1,27 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import {
+  collection,
+  getDocs,
+} from "firebase/firestore";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { db } from "@/lib/firebase";
 
 type Locale = "tr" | "en";
 
 type MenuItem = {
+  id?: string;
   name: string;
   description?: string;
   price: string;
   extras?: string[];
+  order?: number;
 };
 
 type MenuSection = {
+  id?: string;
   title: string;
   items: MenuItem[];
+  order?: number;
 };
 
-const menu: Record<Locale, MenuSection[]> = {
+/* =========================================================
+   FALLBACK MENU
+   Firestore unavailable/empty olursa mevcut menü çalışır.
+   ========================================================= */
+
+export const menu: Record<Locale, MenuSection[]> = {
   tr: [
     {
       title: "Başlangıçlar",
@@ -54,6 +69,7 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Çorbalar",
       items: [
@@ -69,17 +85,20 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Pizza & Burgerler",
       items: [
         {
           name: "Pizza Margherita",
-          description: "mozzarella, domates sosu, fesleğen",
+          description:
+            "mozzarella, domates sosu, fesleğen",
           price: "890",
         },
         {
           name: "Pizza Capricciosa",
-          description: "dana jambon, enginar, zeytin",
+          description:
+            "dana jambon, enginar, zeytin",
           price: "950",
         },
         {
@@ -102,6 +121,7 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Salatalar",
       items: [
@@ -132,30 +152,38 @@ const menu: Record<Locale, MenuSection[]> = {
         {
           name: "Sezar Salatası",
           price: "690",
-          extras: ["+ tavuk 300", "+ karides 350"],
+          extras: [
+            "+ tavuk 300",
+            "+ karides 350",
+          ],
         },
       ],
     },
+
     {
       title: "Makarna",
       items: [
         {
           name: "Spaghetti Pomodoro",
-          description: "domates sosu, fesleğen, parmesan",
+          description:
+            "domates sosu, fesleğen, parmesan",
           price: "730",
         },
         {
           name: "Salmon Tagliatelle",
-          description: "somon, çeri domates, kremalı sos",
+          description:
+            "somon, çeri domates, kremalı sos",
           price: "1050",
         },
         {
           name: "Bolognese Pappardelle",
-          description: "dana kıyma, Bolonez sos, parmesan",
+          description:
+            "dana kıyma, Bolonez sos, parmesan",
           price: "920",
         },
       ],
     },
+
     {
       title: "Yan Lezzetler",
       items: [
@@ -167,6 +195,7 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Soslar",
       items: [
@@ -178,26 +207,31 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Denizden",
       items: [
         {
           name: "Dorado",
-          description: "bütün dorado, baby patates, cacık",
+          description:
+            "bütün dorado, baby patates, cacık",
           price: "1550",
         },
         {
           name: "Izgara Somon",
-          description: "somon fileto, ballı glazeli havuç",
+          description:
+            "somon fileto, ballı glazeli havuç",
           price: "1250",
         },
         {
           name: "Jumbo Karides",
-          description: "ızgara jumbo karides, alevde lime",
+          description:
+            "ızgara jumbo karides, alevde lime",
           price: "1150",
         },
       ],
     },
+
     {
       title: "Izgaralar",
       items: [
@@ -224,12 +258,14 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Tatlı",
       items: [
         {
           name: "Lara'nın Pavlovası",
-          description: "beze, çırpılmış krema, ahududu",
+          description:
+            "beze, çırpılmış krema, ahududu",
           price: "590",
         },
         {
@@ -273,47 +309,56 @@ const menu: Record<Locale, MenuSection[]> = {
         },
         {
           name: "Hummus",
-          description: "nachos, vegetable sticks",
+          description:
+            "nachos, vegetable sticks",
           price: "450",
         },
         {
           name: "Crispy Chicken Bites",
-          description: "sweet chili sauce, cheddar sauce",
+          description:
+            "sweet chili sauce, cheddar sauce",
           price: "790",
         },
         {
           name: "Fried Calamari Rings",
-          description: "tartar sauce, rocket salad",
+          description:
+            "tartar sauce, rocket salad",
           price: "830",
         },
       ],
     },
+
     {
       title: "Soups",
       items: [
         {
           name: "Spicy Tomato Soup",
-          description: "parmesan, croutons",
+          description:
+            "parmesan, croutons",
           price: "420",
         },
         {
           name: "Lentil Soup",
-          description: "spices mix, lemon",
+          description:
+            "spices mix, lemon",
           price: "390",
         },
       ],
     },
+
     {
       title: "Pizza & Burgers",
       items: [
         {
           name: "Pizza Margherita",
-          description: "mozzarella, tomato sauce, basil",
+          description:
+            "mozzarella, tomato sauce, basil",
           price: "890",
         },
         {
           name: "Pizza Capricciosa",
-          description: "beef ham, artichoke, olives",
+          description:
+            "beef ham, artichoke, olives",
           price: "950",
         },
         {
@@ -330,11 +375,13 @@ const menu: Record<Locale, MenuSection[]> = {
         },
         {
           name: "Mini Burger Trio",
-          description: "three mini cheeseburgers, fries",
+          description:
+            "three mini cheeseburgers, fries",
           price: "1050",
         },
       ],
     },
+
     {
       title: "Salads",
       items: [
@@ -365,21 +412,27 @@ const menu: Record<Locale, MenuSection[]> = {
         {
           name: "Caesar Salad",
           price: "690",
-          extras: ["+ chicken 300", "+ shrimps 350"],
+          extras: [
+            "+ chicken 300",
+            "+ shrimps 350",
+          ],
         },
       ],
     },
+
     {
       title: "Pasta",
       items: [
         {
           name: "Spaghetti Pomodoro",
-          description: "tomato sauce, basil, parmesan",
+          description:
+            "tomato sauce, basil, parmesan",
           price: "730",
         },
         {
           name: "Salmon Tagliatelle",
-          description: "salmon, cherry tomatoes, creamy sauce",
+          description:
+            "salmon, cherry tomatoes, creamy sauce",
           price: "1050",
         },
         {
@@ -390,6 +443,7 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Sides",
       items: [
@@ -401,6 +455,7 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "Sauces",
       items: [
@@ -412,17 +467,20 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "From the Sea",
       items: [
         {
           name: "Dorado",
-          description: "whole dorado, baby potatoes, tzatziki",
+          description:
+            "whole dorado, baby potatoes, tzatziki",
           price: "1550",
         },
         {
           name: "Grilled Salmon",
-          description: "salmon fillet, honey-glazed carrots",
+          description:
+            "salmon fillet, honey-glazed carrots",
           price: "1250",
         },
         {
@@ -433,6 +491,7 @@ const menu: Record<Locale, MenuSection[]> = {
         },
       ],
     },
+
     {
       title: "From the Land",
       items: [
@@ -454,11 +513,13 @@ const menu: Record<Locale, MenuSection[]> = {
         },
         {
           name: "Grilled Chicken",
-          description: "grilled vegetables",
+          description:
+            "grilled vegetables",
           price: "950",
         },
       ],
     },
+
     {
       title: "Dessert",
       items: [
@@ -479,7 +540,8 @@ const menu: Record<Locale, MenuSection[]> = {
         },
         {
           name: "Fruit Plate",
-          description: "seasonal fruits",
+          description:
+            "seasonal fruits",
           price: "970",
         },
         {
@@ -493,48 +555,391 @@ const menu: Record<Locale, MenuSection[]> = {
   ],
 };
 
-export default function FoodMenuPage() {
-  const [locale, setLocale] = useState<Locale>("en");
+/* =========================================================
+   PAGE
+   ========================================================= */
 
-  const isTR = locale === "tr";
-  const sections = menu[locale];
+export default function FoodMenuPage() {
+  const [locale, setLocale] =
+    useState<Locale>("en");
+
+  const [firestoreSections, setFirestoreSections] =
+    useState<Record<Locale, MenuSection[]>>({
+      en: [],
+      tr: [],
+    });
+
+  const [menuTitle, setMenuTitle] =
+    useState<Record<Locale, string>>({
+      en: "Food Menu",
+      tr: "Yemek Menüsü",
+    });
+
+  const [menuSubtitle, setMenuSubtitle] =
+    useState<Record<Locale, string>>({
+      en: "Restaurant & Bar",
+      tr: "Restaurant & Bar",
+    });
+
+  const [cmsReady, setCmsReady] =
+    useState(false);
+
+  const isTR =
+    locale === "tr";
+
+  /* =========================================================
+     FIRESTORE MENU
+     ========================================================= */
+
+  useEffect(() => {
+    async function loadMenu() {
+      try {
+        const [
+          categorySnapshot,
+          itemSnapshot,
+          settingsSnapshot,
+        ] = await Promise.all([
+          getDocs(
+            collection(
+              db,
+              "menuCategories"
+            )
+          ),
+
+          getDocs(
+            collection(
+              db,
+              "menuItems"
+            )
+          ),
+
+          getDocs(
+            collection(
+              db,
+              "menuSettings"
+            )
+          ),
+        ]);
+
+        const categories =
+          categorySnapshot.docs
+            .map((document) => {
+              const data =
+                document.data();
+
+              return {
+                id:
+                  document.id,
+
+                menu:
+                  data.menu,
+
+                nameEN:
+                  data.nameEN || "",
+
+                nameTR:
+                  data.nameTR || "",
+
+                order:
+                  data.order ?? 0,
+
+                visible:
+                  data.visible !==
+                  false,
+              };
+            })
+            .filter(
+              (category) =>
+                category.menu ===
+                  "food" &&
+                category.visible
+            )
+            .sort(
+              (a, b) =>
+                a.order -
+                b.order
+            );
+
+        const allItems =
+          itemSnapshot.docs
+            .map((document) => {
+              const data =
+                document.data();
+
+              return {
+                id:
+                  document.id,
+
+                menu:
+                  data.menu,
+
+                categoryId:
+                  data.categoryId ||
+                  "",
+
+                nameEN:
+                  data.nameEN || "",
+
+                nameTR:
+                  data.nameTR || "",
+
+                descriptionEN:
+                  data.descriptionEN ||
+                  "",
+
+                descriptionTR:
+                  data.descriptionTR ||
+                  "",
+
+                price:
+                  data.price || "",
+
+                extrasEN:
+                  Array.isArray(
+                    data.extrasEN
+                  )
+                    ? data.extrasEN
+                    : [],
+
+                extrasTR:
+                  Array.isArray(
+                    data.extrasTR
+                  )
+                    ? data.extrasTR
+                    : [],
+
+                order:
+                  data.order ?? 0,
+
+                visible:
+                  data.visible !==
+                  false,
+              };
+            })
+            .filter(
+              (item) =>
+                item.menu ===
+                  "food" &&
+                item.visible
+            );
+
+        const buildSections = (
+          targetLocale: Locale
+        ): MenuSection[] => {
+          return categories.map(
+            (category) => {
+              const categoryItems =
+                allItems
+                  .filter(
+                    (item) =>
+                      item.categoryId ===
+                      category.id
+                  )
+                  .sort(
+                    (a, b) =>
+                      a.order -
+                      b.order
+                  )
+                  .map(
+                    (item) => ({
+                      id:
+                        item.id,
+
+                      name:
+                        targetLocale ===
+                        "en"
+                          ? item.nameEN ||
+                            item.nameTR
+                          : item.nameTR ||
+                            item.nameEN,
+
+                      description:
+                        targetLocale ===
+                        "en"
+                          ? item.descriptionEN ||
+                            undefined
+                          : item.descriptionTR ||
+                            undefined,
+
+                      price:
+                        item.price,
+
+                      extras:
+                        targetLocale ===
+                        "en"
+                          ? item.extrasEN
+                          : item.extrasTR,
+
+                      order:
+                        item.order,
+                    })
+                  );
+
+              return {
+                id:
+                  category.id,
+
+                title:
+                  targetLocale ===
+                  "en"
+                    ? category.nameEN ||
+                      category.nameTR
+                    : category.nameTR ||
+                      category.nameEN,
+
+                items:
+                  categoryItems,
+
+                order:
+                  category.order,
+              };
+            }
+          );
+        };
+
+        const foodSettings =
+          settingsSnapshot.docs.find(
+            (document) =>
+              document.id ===
+              "food"
+          );
+
+        if (foodSettings) {
+          const settings =
+            foodSettings.data();
+
+          setMenuTitle({
+            en:
+              settings.titleEN ||
+              "Food Menu",
+
+            tr:
+              settings.titleTR ||
+              "Yemek Menüsü",
+          });
+
+          setMenuSubtitle({
+            en:
+              settings.subtitleEN ||
+              "Restaurant & Bar",
+
+            tr:
+              settings.subtitleTR ||
+              "Restaurant & Bar",
+          });
+        }
+
+        /*
+         * Firestore'da en az bir Food
+         * kategorisi varsa CMS kaynağını
+         * kullanıyoruz.
+         */
+        if (
+          categories.length >
+          0
+        ) {
+          setFirestoreSections({
+            en:
+              buildSections(
+                "en"
+              ),
+
+            tr:
+              buildSections(
+                "tr"
+              ),
+          });
+
+          setCmsReady(
+            true
+          );
+        } else {
+          setCmsReady(
+            false
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Food menu could not be loaded from Firestore:",
+          error
+        );
+
+        setCmsReady(
+          false
+        );
+      }
+    }
+
+    void loadMenu();
+  }, []);
+
+  /*
+   * Firestore hazırsa CMS.
+   * Değilse mevcut hardcoded menü.
+   */
+  const sections =
+    cmsReady
+      ? firestoreSections[
+          locale
+        ]
+      : menu[locale];
 
   return (
     <main className="restaurant-menu-page">
 
       {/* PHOTO HEADER */}
+
       <div
         className="restaurant-menu-header-bg"
         style={{
-          backgroundImage: "url('/images/home/3.jpg')",
+          backgroundImage:
+            "url('/images/home/3.jpg')",
         }}
       >
         <div className="restaurant-menu-header-overlay" />
-<Header
-  locale={locale}
-  onLocaleChange={setLocale}
-/>
+
+        <Header
+          locale={locale}
+          onLocaleChange={
+            setLocale
+          }
+        />
       </div>
 
       {/* FOOD / DRINKS / BREAKFAST */}
+
       <nav
         className="restaurant-menu-tabs"
         aria-label="Menu navigation"
       >
-        <Link href="/food-menu" className="active">
-          {isTR ? "YEMEK" : "FOOD"}
+        <Link
+          href={`/food-menu?lang=${locale}`}
+          className="active"
+        >
+          {isTR
+            ? "YEMEK"
+            : "FOOD"}
         </Link>
 
-        <Link href="/drinks-menu">
-          {isTR ? "İÇECEK" : "DRINKS"}
+        <Link
+          href={`/drinks-menu?lang=${locale}`}
+        >
+          {isTR
+            ? "İÇECEK"
+            : "DRINKS"}
         </Link>
 
-        <Link href="/breakfast-menu">
-          {isTR ? "KAHVALTI" : "BREAKFAST"}
+        <Link
+          href={`/breakfast-menu?lang=${locale}`}
+        >
+          {isTR
+            ? "KAHVALTI"
+            : "BREAKFAST"}
         </Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
+
       <div
         className="restaurant-menu-watermark"
         aria-hidden="true"
@@ -548,54 +953,95 @@ export default function FoodMenuPage() {
       </div>
 
       {/* TITLE */}
+
       <section className="restaurant-menu-heading">
         <h1>
-          {isTR ? "Yemek Menüsü" : "Food Menu"}
+          {menuTitle[
+            locale
+          ]}
         </h1>
 
-        <span>Restaurant &amp; Bar</span>
+        <span>
+          {menuSubtitle[
+            locale
+          ]}
+        </span>
       </section>
 
       {/* MENU */}
+
       <section className="restaurant-menu-grid">
-        {sections.map((section) => (
-          <section
-            className="restaurant-menu-section"
-            key={section.title}
-          >
-            <h2>{section.title}</h2>
+        {sections.map(
+          (section) => (
+            <section
+              className="restaurant-menu-section"
+              key={
+                section.id ||
+                section.title
+              }
+            >
+              <h2>
+                {section.title}
+              </h2>
 
-            <div className="restaurant-menu-items">
-              {section.items.map((item) => (
-                <article
-                  className="restaurant-menu-item"
-                  key={item.name}
-                >
-                  <div className="restaurant-menu-item-main">
-                    <h3>{item.name}</h3>
-                    <strong>{item.price}</strong>
-                  </div>
-
-                  {item.description && (
-                    <p>{item.description}</p>
-                  )}
-
-                  {item.extras?.map((extra) => (
-                    <p
-                      className="restaurant-menu-extra"
-                      key={extra}
+              <div className="restaurant-menu-items">
+                {section.items.map(
+                  (item) => (
+                    <article
+                      className="restaurant-menu-item"
+                      key={
+                        item.id ||
+                        `${section.title}-${item.name}`
+                      }
                     >
-                      {extra}
-                    </p>
-                  ))}
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
+                      <div className="restaurant-menu-item-main">
+                        <h3>
+                          {item.name}
+                        </h3>
+
+                        {item.price && (
+                          <strong>
+                            {
+                              item.price
+                            }
+                          </strong>
+                        )}
+                      </div>
+
+                      {item.description && (
+                        <p>
+                          {
+                            item.description
+                          }
+                        </p>
+                      )}
+
+                      {item.extras?.map(
+                        (
+                          extra,
+                          index
+                        ) => (
+                          <p
+                            className="restaurant-menu-extra"
+                            key={`${extra}-${index}`}
+                          >
+                            {
+                              extra
+                            }
+                          </p>
+                        )
+                      )}
+                    </article>
+                  )
+                )}
+              </div>
+            </section>
+          )
+        )}
       </section>
 
       {/* BOTTOM */}
+
       <section className="restaurant-menu-note">
         <p>
           {isTR
@@ -603,12 +1049,23 @@ export default function FoodMenuPage() {
             : "Please inform our team of any allergies or dietary requirements before ordering."}
         </p>
 
-        <Link href={isTR ? "/tr" : "/"}>
-          {isTR ? "LA LARA'YA DÖN" : "BACK TO LA LARA"} →
+        <Link
+          href={
+            isTR
+              ? "/tr"
+              : "/"
+          }
+        >
+          {isTR
+            ? "LA LARA'YA DÖN"
+            : "BACK TO LA LARA"}{" "}
+          →
         </Link>
       </section>
 
-      <Footer locale={locale} />
+      <Footer
+        locale={locale}
+      />
     </main>
   );
 }

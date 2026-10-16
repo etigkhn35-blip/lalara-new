@@ -1,533 +1,304 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  onAuthStateChanged,
-  signOut,
-  User,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
-
-type NavItem = {
-  label: string;
-  href: string;
-  icon: string;
-};
-
-const navigation: NavItem[] = [
-  {
-    label: "Overview",
-    href: "/admin/dashboard",
-    icon: "⌂",
-  },
-  {
-    label: "Site Editor",
-    href: "/admin/content",
-    icon: "✦",
-  },
-  {
-    label: "Media Library",
-    href: "/admin/media",
-    icon: "▧",
-  },
-  {
-    label: "Menus & PDFs",
-    href: "/admin/menus",
-    icon: "≡",
-  },
-  {
-    label: "Analytics",
-    href: "/admin/analytics",
-    icon: "↗",
-  },
-  {
-    label: "SEO",
-    href: "/admin/seo",
-    icon: "◎",
-  },
-  {
-    label: "Settings",
-    href: "/admin/settings",
-    icon: "⚙",
-  },
-];
+import Link from "next/link";
+import AdminShell from "@/components/admin/AdminShell";
 
 export default function AdminDashboardPage() {
-  const router = useRouter();
-
-  const [user, setUser] = useState<User | null>(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (firebaseUser) => {
-        if (!firebaseUser) {
-          router.replace("/admin");
-          return;
-        }
-
-        setUser(firebaseUser);
-        setCheckingAuth(false);
-      }
-    );
-
-    return unsubscribe;
-  }, [router]);
-
-  async function handleLogout() {
-    await signOut(auth);
-
-    router.replace("/admin");
-  }
-
-  if (checkingAuth) {
-    return (
-      <main className="admin-loading">
-        <Image
-          src="/lalara-logo.png"
-          alt="La Lara"
-          width={220}
-          height={82}
-          priority
-        />
-
-        <span>Loading Management Studio</span>
-      </main>
-    );
-  }
-
   return (
-    <main className="admin-shell">
-      <aside
-        className={`admin-sidebar ${
-          sidebarOpen ? "is-open" : ""
-        }`}
-      >
-        <div className="admin-sidebar-top">
-          <a
-            href="/admin/dashboard"
-            className="admin-sidebar-brand"
-          >
-            <Image
-              src="/lalara-logo.png"
-              alt="La Lara Restaurant & Bar"
-              width={210}
-              height={78}
-              priority
-            />
-          </a>
+    <AdminShell
+      eyebrow="Overview"
+      title="Dashboard"
+    >
+      <div className="admin-overview">
+        {/* PAGE INTRO */}
 
-          <button
-            type="button"
-            className="admin-sidebar-close"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Close navigation"
-          >
-            ×
-          </button>
-        </div>
+        <section className="admin-overview-heading">
+          <div>
+            <span className="admin-eyebrow">
+              Management Studio
+            </span>
 
-        <div className="admin-sidebar-label">
-          Management Studio
-        </div>
+            <h1>
+              La Lara at a glance.
+            </h1>
+          </div>
 
-        <nav className="admin-navigation">
-          {navigation.map((item, index) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={
-                index === 0
-                  ? "admin-nav-item active"
-                  : "admin-nav-item"
-              }
-            >
-              <span className="admin-nav-icon">
-                {item.icon}
+          <p>
+            Manage the website, menus, photography,
+            events and digital performance from one place.
+          </p>
+        </section>
+
+        {/* ANALYTICS SUMMARY */}
+
+        <section className="admin-overview-section">
+          <div className="admin-section-heading">
+            <div>
+              <span className="admin-eyebrow">
+                Website
               </span>
 
-              <span>{item.label}</span>
-            </a>
-          ))}
-        </nav>
-
-        <div className="admin-sidebar-bottom">
-          <div className="admin-sidebar-user">
-            <div className="admin-user-avatar">
-              {user?.email
-                ?.charAt(0)
-                .toUpperCase() || "A"}
+              <h2>Performance</h2>
             </div>
 
-            <div>
-              <strong>Administrator</strong>
+            <Link href="/admin/analytics">
+              View analytics →
+            </Link>
+          </div>
 
-              <span>
-                {user?.email}
+          <div className="admin-metric-grid">
+            <article className="admin-metric">
+              <span>Visitors</span>
+
+              <strong>—</strong>
+
+              <small>
+                Analytics connection pending
+              </small>
+            </article>
+
+            <article className="admin-metric">
+              <span>Page views</span>
+
+              <strong>—</strong>
+
+              <small>
+                Analytics connection pending
+              </small>
+            </article>
+
+            <article className="admin-metric">
+              <span>Reservations</span>
+
+              <strong>—</strong>
+
+              <small>
+                WhatsApp · Phone · Email
+              </small>
+            </article>
+
+            <article className="admin-metric">
+              <span>Menu views</span>
+
+              <strong>—</strong>
+
+              <small>
+                Food · Drinks · Breakfast
+              </small>
+            </article>
+          </div>
+        </section>
+
+        {/* GOOGLE SEARCH */}
+
+        <section className="admin-overview-section">
+          <div className="admin-section-heading">
+            <div>
+              <span className="admin-eyebrow">
+                Google
               </span>
+
+              <h2>Search performance</h2>
+            </div>
+
+            <Link href="/admin/search">
+              Open Google Search →
+            </Link>
+          </div>
+
+          <div className="admin-metric-grid">
+            <article className="admin-metric">
+              <span>Clicks</span>
+
+              <strong>—</strong>
+
+              <small>
+                Search Console pending
+              </small>
+            </article>
+
+            <article className="admin-metric">
+              <span>Impressions</span>
+
+              <strong>—</strong>
+
+              <small>
+                Search Console pending
+              </small>
+            </article>
+
+            <article className="admin-metric">
+              <span>Average CTR</span>
+
+              <strong>—</strong>
+
+              <small>
+                Search Console pending
+              </small>
+            </article>
+
+            <article className="admin-metric">
+              <span>Average position</span>
+
+              <strong>—</strong>
+
+              <small>
+                Search Console pending
+              </small>
+            </article>
+          </div>
+        </section>
+
+        {/* MANAGEMENT */}
+
+        <section className="admin-overview-section">
+          <div className="admin-section-heading">
+            <div>
+              <span className="admin-eyebrow">
+                Manage
+              </span>
+
+              <h2>Website</h2>
             </div>
           </div>
 
-          <button
-            type="button"
-            className="admin-logout"
-            onClick={handleLogout}
-          >
-            Sign out
-          </button>
-        </div>
-      </aside>
-
-      {sidebarOpen && (
-        <button
-          type="button"
-          className="admin-sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-          aria-label="Close navigation"
-        />
-      )}
-
-      <section className="admin-main">
-        <header className="admin-topbar">
-          <div className="admin-topbar-left">
-            <button
-              type="button"
-              className="admin-mobile-menu"
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Open navigation"
+          <div className="admin-management-grid">
+            <Link
+              href="/admin/content"
+              className="admin-management-card"
             >
-              <span />
-              <span />
-            </button>
+              <div>
+                <span>01</span>
 
-            <div>
-              <span>La Lara</span>
+                <h3>Website</h3>
 
-              <strong>
-                Management Studio
-              </strong>
-            </div>
+                <p>
+                  Navigation, homepage, story,
+                  contact and footer content.
+                </p>
+              </div>
+
+              <strong>→</strong>
+            </Link>
+
+            <Link
+              href="/admin/menus"
+              className="admin-management-card"
+            >
+              <div>
+                <span>02</span>
+
+                <h3>Menus</h3>
+
+                <p>
+                  Food, drinks and breakfast
+                  categories, items and prices.
+                </p>
+              </div>
+
+              <strong>→</strong>
+            </Link>
+
+            <Link
+              href="/admin/media"
+              className="admin-management-card"
+            >
+              <div>
+                <span>03</span>
+
+                <h3>Gallery</h3>
+
+                <p>
+                  Add, remove, reorder and manage
+                  photography.
+                </p>
+              </div>
+
+              <strong>→</strong>
+            </Link>
+
+            <Link
+              href="/admin/events"
+              className="admin-management-card"
+            >
+              <div>
+                <span>04</span>
+
+                <h3>Private Events</h3>
+
+                <p>
+                  Manage events, descriptions
+                  and slider photography.
+                </p>
+              </div>
+
+              <strong>→</strong>
+            </Link>
+
+            <Link
+              href="/admin/seo"
+              className="admin-management-card"
+            >
+              <div>
+                <span>05</span>
+
+                <h3>SEO</h3>
+
+                <p>
+                  Titles, descriptions and
+                  search visibility settings.
+                </p>
+              </div>
+
+              <strong>→</strong>
+            </Link>
+
+            <Link
+              href="/admin/settings"
+              className="admin-management-card"
+            >
+              <div>
+                <span>06</span>
+
+                <h3>Settings</h3>
+
+                <p>
+                  Contact information, social
+                  links and restaurant settings.
+                </p>
+              </div>
+
+              <strong>→</strong>
+            </Link>
+          </div>
+        </section>
+
+        {/* STATUS */}
+
+        <section className="admin-overview-status">
+          <div>
+            <span className="admin-eyebrow">
+              Website status
+            </span>
+
+            <h2>La Lara Restaurant &amp; Bar</h2>
           </div>
 
-          <div className="admin-topbar-actions">
+          <div className="admin-overview-status-right">
+            <span className="admin-published">
+              Published
+            </span>
+
             <a
               href="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="admin-view-site"
             >
-              View website ↗
+              Open website ↗
             </a>
-
-            <div className="admin-status">
-              <i />
-              Live
-            </div>
           </div>
-        </header>
-
-        <div className="admin-content">
-          <section className="admin-welcome">
-            <div>
-              <p className="admin-eyebrow">
-                Overview
-              </p>
-
-              <h1>
-                Good evening.
-                <br />
-                Here&apos;s La Lara.
-              </h1>
-            </div>
-
-            <p className="admin-welcome-copy">
-              Manage the website, update content and
-              follow La Lara&apos;s digital performance
-              from one place.
-            </p>
-          </section>
-
-          <section className="admin-kpis">
-            <article className="admin-kpi">
-              <div className="admin-kpi-head">
-                <span>Visitors today</span>
-                <small>Today</small>
-              </div>
-
-              <strong>—</strong>
-
-              <p>
-                Analytics connection pending
-              </p>
-            </article>
-
-            <article className="admin-kpi">
-              <div className="admin-kpi-head">
-                <span>Last 7 days</span>
-                <small>7D</small>
-              </div>
-
-              <strong>—</strong>
-
-              <p>
-                Analytics connection pending
-              </p>
-            </article>
-
-            <article className="admin-kpi">
-              <div className="admin-kpi-head">
-                <span>Last 30 days</span>
-                <small>30D</small>
-              </div>
-
-              <strong>—</strong>
-
-              <p>
-                Analytics connection pending
-              </p>
-            </article>
-
-            <article className="admin-kpi">
-              <div className="admin-kpi-head">
-                <span>Reservation actions</span>
-                <small>30D</small>
-              </div>
-
-              <strong>—</strong>
-
-              <p>
-                Calls · Email · Menu clicks
-              </p>
-            </article>
-          </section>
-
-          <section className="admin-dashboard-grid">
-            <article className="admin-performance-card">
-              <div className="admin-card-heading">
-                <div>
-                  <p className="admin-eyebrow">
-                    Performance
-                  </p>
-
-                  <h2>
-                    Website activity
-                  </h2>
-                </div>
-
-                <button type="button">
-                  Last 30 days⌄
-                </button>
-              </div>
-
-              <div className="admin-chart-empty">
-                <div className="admin-chart-lines">
-                  <span />
-                  <span />
-                  <span />
-                  <span />
-                </div>
-
-                <div>
-                  <strong>
-                    Analytics is ready to connect.
-                  </strong>
-
-                  <p>
-                    Visitor activity will appear here
-                    after we connect the reporting layer.
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <article className="admin-quick-card">
-              <div className="admin-card-heading">
-                <div>
-                  <p className="admin-eyebrow">
-                    Quick access
-                  </p>
-
-                  <h2>
-                    Website
-                  </h2>
-                </div>
-              </div>
-
-              <div className="admin-quick-links">
-                <a href="/admin/content">
-                  <div>
-                    <span>01</span>
-
-                    <strong>
-                      Edit website content
-                    </strong>
-                  </div>
-
-                  <i>→</i>
-                </a>
-
-                <a href="/admin/media">
-                  <div>
-                    <span>02</span>
-
-                    <strong>
-                      Change photography
-                    </strong>
-                  </div>
-
-                  <i>→</i>
-                </a>
-
-                <a href="/admin/menus">
-                  <div>
-                    <span>03</span>
-
-                    <strong>
-                      Replace menu PDFs
-                    </strong>
-                  </div>
-
-                  <i>→</i>
-                </a>
-
-                <a href="/admin/seo">
-                  <div>
-                    <span>04</span>
-
-                    <strong>
-                      SEO settings
-                    </strong>
-                  </div>
-
-                  <i>→</i>
-                </a>
-              </div>
-            </article>
-          </section>
-
-          <section className="admin-lower-grid">
-            <article className="admin-site-card">
-              <div className="admin-card-heading">
-                <div>
-                  <p className="admin-eyebrow">
-                    Website content
-                  </p>
-
-                  <h2>
-                    Home page
-                  </h2>
-                </div>
-
-                <span className="admin-published">
-                  Published
-                </span>
-              </div>
-
-              <div className="admin-site-preview">
-                <div className="admin-site-preview-image">
-                  <Image
-                    src="/images/home/1.jpg"
-                    alt="La Lara homepage"
-                    fill
-                    sizes="600px"
-                    className="cover"
-                  />
-
-                  <div />
-                </div>
-
-                <div className="admin-site-preview-info">
-                  <div>
-                    <span>Languages</span>
-
-                    <strong>
-                      English · Türkçe
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span>Sections</span>
-
-                    <strong>10 sections</strong>
-                  </div>
-
-                  <a href="/admin/content">
-                    Open Site Editor →
-                  </a>
-                </div>
-              </div>
-            </article>
-
-            <article className="admin-actions-card">
-              <div className="admin-card-heading">
-                <div>
-                  <p className="admin-eyebrow">
-                    Engagement
-                  </p>
-
-                  <h2>
-                    Key actions
-                  </h2>
-                </div>
-              </div>
-
-              <div className="admin-action-row">
-                <span>
-                  Reservation calls
-                </span>
-
-                <strong>—</strong>
-              </div>
-
-              <div className="admin-action-row">
-                <span>
-                  Reservation emails
-                </span>
-
-                <strong>—</strong>
-              </div>
-
-              <div className="admin-action-row">
-                <span>
-                  Food menu views
-                </span>
-
-                <strong>—</strong>
-              </div>
-
-              <div className="admin-action-row">
-                <span>
-                  Drinks menu views
-                </span>
-
-                <strong>—</strong>
-              </div>
-
-              <div className="admin-action-row">
-                <span>
-                  Breakfast menu views
-                </span>
-
-                <strong>—</strong>
-              </div>
-            </article>
-          </section>
-
-          <footer className="admin-dashboard-footer">
-            <span>
-              La Lara Restaurant &amp; Bar
-            </span>
-
-            <span>
-              Management Studio · 2026
-            </span>
-          </footer>
-        </div>
-      </section>
-    </main>
+        </section>
+      </div>
+    </AdminShell>
   );
 }
