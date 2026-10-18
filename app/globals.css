@@ -13638,3 +13638,30 @@ h1,h2,h3,blockquote {
   transform: rotate(-45deg);
   transform-origin: center;
 }
+/* =========================================================
+   TURKISH LOCALE
+   Correct uppercase: i → İ / ı → I
+   ========================================================= */
+
+.tr-site {
+  font-language-override: "TRK";
+}
+
+.tr-site .eyebrow,
+.tr-site .line-link,
+.tr-site .outline-button,
+.tr-site .scroll-cue,
+.tr-site .section-title > div > span,
+.tr-site .menu-grid article > .kicker,
+.tr-site .desktop-nav a,
+.tr-site .language,
+.tr-site .header-reserve,
+.tr-site .mobile-menu-language,
+.tr-site .mobile-menu-reserve,
+.tr-site .contact-label,
+.tr-site .contact-heading > div > span,
+.tr-site .footer-brand p,
+.tr-site .footer-grid span,
+.tr-site .footer-bottom {
+  text-transform: uppercase;
+}

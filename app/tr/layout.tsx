@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/tr",
     languages: {
-      "en": "/",
-      "tr": "/tr",
+      en: "/",
+      tr: "/tr",
       "x-default": "/",
     },
   },
@@ -23,6 +23,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TurkishLayout({ children }: { children: React.ReactNode }) {
-  return children;
+export default function TurkishLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div lang="tr" className="tr-site">
+      {children}
+    </div>
+  );
 }
