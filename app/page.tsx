@@ -14,19 +14,14 @@ import { db } from "@/lib/firebase";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const defaultPhotos = {
-  hero: "/images/home/1.jpg",
-  atmosphere: "/images/home/2.jpg",
-  food: "/images/home/3.jpg",
-  drinks: "/images/home/4.jpg",
-  breakfast: "/images/home/5.jpg",
-  sunset: "/images/home/6.jpg",
-  story: "/images/home/7.jpg",
-  moments: "/images/home/8.jpg",
-  event1: "/images/home/8.jpg",
-  event2: "/images/home/7.jpg",
-  event3: "/images/home/3.jpg",
-  contactHero: "/images/home/6.jpg",
+type HomepageMedia = {
+  hero?: string;
+  food?: string;
+  drinks?: string;
+  breakfast?: string;
+  atmosphere?: string;
+  moments?: string;
+  sunset?: string;
 };
 
 type CmsRecord = {
@@ -95,10 +90,7 @@ export default function Home() {
     useState<SiteSettings>(defaultSettings);
 
   const [photos, setPhotos] =
-    useState(defaultPhotos);
-
-  const [gallery, setGallery] =
-    useState<string[]>([]);
+    useState<HomepageMedia | null>(null);
 
   useEffect(() => {
     async function loadCms() {
@@ -135,31 +127,11 @@ export default function Home() {
         const [
           contactSnapshot,
           socialSnapshot,
-          mediaSnapshot,
+          homepageMediaSnapshot,
         ] = await Promise.all([
-          getDoc(
-            doc(
-              db,
-              "siteSettings",
-              "contact"
-            )
-          ),
-
-          getDoc(
-            doc(
-              db,
-              "siteSettings",
-              "social"
-            )
-          ),
-
-          getDoc(
-            doc(
-              db,
-              "siteSettings",
-              "media"
-            )
-          ),
+          getDoc(doc(db, "siteSettings", "contact")),
+          getDoc(doc(db, "siteSettings", "social")),
+          getDoc(doc(db, "pageMedia", "homepage")),
         ]);
 
         setSettings({
@@ -188,78 +160,11 @@ export default function Home() {
             defaultSettings.tripadvisor,
         });
 
-        const savedImages =
-          mediaSnapshot.data()?.images || {};
+        const fields = homepageMediaSnapshot.exists()
+          ? (homepageMediaSnapshot.data()?.fields as HomepageMedia | undefined)
+          : undefined;
 
-        setPhotos({
-          hero:
-            savedImages.hero?.url ||
-            defaultPhotos.hero,
-
-          atmosphere:
-            savedImages.atmosphere?.url ||
-            defaultPhotos.atmosphere,
-
-          food:
-            savedImages.food?.url ||
-            defaultPhotos.food,
-
-          drinks:
-            savedImages.drinks?.url ||
-            defaultPhotos.drinks,
-
-          breakfast:
-            savedImages.breakfast?.url ||
-            defaultPhotos.breakfast,
-
-          sunset:
-            savedImages.sunset?.url ||
-            defaultPhotos.sunset,
-
-          story:
-            savedImages.story?.url ||
-            defaultPhotos.story,
-
-          moments:
-            savedImages.moments?.url ||
-            defaultPhotos.moments,
-
-          event1:
-            savedImages.event1?.url ||
-            savedImages.moments?.url ||
-            defaultPhotos.event1,
-
-          event2:
-            savedImages.event2?.url ||
-            defaultPhotos.event2,
-
-          event3:
-            savedImages.event3?.url ||
-            defaultPhotos.event3,
-
-          contactHero:
-            savedImages.contactHero?.url ||
-            defaultPhotos.contactHero,
-        });
-
-        setGallery(
-          Array.isArray(
-            mediaSnapshot.data()?.gallery
-          )
-            ? mediaSnapshot
-                .data()!
-                .gallery.map(
-                  (item: { url?: string }) =>
-                    item.url
-                )
-                .filter(
-                  (
-                    url: string | undefined
-                  ): url is string =>
-                    Boolean(url)
-                )
-            : []
-        );
+        setPhotos(fields || {});
       } catch (error) {
         console.error(
           "La Lara CMS load error:",
@@ -349,12 +254,7 @@ function cmsStyle(
       "Hello La Lara, I would like to request a reservation.\n\nDate:\nTime:\nNumber of guests:"
     );
 
-  const galleryPhotos = [
-    gallery[0] || photos.atmosphere,
-    gallery[1] || photos.food,
-    gallery[2] || photos.drinks,
-    gallery[3] || photos.sunset,
-  ];
+  const galleryPhotos = photos?.moments ? [photos.moments] : [];
 
   /* =========================================================
      CMS KEYS
@@ -426,14 +326,16 @@ function cmsStyle(
 
       {isVisible("hero") && (
         <section className="hero opaque-section">
-          <Image
-            src={photos.hero}
-            alt="La Lara Restaurant & Bar overlooking Yalıkavak Bay in Bodrum"
-            fill
-            priority
-            sizes="100vw"
-            className="cover"
-          />
+          {photos?.hero && (
+            <Image
+              src={photos.hero}
+              alt="La Lara Restaurant & Bar overlooking Yalıkavak Bay in Bodrum"
+              fill
+              priority
+              sizes="100vw"
+              className="cover"
+            />
+          )}
 
           <div className="image-overlay" />
 
@@ -573,13 +475,15 @@ function cmsStyle(
           <div className="menu-grid">
             <article>
               <div className="menu-image">
-                <Image
-                  src={photos.food}
-                  alt="Mediterranean dishes served at La Lara Restaurant in Yalıkavak"
-                  fill
-                  sizes="(max-width:900px) 100vw,33vw"
-                  className="cover"
-                />
+                {photos?.food && (
+                  <Image
+                    src={photos.food}
+                    alt="Mediterranean dishes served at La Lara Restaurant in Yalıkavak"
+                    fill
+                    sizes="(max-width:900px) 100vw,33vw"
+                    className="cover"
+                  />
+                )}
               </div>
 
               <h3>Food</h3>
@@ -595,13 +499,15 @@ function cmsStyle(
 
             <article>
               <div className="menu-image">
-                <Image
-                  src={photos.drinks}
-                  alt="Cocktails and drinks at La Lara Restaurant"
-                  fill
-                  sizes="(max-width:900px) 100vw,33vw"
-                  className="cover"
-                />
+                {photos?.drinks && (
+                  <Image
+                    src={photos.drinks}
+                    alt="Cocktails and drinks at La Lara Restaurant"
+                    fill
+                    sizes="(max-width:900px) 100vw,33vw"
+                    className="cover"
+                  />
+                )}
               </div>
 
               <h3>Drinks</h3>
@@ -617,13 +523,15 @@ function cmsStyle(
 
             <article>
               <div className="menu-image">
-                <Image
-                  src={photos.breakfast}
-                  alt="Breakfast overlooking Yalıkavak Bay at La Lara"
-                  fill
-                  sizes="(max-width:900px) 100vw,33vw"
-                  className="cover"
-                />
+                {photos?.breakfast && (
+                  <Image
+                    src={photos.breakfast}
+                    alt="Breakfast overlooking Yalıkavak Bay at La Lara"
+                    fill
+                    sizes="(max-width:900px) 100vw,33vw"
+                    className="cover"
+                  />
+                )}
               </div>
 
               <h3>Breakfast</h3>
@@ -691,13 +599,15 @@ function cmsStyle(
 
           <div className="story-grid">
             <div className="story-image">
-              <Image
-                src={photos.story}
-                alt="The family story behind La Lara Restaurant"
-                fill
-                sizes="(max-width:900px) 100vw,56vw"
-                className="cover"
-              />
+              {photos?.atmosphere && (
+                <Image
+                  src={photos.atmosphere}
+                  alt="The family story behind La Lara Restaurant"
+                  fill
+                  sizes="(max-width:900px) 100vw,56vw"
+                  className="cover"
+                />
+              )}
             </div>
 
             <div className="story-copy">
@@ -780,13 +690,15 @@ function cmsStyle(
             id="moments"
             className="experience opaque-section"
           >
-            <Image
-              src={galleryPhotos[0]}
-              alt="La Lara Restaurant and Yalıkavak atmosphere"
-              fill
-              sizes="100vw"
-              className="cover"
-            />
+            {photos?.moments && (
+              <Image
+                src={photos.moments}
+                alt="La Lara Restaurant and Yalıkavak atmosphere"
+                fill
+                sizes="100vw"
+                className="cover"
+              />
+            )}
 
             <div className="image-overlay" />
 
@@ -903,13 +815,15 @@ function cmsStyle(
         className="split-section opaque-section"
       >
         <div className="split-image">
-          <Image
-            src={photos.event1}
-            alt="Private dining, weddings and events at La Lara Yalıkavak"
-            fill
-            sizes="(max-width:900px) 100vw,58vw"
-            className="cover"
-          />
+          {photos?.sunset && (
+            <Image
+              src={photos.sunset}
+              alt="Private dining, weddings and events at La Lara Yalıkavak"
+              fill
+              sizes="(max-width:900px) 100vw,58vw"
+              className="cover"
+            />
+          )}
         </div>
 
         <div className="split-copy">

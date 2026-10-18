@@ -35,47 +35,70 @@ type CmsRecord = {
   status?: string;
 };
 
+type StoryMedia = {
+  hero: string;
+  lara: string;
+  restaurant: string;
+  people: string;
+};
+
+type OurStoryContentProps = {
+  initialMedia: StoryMedia;
+};
+
 function renderLines(value: string) {
   const lines = value.split("\n");
 
   return lines.map((line, index) => (
     <span key={`${line}-${index}`}>
       {line}
-
       {index < lines.length - 1 && <br />}
     </span>
   ));
 }
 
-export default function OurStoryContent() {
+export default function OurStoryContent({
+  initialMedia,
+}: OurStoryContentProps) {
   const [cms, setCms] =
     useState<Record<string, CmsRecord>>({});
+
+  const media = initialMedia;
 
   useEffect(() => {
     async function loadContent() {
       try {
-        const snapshot = await getDocs(
-          collection(db, "siteContent")
-        );
+        const contentSnapshot =
+          await getDocs(
+            collection(
+              db,
+              "siteContent"
+            )
+          );
 
         const nextCms: Record<
           string,
           CmsRecord
         > = {};
 
-        snapshot.forEach((item) => {
-          const data =
-            item.data() as CmsRecord;
+        contentSnapshot.forEach(
+          (item) => {
+            const data =
+              item.data() as CmsRecord;
 
-          if (
-            item.id.startsWith("en-") &&
-            data.status === "published"
-          ) {
-            nextCms[
-              item.id.replace("en-", "")
-            ] = data;
+            if (
+              item.id.startsWith("en-") &&
+              data.status === "published"
+            ) {
+              nextCms[
+                item.id.replace(
+                  "en-",
+                  ""
+                )
+              ] = data;
+            }
           }
-        });
+        );
 
         setCms(nextCms);
       } catch (error) {
@@ -94,64 +117,83 @@ export default function OurStoryContent() {
   }
 
   function isVisible(key: string) {
-    return cms[key]?.visible !== false;
+    return (
+      cms[key]?.visible !== false
+    );
   }
 
-function cmsStyle(
-  key: string,
-  kind: "eyebrow" | "heading" | "text"
-) {
-  const item = cms[key];
+  function cmsStyle(
+    key: string,
+    kind:
+      | "eyebrow"
+      | "heading"
+      | "text"
+  ) {
+    const item = cms[key];
 
-  if (!item) {
-    return undefined;
+    if (!item) {
+      return undefined;
+    }
+
+    const size =
+      kind === "eyebrow"
+        ? item.eyebrowSize
+        : kind === "heading"
+          ? item.headingSize
+          : item.textSize;
+
+    return {
+      ...(size
+        ? {
+            fontSize: `${size}px`,
+          }
+        : {}),
+
+      ...(item.fontFamily
+        ? {
+            fontFamily:
+              item.fontFamily ===
+              "sans"
+                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
+                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+          }
+        : {}),
+
+      ...(item.fontWeight
+        ? {
+            fontWeight:
+              item.fontWeight,
+          }
+        : {}),
+
+      ...(item.lineHeight
+        ? {
+            lineHeight:
+              item.lineHeight,
+          }
+        : {}),
+
+      ...(item.letterSpacing !==
+      undefined
+        ? {
+            letterSpacing: `${item.letterSpacing}px`,
+          }
+        : {}),
+    };
   }
-
-  const size =
-    kind === "eyebrow"
-      ? item.eyebrowSize
-      : kind === "heading"
-        ? item.headingSize
-        : item.textSize;
-
-  return {
-    ...(size
-      ? {
-          fontSize: `${size}px`,
-        }
-      : {}),
-
-    ...(item.fontWeight
-      ? {
-          fontWeight: item.fontWeight,
-        }
-      : {}),
-
-    ...(item.lineHeight
-      ? {
-          lineHeight: item.lineHeight,
-        }
-      : {}),
-
-    ...(item.letterSpacing !== undefined
-      ? {
-          letterSpacing: `${item.letterSpacing}px`,
-        }
-      : {}),
-  };
-}
-
-  const hero =
-    content("story-hero");
 
   const lara =
-    content("the-woman-behind-the-name");
+    content(
+      "the-woman-behind-the-name"
+    );
 
   const elephant =
     content("pink-elephant");
 
   const people =
-    content("the-people-behind-our-story");
+    content(
+      "the-people-behind-our-story"
+    );
 
   const cta =
     content("story-cta");
@@ -160,36 +202,44 @@ function cmsStyle(
     <main className="story-page">
       <Header locale="en" />
 
-    {/* =====================================================
-    HERO
-    ===================================================== */}
+      {/* =====================================================
+          HERO
+          ===================================================== */}
 
-<section className="story-page-hero">
-  <Image
-    src="/images/home/7.jpg"
-    alt="The family story behind La Lara Restaurant"
-    fill
-    priority
-    sizes="100vw"
-    className="cover"
-  />
+      {media.hero && (
+        <section
+          className="story-page-hero"
+          style={{
+            background: "transparent",
+          }}
+        >
+          <Image
+            src={media.hero}
+            alt="La Lara Restaurant & Bar in Yalıkavak"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="cover"
+          />
 
-  <div className="image-overlay" />
+          <div className="image-overlay" />
 
-  <div className="story-page-hero-content">
-    <p className="eyebrow light">
-      La Lara · Yalıkavak
-    </p>
+          <div className="story-page-hero-content">
+            <p className="eyebrow light">
+              La Lara · Yalıkavak
+            </p>
 
-    <h1>Our Story</h1>
+            <h1>Our Story</h1>
 
-    <p>
-      The people, the memories and the little things
-      <br />
-      that made La Lara.
-    </p>
-  </div>
-</section>
+            <p>
+              The people, the memories and the little things
+              <br />
+              that made La Lara.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* =====================================================
           THE WOMAN BEHIND THE NAME — INTRO
@@ -218,7 +268,9 @@ function cmsStyle(
               )}
             >
               {lara?.heading
-                ? renderLines(lara.heading)
+                ? renderLines(
+                    lara.heading
+                  )
                 : (
                   <>
                     The Woman
@@ -236,17 +288,21 @@ function cmsStyle(
             </p>
           </section>
 
-          {/* LARA */}
+          {/* =================================================
+              LARA
+              ================================================= */}
 
           <section className="story-page-section story-page-section-lara">
             <div className="story-page-image">
-              <Image
-                src="/images/home/7.jpg"
-                alt="The story of Lara and the inspiration behind La Lara"
-                fill
-                sizes="(max-width:900px) 100vw,50vw"
-                className="cover"
-              />
+              {media.lara && (
+                <Image
+                  src={media.lara}
+                  alt="The story of Lara and the inspiration behind La Lara"
+                  fill
+                  sizes="(max-width:900px) 100vw,50vw"
+                  className="cover"
+                />
+              )}
             </div>
 
             <div className="story-page-copy">
@@ -263,7 +319,8 @@ function cmsStyle(
                       "the-woman-behind-the-name",
                       "text"
                     ),
-                    whiteSpace: "pre-line",
+                    whiteSpace:
+                      "pre-line",
                   }}
                 >
                   {lara.body}
@@ -319,7 +376,9 @@ function cmsStyle(
             </div>
           </section>
 
-          {/* QUOTE */}
+          {/* =================================================
+              QUOTE
+              ================================================= */}
 
           <section className="story-page-quote">
             <p>
@@ -331,7 +390,9 @@ function cmsStyle(
             </p>
           </section>
 
-          {/* MEMORY */}
+          {/* =================================================
+              A PLACE OF OUR OWN
+              ================================================= */}
 
           <section className="story-page-section story-page-section-reverse">
             <div className="story-page-copy">
@@ -366,17 +427,23 @@ function cmsStyle(
                 character.
               </p>
 
-              <p>Just like Lara.</p>
+              <p>
+                Just like Lara.
+              </p>
             </div>
 
             <div className="story-page-image">
-              <Image
-                src="/images/home/2.jpg"
-                alt="La Lara Restaurant atmosphere in Yalıkavak"
-                fill
-                sizes="(max-width:900px) 100vw,50vw"
-                className="cover"
-              />
+              {media.restaurant && (
+                <Image
+                  src={
+                    media.restaurant
+                  }
+                  alt="La Lara Restaurant atmosphere in Yalıkavak"
+                  fill
+                  sizes="(max-width:900px) 100vw,50vw"
+                  className="cover"
+                />
+              )}
             </div>
           </section>
         </>
@@ -443,7 +510,8 @@ function cmsStyle(
               {elephant?.body ? (
                 <div
                   style={{
-                    whiteSpace: "pre-line",
+                    whiteSpace:
+                      "pre-line",
                   }}
                 >
                   {elephant.body}
@@ -542,15 +610,19 @@ function cmsStyle(
       ) && (
         <section className="story-page-people">
           <div className="story-page-people-image">
-            <Image
-              src="/images/home/8.jpg"
-              alt="Family-inspired hospitality at La Lara"
-              fill
-              sizes="100vw"
-              className="cover"
-            />
+            {media.people && (
+              <Image
+                src={media.people}
+                alt="Family-inspired hospitality at La Lara"
+                fill
+                sizes="(max-width:900px) 100vw,50vw"
+                className="cover"
+              />
+            )}
 
-            <div className="image-overlay" />
+            {media.people && (
+              <div className="image-overlay" />
+            )}
           </div>
 
           <div className="story-page-people-content">
@@ -594,7 +666,8 @@ function cmsStyle(
               {people?.body ? (
                 <div
                   style={{
-                    whiteSpace: "pre-line",
+                    whiteSpace:
+                      "pre-line",
                   }}
                 >
                   {people.body}
@@ -680,7 +753,9 @@ function cmsStyle(
             )}
           >
             {cta?.heading
-              ? renderLines(cta.heading)
+              ? renderLines(
+                  cta.heading
+                )
               : (
                 <>
                   Come and make
@@ -697,7 +772,9 @@ function cmsStyle(
                 "text"
               )}
             >
-              {renderLines(cta.body)}
+              {renderLines(
+                cta.body
+              )}
             </p>
           )}
 
@@ -710,17 +787,18 @@ function cmsStyle(
               <span>→</span>
             </Link>
 
-           <a
-  href={
-    cta?.buttonLink ||
-    "https://wa.me/905458941838?text=Hello%20La%20Lara%2C%20I%20would%20like%20to%20request%20a%20reservation."
-  }
-  target="_blank"
-  rel="noopener noreferrer"
-  className="outline-button story-page-dark-button"
->
-  {cta?.buttonLabel || "RESERVE A TABLE"}
-</a>
+            <a
+              href={
+                cta?.buttonLink ||
+                "https://wa.me/905458941838?text=Hello%20La%20Lara%2C%20I%20would%20like%20to%20request%20a%20reservation."
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="outline-button story-page-dark-button"
+            >
+              {cta?.buttonLabel ||
+                "RESERVE A TABLE"}
+            </a>
           </div>
         </section>
       )}

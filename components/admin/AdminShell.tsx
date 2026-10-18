@@ -52,11 +52,6 @@ const navigation: NavItem[] = [
     icon: "▧",
   },
   {
-    label: "Private Events",
-    href: "/admin/events",
-    icon: "◇",
-  },
-  {
     label: "Analytics",
     href: "/admin/analytics",
     icon: "↗",
@@ -182,7 +177,12 @@ export default function AdminShell({
           </button>
         </div>
 
-        <div className="admin-sidebar-label">
+        <div
+          className="admin-sidebar-label"
+          style={{
+            fontSize: "12px",
+          }}
+        >
           Management Studio
         </div>
 
@@ -198,12 +198,22 @@ export default function AdminShell({
                 className={`admin-nav-item ${
                   active ? "active" : ""
                 }`}
+                style={{
+                  fontSize: "16px",
+                }}
               >
-                <span className="admin-nav-icon">
+                <span
+                  className="admin-nav-icon"
+                  style={{
+                    fontSize: "15px",
+                  }}
+                >
                   {item.icon}
                 </span>
 
-                <span>{item.label}</span>
+                <span>
+                  {item.label}
+                </span>
               </Link>
             );
           })}
@@ -218,11 +228,19 @@ export default function AdminShell({
             </div>
 
             <div>
-              <strong>
+              <strong
+                style={{
+                  fontSize: "14px",
+                }}
+              >
                 Administrator
               </strong>
 
-              <span>
+              <span
+                style={{
+                  fontSize: "12px",
+                }}
+              >
                 {user?.email}
               </span>
             </div>
@@ -232,6 +250,9 @@ export default function AdminShell({
             type="button"
             className="admin-logout"
             onClick={handleLogout}
+            style={{
+              fontSize: "14px",
+            }}
           >
             Sign out
           </button>

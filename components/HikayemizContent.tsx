@@ -21,10 +21,29 @@ type CmsRecord = {
   buttonLabel?: string;
   buttonLink?: string;
 
+  eyebrowSize?: number;
+  headingSize?: number;
+  textSize?: number;
+  buttonSize?: number;
 
+  fontFamily?: "display" | "sans";
+  fontWeight?: number;
+  lineHeight?: number;
+  letterSpacing?: number;
 
   visible?: boolean;
   status?: string;
+};
+
+export type StoryMedia = {
+  hero: string;
+  lara: string;
+  restaurant: string;
+  people: string;
+};
+
+type HikayemizContentProps = {
+  initialMedia: StoryMedia;
 };
 
 function renderLines(value: string) {
@@ -38,45 +57,60 @@ function renderLines(value: string) {
   ));
 }
 
-export default function HikayemizContent() {
+export default function HikayemizContent({
+  initialMedia,
+}: HikayemizContentProps) {
   const [cms, setCms] =
     useState<Record<string, CmsRecord>>({});
 
- useEffect(() => {
-  async function loadContent() {
-    try {
-      const snapshot = await getDocs(
-        collection(db, "siteContent")
-      );
+  const media = initialMedia;
 
-      const nextCms: Record<string, CmsRecord> = {};
+  useEffect(() => {
+    async function loadContent() {
+      try {
+        const contentSnapshot =
+          await getDocs(
+            collection(
+              db,
+              "siteContent"
+            )
+          );
 
-      snapshot.forEach((item) => {
-        const data = item.data() as CmsRecord;
+        const nextCms: Record<
+          string,
+          CmsRecord
+        > = {};
 
-        if (
-          item.id.startsWith("tr-") &&
-          data.status === "published"
-        ) {
-          nextCms[
-            item.id.replace("tr-", "")
-          ] = data;
-        }
-      });
+        contentSnapshot.forEach(
+          (item) => {
+            const data =
+              item.data() as CmsRecord;
 
-      setCms(nextCms);
-    } catch (error) {
-      console.error(
-        "La Lara TR story CMS load error:",
-        error
-      );
-    } finally {
-      
+            if (
+              item.id.startsWith("tr-") &&
+              data.status === "published"
+            ) {
+              nextCms[
+                item.id.replace(
+                  "tr-",
+                  ""
+                )
+              ] = data;
+            }
+          }
+        );
+
+        setCms(nextCms);
+      } catch (error) {
+        console.error(
+          "La Lara TR story CMS load error:",
+          error
+        );
+      }
     }
-  }
 
-  loadContent();
-}, []);
+    loadContent();
+  }, []);
 
   function content(key: string) {
     return cms[key];
@@ -86,18 +120,77 @@ export default function HikayemizContent() {
     return cms[key]?.visible !== false;
   }
 
-  const hero =
-    content("story-hero");
-   
+  function cmsStyle(
+    key: string,
+    kind:
+      | "eyebrow"
+      | "heading"
+      | "text"
+  ) {
+    const item = cms[key];
+
+    if (!item) {
+      return undefined;
+    }
+
+    const size =
+      kind === "eyebrow"
+        ? item.eyebrowSize
+        : kind === "heading"
+          ? item.headingSize
+          : item.textSize;
+
+    return {
+      ...(size
+        ? {
+            fontSize: `${size}px`,
+          }
+        : {}),
+
+      ...(item.fontFamily
+        ? {
+            fontFamily:
+              item.fontFamily ===
+              "sans"
+                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
+                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+          }
+        : {}),
+
+      ...(item.fontWeight
+        ? {
+            fontWeight:
+              item.fontWeight,
+          }
+        : {}),
+
+      ...(item.lineHeight
+        ? {
+            lineHeight:
+              item.lineHeight,
+          }
+        : {}),
+
+      ...(item.letterSpacing !== undefined
+        ? {
+            letterSpacing: `${item.letterSpacing}px`,
+          }
+        : {}),
+    };
+  }
 
   const lara =
-    content("the-woman-behind-the-name");
+    content(
+      "the-woman-behind-the-name"
+    );
 
   const elephant =
     content("pink-elephant");
 
   const people =
-    content("the-people-behind-our-story");
+    content(
+      "the-people-behind-our-story"
+    );
 
   const cta =
     content("story-cta");
@@ -111,39 +204,45 @@ export default function HikayemizContent() {
   return (
     <main className="story-page">
       <Header locale="tr" />
-    
 
       {/* =====================================================
           HERO
           ===================================================== */}
-{isVisible("story-hero") && (
-  <section className="story-page-hero">
-    <Image
-      src="/images/home/7.jpg"
-      alt="La Lara Restaurant'ın aile hikâyesi"
-      fill
-      priority
-      sizes="100vw"
-      className="cover"
-    />
 
-    <div className="image-overlay" />
+      {media.hero && (
+        <section
+          className="story-page-hero"
+          style={{
+            background: "transparent",
+          }}
+        >
+          <Image
+            src={media.hero}
+            alt="La Lara Restaurant & Bar Yalıkavak"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="cover"
+          />
 
-    <div className="story-page-hero-content">
-      <p className="eyebrow light">
-        La Lara · Yalıkavak
-      </p>
+          <div className="image-overlay" />
 
-      <h1>Hikâyemiz</h1>
+          <div className="story-page-hero-content">
+            <p className="eyebrow light">
+              La Lara · Yalıkavak
+            </p>
 
-      <p>
-        La Lara&apos;yı var eden insanlar, anılar
-        <br />
-        ve küçük detaylar.
-      </p>
-    </div>
-  </section>
-)}
+            <h1>Hikâyemiz</h1>
+
+            <p>
+              La Lara&apos;yı var eden insanlar, anılar
+              <br />
+              ve küçük detaylar.
+            </p>
+          </div>
+        </section>
+      )}
 
       {/* =====================================================
           THE WOMAN BEHIND THE NAME
@@ -156,15 +255,25 @@ export default function HikayemizContent() {
           <section className="story-page-intro">
             <p
               className="eyebrow"
+              style={cmsStyle(
+                "the-woman-behind-the-name",
+                "eyebrow"
+              )}
             >
               {lara?.eyebrow ||
                 "Her Şeyin Başladığı Yer"}
             </p>
 
             <h2
+              style={cmsStyle(
+                "the-woman-behind-the-name",
+                "heading"
+              )}
             >
               {lara?.heading
-                ? renderLines(lara.heading)
+                ? renderLines(
+                    lara.heading
+                  )
                 : (
                   <>
                     İsmin Ardındaki
@@ -183,17 +292,21 @@ export default function HikayemizContent() {
             </p>
           </section>
 
-          {/* LARA */}
+          {/* =================================================
+              LARA
+              ================================================= */}
 
           <section className="story-page-section story-page-section-lara">
             <div className="story-page-image">
-              <Image
-                src="/images/home/7.jpg"
-                alt="Lara ve La Lara'nın ilham veren hikâyesi"
-                fill
-                sizes="(max-width: 900px) 100vw, 50vw"
-                className="cover"
-              />
+              {media.lara && (
+                <Image
+                  src={media.lara}
+                  alt="Lara ve La Lara'nın ilham veren hikâyesi"
+                  fill
+                  sizes="(max-width:900px) 100vw,50vw"
+                  className="cover"
+                />
+              )}
             </div>
 
             <div className="story-page-copy">
@@ -205,7 +318,14 @@ export default function HikayemizContent() {
 
               {lara?.body ? (
                 <div
-                  style={{ whiteSpace: "pre-line" }}
+                  style={{
+                    ...cmsStyle(
+                      "the-woman-behind-the-name",
+                      "text"
+                    ),
+                    whiteSpace:
+                      "pre-line",
+                  }}
                 >
                   {lara.body}
                 </div>
@@ -263,7 +383,9 @@ export default function HikayemizContent() {
             </div>
           </section>
 
-          {/* QUOTE */}
+          {/* =================================================
+              QUOTE
+              ================================================= */}
 
           <section className="story-page-quote">
             <p>
@@ -274,7 +396,9 @@ export default function HikayemizContent() {
             </p>
           </section>
 
-          {/* RESTAURANT */}
+          {/* =================================================
+              RESTAURANT
+              ================================================= */}
 
           <section className="story-page-section story-page-section-reverse">
             <div className="story-page-copy">
@@ -309,17 +433,21 @@ export default function HikayemizContent() {
                 dolu.
               </p>
 
-              <p>Tıpkı Lara gibi.</p>
+              <p>
+                Tıpkı Lara gibi.
+              </p>
             </div>
 
             <div className="story-page-image">
-              <Image
-                src="/images/home/2.jpg"
-                alt="La Lara Restaurant Yalıkavak atmosferi"
-                fill
-                sizes="(max-width: 900px) 100vw, 50vw"
-                className="cover"
-              />
+              {media.restaurant && (
+                <Image
+                  src={media.restaurant}
+                  alt="La Lara Restaurant Yalıkavak atmosferi"
+                  fill
+                  sizes="(max-width:900px) 100vw,50vw"
+                  className="cover"
+                />
+              )}
             </div>
           </section>
         </>
@@ -334,12 +462,20 @@ export default function HikayemizContent() {
           <div className="story-page-elephant-heading">
             <p
               className="eyebrow"
+              style={cmsStyle(
+                "pink-elephant",
+                "eyebrow"
+              )}
             >
               {elephant?.eyebrow ||
                 "Bir Aile Geleneği"}
             </p>
 
             <h2
+              style={cmsStyle(
+                "pink-elephant",
+                "heading"
+              )}
             >
               {elephant?.heading
                 ? renderLines(
@@ -370,11 +506,16 @@ export default function HikayemizContent() {
 
             <div
               className="story-page-elephant-copy"
+              style={cmsStyle(
+                "pink-elephant",
+                "text"
+              )}
             >
               {elephant?.body ? (
                 <div
                   style={{
-                    whiteSpace: "pre-line",
+                    whiteSpace:
+                      "pre-line",
                   }}
                 >
                   {elephant.body}
@@ -442,27 +583,39 @@ export default function HikayemizContent() {
       ) && (
         <section className="story-page-people">
           <div className="story-page-people-image">
-            <Image
-              src="/images/home/8.jpg"
-              alt="La Lara'nın aileden ilham alan misafirperverliği"
-              fill
-              sizes="100vw"
-              className="cover"
-            />
+            {media.people && (
+              <Image
+                src={media.people}
+                alt="La Lara'nın aileden ilham alan misafirperverliği"
+                fill
+                sizes="(max-width:900px) 100vw,50vw"
+                className="cover"
+              />
+            )}
 
-            <div className="image-overlay" />
+            {media.people && (
+              <div className="image-overlay" />
+            )}
           </div>
 
           <div className="story-page-people-content">
             <div>
               <p
                 className="eyebrow light"
+                style={cmsStyle(
+                  "the-people-behind-our-story",
+                  "eyebrow"
+                )}
               >
                 {people?.eyebrow ||
                   "Emeği Geçenler"}
               </p>
 
               <h2
+                style={cmsStyle(
+                  "the-people-behind-our-story",
+                  "heading"
+                )}
               >
                 {people?.heading
                   ? renderLines(
@@ -480,11 +633,16 @@ export default function HikayemizContent() {
 
             <div
               className="story-page-people-copy"
+              style={cmsStyle(
+                "the-people-behind-our-story",
+                "text"
+              )}
             >
               {people?.body ? (
                 <div
                   style={{
-                    whiteSpace: "pre-line",
+                    whiteSpace:
+                      "pre-line",
                   }}
                 >
                   {people.body}
@@ -549,15 +707,25 @@ export default function HikayemizContent() {
         <section className="story-page-cta">
           <p
             className="eyebrow"
+            style={cmsStyle(
+              "story-cta",
+              "eyebrow"
+            )}
           >
             {cta?.eyebrow ||
               "La Lara · Yalıkavak"}
           </p>
 
           <h2
+            style={cmsStyle(
+              "story-cta",
+              "heading"
+            )}
           >
             {cta?.heading
-              ? renderLines(cta.heading)
+              ? renderLines(
+                  cta.heading
+                )
               : (
                 <>
                   Şimdi kendi
@@ -569,8 +737,14 @@ export default function HikayemizContent() {
 
           {cta?.body && (
             <p
+              style={cmsStyle(
+                "story-cta",
+                "text"
+              )}
             >
-              {renderLines(cta.body)}
+              {renderLines(
+                cta.body
+              )}
             </p>
           )}
 

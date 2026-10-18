@@ -14,20 +14,33 @@ import { db } from "@/lib/firebase";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const defaultPhotos = {
-  hero: "/images/home/1.jpg",
-  atmosphere: "/images/home/2.jpg",
-  food: "/images/home/3.jpg",
-  drinks: "/images/home/4.jpg",
-  breakfast: "/images/home/5.jpg",
-  sunset: "/images/home/6.jpg",
-  story: "/images/home/7.jpg",
-  moments: "/images/home/8.jpg",
-  event1: "/images/home/8.jpg",
-  event2: "/images/home/7.jpg",
-  event3: "/images/home/3.jpg",
-  contactHero: "/images/home/6.jpg",
+/* =========================================================
+   MEDIA
+   ========================================================= */
+
+type HomepagePhotos = {
+  hero: string;
+  food: string;
+  drinks: string;
+  breakfast: string;
+  atmosphere: string;
+  moments: string;
+  sunset: string;
 };
+
+const emptyPhotos: HomepagePhotos = {
+  hero: "",
+  food: "",
+  drinks: "",
+  breakfast: "",
+  atmosphere: "",
+  moments: "",
+  sunset: "",
+};
+
+/* =========================================================
+   TYPES
+   ========================================================= */
 
 type CmsRecord = {
   eyebrow?: string;
@@ -60,6 +73,10 @@ type SiteSettings = {
   tripadvisor: string;
 };
 
+/* =========================================================
+   DEFAULT SETTINGS
+   ========================================================= */
+
 const defaultSettings: SiteSettings = {
   phone: "+90 545 894 18 38",
 
@@ -79,6 +96,10 @@ const defaultSettings: SiteSettings = {
     "https://www.tripadvisor.com/Restaurant_Review-g312738-d24780161-Reviews-La_Lara_Restaurant_Bar-Yalikavak_Bodrum_District_Mugla_Province_Turkish_Aegean_C.html",
 };
 
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
 function renderLines(value: string) {
   const lines = value.split("\n");
 
@@ -93,6 +114,10 @@ function renderLines(value: string) {
   ));
 }
 
+/* =========================================================
+   PAGE
+   ========================================================= */
+
 export default function HomeTR() {
   const [cms, setCms] =
     useState<Record<string, CmsRecord>>({});
@@ -103,10 +128,16 @@ export default function HomeTR() {
     );
 
   const [photos, setPhotos] =
-    useState(defaultPhotos);
+    useState<HomepagePhotos>(
+      emptyPhotos
+    );
 
   const [gallery, setGallery] =
     useState<string[]>([]);
+
+  /* =======================================================
+     LOAD CMS
+     ======================================================= */
 
   useEffect(() => {
     async function loadCms() {
@@ -153,13 +184,14 @@ export default function HomeTR() {
         setCms(nextCms);
 
         /* ================================================
-           SETTINGS / MEDIA
+           SETTINGS + MEDIA
            ================================================ */
 
         const [
           contactSnapshot,
           socialSnapshot,
-          mediaSnapshot,
+          homepageMediaSnapshot,
+          galleryMediaSnapshot,
         ] = await Promise.all([
           getDoc(
             doc(
@@ -180,11 +212,23 @@ export default function HomeTR() {
           getDoc(
             doc(
               db,
-              "siteSettings",
-              "media"
+              "pageMedia",
+              "homepage"
+            )
+          ),
+
+          getDoc(
+            doc(
+              db,
+              "pageMedia",
+              "gallery"
             )
           ),
         ]);
+
+        /* ================================================
+           SETTINGS
+           ================================================ */
 
         setSettings({
           phone:
@@ -218,89 +262,85 @@ export default function HomeTR() {
             defaultSettings.tripadvisor,
         });
 
-        const savedImages =
-          mediaSnapshot.data()
-            ?.images || {};
+        /* ================================================
+           HOMEPAGE MEDIA
+           ================================================ */
+
+        const homepageFields =
+          homepageMediaSnapshot.exists()
+            ? homepageMediaSnapshot.data()
+                ?.fields || {}
+            : {};
 
         setPhotos({
           hero:
-            savedImages.hero?.url ||
-            defaultPhotos.hero,
-
-          atmosphere:
-            savedImages.atmosphere
-              ?.url ||
-            defaultPhotos.atmosphere,
+            typeof homepageFields.hero ===
+            "string"
+              ? homepageFields.hero
+              : "",
 
           food:
-            savedImages.food?.url ||
-            defaultPhotos.food,
+            typeof homepageFields.food ===
+            "string"
+              ? homepageFields.food
+              : "",
 
           drinks:
-            savedImages.drinks?.url ||
-            defaultPhotos.drinks,
+            typeof homepageFields.drinks ===
+            "string"
+              ? homepageFields.drinks
+              : "",
 
           breakfast:
-            savedImages.breakfast
-              ?.url ||
-            defaultPhotos.breakfast,
+            typeof homepageFields
+              .breakfast === "string"
+              ? homepageFields.breakfast
+              : "",
 
-          sunset:
-            savedImages.sunset?.url ||
-            defaultPhotos.sunset,
-
-          story:
-            savedImages.story?.url ||
-            defaultPhotos.story,
+          atmosphere:
+            typeof homepageFields
+              .atmosphere === "string"
+              ? homepageFields.atmosphere
+              : "",
 
           moments:
-            savedImages.moments?.url ||
-            defaultPhotos.moments,
+            typeof homepageFields
+              .moments === "string"
+              ? homepageFields.moments
+              : "",
 
-          event1:
-            savedImages.event1?.url ||
-            savedImages.moments?.url ||
-            defaultPhotos.event1,
-
-          event2:
-            savedImages.event2?.url ||
-            defaultPhotos.event2,
-
-          event3:
-            savedImages.event3?.url ||
-            defaultPhotos.event3,
-
-          contactHero:
-            savedImages.contactHero
-              ?.url ||
-            defaultPhotos.contactHero,
+          sunset:
+            typeof homepageFields.sunset ===
+            "string"
+              ? homepageFields.sunset
+              : "",
         });
 
-        const savedGallery =
-          mediaSnapshot.data()?.gallery;
+        /* ================================================
+           GALLERY MEDIA
+           ================================================ */
 
-        if (
+        const galleryFields =
+          galleryMediaSnapshot.exists()
+            ? galleryMediaSnapshot.data()
+                ?.fields || {}
+            : {};
+
+        const savedGallery =
           Array.isArray(
-            savedGallery
+            galleryFields.photos
           )
-        ) {
-          setGallery(
-            savedGallery
-              .map(
-                (item: {
-                  url?: string;
-                }) => item?.url
-              )
-              .filter(
+            ? galleryFields.photos.filter(
                 (
-                  url:
-                    | string
-                    | undefined
+                  url: unknown
                 ): url is string =>
-                  Boolean(url)
+                  typeof url ===
+                    "string" &&
+                  url.length > 0
               )
-          );
-        }
+            : [];
+
+        setGallery(savedGallery);
       } catch (error) {
         console.error(
           "La Lara CMS load error:",
@@ -312,9 +352,9 @@ export default function HomeTR() {
     loadCms();
   }, []);
 
-  /* ================================================
+  /* =======================================================
      CMS HELPERS
-     ================================================ */
+     ======================================================= */
 
   function content(key: string) {
     return cms[key];
@@ -389,9 +429,9 @@ export default function HomeTR() {
     };
   }
 
-  /* ================================================
+  /* =======================================================
      SETTINGS
-     ================================================ */
+     ======================================================= */
 
   const telHref = `tel:${settings.phone.replace(
     /[^+\d]/g,
@@ -407,23 +447,9 @@ export default function HomeTR() {
       "Merhaba La Lara, rezervasyon talebinde bulunmak istiyorum.\n\nTarih:\nSaat:\nKişi sayısı:"
     );
 
-  const galleryPhotos = [
-    gallery[0] ||
-      photos.atmosphere,
-
-    gallery[1] ||
-      photos.food,
-
-    gallery[2] ||
-      photos.drinks,
-
-    gallery[3] ||
-      photos.sunset,
-  ];
-
-  /* ================================================
+  /* =======================================================
      CMS KEYS
-     ================================================ */
+     ======================================================= */
 
   const hero =
     content("hero");
@@ -448,7 +474,9 @@ export default function HomeTR() {
 
   return (
     <main className="home-page">
-      {/* OPENING */}
+      {/* ===================================================
+          OPENING
+          =================================================== */}
 
       <div
         className="opening"
@@ -466,7 +494,9 @@ export default function HomeTR() {
         />
       </div>
 
-      {/* BACKGROUND BRAND */}
+      {/* ===================================================
+          BACKGROUND BRAND
+          =================================================== */}
 
       <div
         className="background-brand"
@@ -481,24 +511,28 @@ export default function HomeTR() {
         />
       </div>
 
-      {/* HEADER */}
+      {/* ===================================================
+          HEADER
+          =================================================== */}
 
       <Header locale="tr" />
 
-      {/* =============================================
+      {/* ===================================================
           01 — HERO
-          ============================================= */}
+          =================================================== */}
 
       {isVisible("hero") && (
         <section className="hero opaque-section">
-          <Image
-            src={photos.hero}
-            alt="Yalıkavak Bodrum'da La Lara Restaurant & Bar"
-            fill
-            priority
-            sizes="100vw"
-            className="cover"
-          />
+          {photos.hero && (
+            <Image
+              src={photos.hero}
+              alt="Yalıkavak Bodrum'da La Lara Restaurant & Bar"
+              fill
+              priority
+              sizes="100vw"
+              className="cover"
+            />
+          )}
 
           <div className="image-overlay" />
 
@@ -562,29 +596,21 @@ export default function HomeTR() {
                 )}
             </p>
 
-            <div className="hero-actions">
-              <a
-                href="#menus"
-                className="outline-button"
-              >
-                MENÜYÜ GÖR
-              </a>
+         <div className="hero-actions">
+  <a
+    href="#menus"
+    className="outline-button tr-uppercase"
+  >
+    MENÜYÜ GÖR
+  </a>
 
-              <a
-                href={
-                  hero?.buttonLink ||
-                  "#reserve"
-                }
-                className="outline-button tr-uppercase"
-                style={cmsStyle(
-                  "hero",
-                  "button"
-                )}
-              >
-                {hero?.buttonLabel ||
-                  "REZERVASYON YAP"}
-              </a>
-            </div>
+  <a
+    href={hero?.buttonLink || "#reserve"}
+    className="outline-button tr-uppercase"
+  >
+    {hero?.buttonLabel || "REZERVASYON YAP"}
+  </a>
+</div>
           </div>
 
           <a
@@ -597,9 +623,9 @@ export default function HomeTR() {
         </section>
       )}
 
-      {/* =============================================
+      {/* ===================================================
           02 — MENUS
-          ============================================= */}
+          =================================================== */}
 
       {isVisible("menus") && (
         <section
@@ -656,13 +682,15 @@ export default function HomeTR() {
           <div className="menu-grid">
             <article>
               <div className="menu-image">
-                <Image
-                  src={photos.food}
-                  alt="La Lara Yalıkavak Akdeniz yemekleri"
-                  fill
-                  sizes="(max-width:900px) 100vw,33vw"
-                  className="cover"
-                />
+                {photos.food && (
+                  <Image
+                    src={photos.food}
+                    alt="La Lara Yalıkavak Akdeniz yemekleri"
+                    fill
+                    sizes="(max-width:900px) 100vw,33vw"
+                    className="cover"
+                  />
+                )}
               </div>
 
               <p className="kicker">
@@ -682,13 +710,15 @@ export default function HomeTR() {
 
             <article>
               <div className="menu-image">
-                <Image
-                  src={photos.drinks}
-                  alt="La Lara Restaurant & Bar kokteyl ve içecekleri"
-                  fill
-                  sizes="(max-width:900px) 100vw,33vw"
-                  className="cover"
-                />
+                {photos.drinks && (
+                  <Image
+                    src={photos.drinks}
+                    alt="La Lara Restaurant & Bar kokteyl ve içecekleri"
+                    fill
+                    sizes="(max-width:900px) 100vw,33vw"
+                    className="cover"
+                  />
+                )}
               </div>
 
               <p className="kicker">
@@ -708,15 +738,17 @@ export default function HomeTR() {
 
             <article>
               <div className="menu-image">
-                <Image
-                  src={
-                    photos.breakfast
-                  }
-                  alt="La Lara Yalıkavak deniz manzaralı kahvaltı"
-                  fill
-                  sizes="(max-width:900px) 100vw,33vw"
-                  className="cover"
-                />
+                {photos.breakfast && (
+                  <Image
+                    src={
+                      photos.breakfast
+                    }
+                    alt="La Lara Yalıkavak deniz manzaralı kahvaltı"
+                    fill
+                    sizes="(max-width:900px) 100vw,33vw"
+                    className="cover"
+                  />
+                )}
               </div>
 
               <p className="kicker">
@@ -737,9 +769,9 @@ export default function HomeTR() {
         </section>
       )}
 
-      {/* =============================================
+      {/* ===================================================
           03 — STORY
-          ============================================= */}
+          =================================================== */}
 
       {isVisible(
         "homepage-our-story"
@@ -790,13 +822,17 @@ export default function HomeTR() {
 
           <div className="story-grid">
             <div className="story-image">
-              <Image
-                src={photos.story}
-                alt="La Lara Restaurant'ın aile hikâyesi"
-                fill
-                sizes="(max-width:900px) 100vw,56vw"
-                className="cover"
-              />
+              {photos.atmosphere && (
+                <Image
+                  src={
+                    photos.atmosphere
+                  }
+                  alt="La Lara Restaurant'ın aile hikâyesi"
+                  fill
+                  sizes="(max-width:900px) 100vw,56vw"
+                  className="cover"
+                />
+              )}
             </div>
 
             <div className="story-copy">
@@ -878,9 +914,10 @@ export default function HomeTR() {
         </section>
       )}
 
-      {/* =============================================
+      {/* ===================================================
           04 — EXPERIENCE / GALLERY
-          ============================================= */}
+          BU BÖLÜM GÖRSELDE GÖSTERDİĞİN BÜYÜK ALAN
+          =================================================== */}
 
       {isVisible(
         "experience-gallery"
@@ -890,13 +927,15 @@ export default function HomeTR() {
             id="moments"
             className="experience opaque-section"
           >
-            <Image
-              src={galleryPhotos[0]}
-              alt="Yalıkavak Körfezi manzaralı La Lara Restaurant"
-              fill
-              sizes="100vw"
-              className="cover"
-            />
+            {photos.moments && (
+              <Image
+                src={photos.moments}
+                alt="Yalıkavak Körfezi manzaralı La Lara Restaurant"
+                fill
+                sizes="100vw"
+                className="cover"
+              />
+            )}
 
             <div className="image-overlay" />
 
@@ -909,7 +948,7 @@ export default function HomeTR() {
                 )}
               >
                 {experience?.eyebrow ||
-                  "La Lara Deneyimi"}
+                  "Yalıkavak'ta La Lara"}
               </p>
 
               <h2
@@ -924,11 +963,9 @@ export default function HomeTR() {
                     )
                   : (
                     <>
-                      Lezzet, manzara
+                      Sofradan
                       <br />
-                      ve birlikte
-                      geçirilen
-                      akşamlar.
+                      Manzaraya.
                     </>
                   )}
               </h2>
@@ -948,8 +985,8 @@ export default function HomeTR() {
                       Akdeniz mutfağı,
                       kokteyller ve
                       Yalıkavak
-                      Körfezi&apos;nin
-                      atmosferi.
+                      Körfezi&apos;ne
+                      karşı akşamlar.
                     </>
                   )}
               </p>
@@ -972,60 +1009,77 @@ export default function HomeTR() {
             </div>
           </section>
 
-          {/* SMALL GALLERY */}
+          {/* ===============================================
+              SMALL GALLERY
+              =============================================== */}
 
-          <section className="menus transparent-section">
-            <div className="menu-grid">
-              {galleryPhotos
-                .slice(1, 4)
-                .map(
-                  (
-                    photo,
-                    index
-                  ) => (
-                    <article
-                      key={`${photo}-${index}`}
-                    >
-                      <div className="menu-image">
-                        <Image
-                          src={photo}
-                          alt={
-                            index === 0
-                              ? "La Lara Restaurant Akdeniz mutfağı"
-                              : index ===
-                                  1
-                                ? "La Lara Restaurant & Bar kokteylleri"
-                                : "La Lara Yalıkavak gün batımı atmosferi"
-                          }
-                          fill
-                          sizes="(max-width:900px) 100vw,33vw"
-                          className="cover"
-                        />
-                      </div>
-                    </article>
-                  )
-                )}
-            </div>
-          </section>
+          {gallery.length > 0 && (
+            <section className="menus transparent-section">
+              <div className="menu-grid">
+                {gallery
+                  .slice(0, 3)
+                  .map(
+                    (
+                      photo,
+                      index
+                    ) => (
+                      <article
+                        key={`${photo}-${index}`}
+                      >
+                        <div className="menu-image">
+                          <Image
+                            src={photo}
+                            alt={
+                              index === 0
+                                ? "La Lara Restaurant Akdeniz mutfağı"
+                                : index === 1
+                                  ? "La Lara Restaurant & Bar kokteylleri"
+                                  : "La Lara Yalıkavak gün batımı atmosferi"
+                            }
+                            fill
+                            sizes="(max-width:900px) 100vw,33vw"
+                            className="cover"
+                          />
+                        </div>
+                      </article>
+                    )
+                  )}
+              </div>
+            </section>
+          )}
         </>
       )}
 
-      {/* =============================================
+            {/* ===================================================
+          SECTION SPACER
+          =================================================== */}
+
+      <div
+        aria-hidden="true"
+        style={{
+          height: "130px",
+          background: "#faf8f4",
+        }}
+      />
+
+      {/* ===================================================
           PRIVATE EVENTS
-          ============================================= */}
+          =================================================== */}
 
       <section
         id="events"
         className="split-section opaque-section"
       >
         <div className="split-image">
-          <Image
-            src={photos.event1}
-            alt="La Lara Yalıkavak özel davet ve organizasyonlar"
-            fill
-            sizes="(max-width:900px) 100vw,58vw"
-            className="cover"
-          />
+          {photos.sunset && (
+            <Image
+              src={photos.sunset}
+              alt="La Lara Yalıkavak özel davet ve organizasyonlar"
+              fill
+              sizes="(max-width:900px) 100vw,58vw"
+              className="cover"
+            />
+          )}
         </div>
 
         <div className="split-copy">
@@ -1040,18 +1094,15 @@ export default function HomeTR() {
           </h2>
 
           <p>
-            Yalıkavak
-            Körfezi&apos;ne karşı
+            Yalıkavak Körfezi&apos;ne karşı
             düğünler, doğum günleri,
-            özel yemekler ve
-            davetler.
+            özel yemekler ve davetler.
           </p>
 
           <p>
             Nasıl bir etkinlik
-            planladığınızı bize
-            anlatın; ekibimiz
-            davetinizi size ve
+            planladığınızı bize anlatın;
+            ekibimiz davetinizi size ve
             misafirlerinize göre
             şekillendirsin.
           </p>
@@ -1060,16 +1111,17 @@ export default function HomeTR() {
             href="/tr/ozel-etkinlikler"
             className="line-link"
           >
-            ETKİNLİĞİNİZİ
-            PLANLAYIN{" "}
+            ETKİNLİĞİNİZİ PLANLAYIN{" "}
             <span>→</span>
           </a>
         </div>
       </section>
 
-      {/* =============================================
+    
+
+      {/* ===================================================
           05 — RESERVATION
-          ============================================= */}
+          =================================================== */}
 
       {isVisible(
         "reservation-contact"
@@ -1165,7 +1217,9 @@ export default function HomeTR() {
         </section>
       )}
 
-      {/* FOOTER */}
+      {/* ===================================================
+          FOOTER
+          =================================================== */}
 
       <Footer locale="tr" />
     </main>
