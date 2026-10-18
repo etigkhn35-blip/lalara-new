@@ -10124,15 +10124,10 @@ h1,h2,h3,blockquote {
 
 .restaurant-menu-header-bg {
   position: relative;
-
   width: 100%;
-  height: 190px;
-
-  overflow: hidden;
-
+  height: 320px;
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
 }
 
 .restaurant-menu-header-overlay {
@@ -10242,9 +10237,9 @@ h1,h2,h3,blockquote {
    MOBILE
    ========================================================= */
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .restaurant-menu-header-bg {
-    height: 120px;
+    height: 260px;
   }
 
   .restaurant-menu-tabs {
@@ -10690,7 +10685,6 @@ h1,h2,h3,blockquote {
   font-size: 14px !important;
   letter-spacing: 0.12em;
 }
-
 /* =========================================================
    BACK TO TOP — FINAL
    ========================================================= */
@@ -10709,7 +10703,7 @@ h1,h2,h3,blockquote {
   height: 52px;
   padding: 0;
 
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  border: 1px solid currentColor;
   border-radius: 50%;
 
   background: transparent;
@@ -10728,13 +10722,12 @@ h1,h2,h3,blockquote {
 
   cursor: pointer;
 
+ 
+
   transition:
     opacity 0.25s ease,
     visibility 0.25s ease,
-    transform 0.25s ease,
-    background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease;
+    transform 0.25s ease;
 }
 
 .site-footer .back-to-top.is-visible {
@@ -10746,10 +10739,6 @@ h1,h2,h3,blockquote {
 }
 
 .site-footer .back-to-top:hover {
-  background: #fff;
-  color: var(--ink);
-  border-color: #fff;
-
   transform: translateY(-4px);
 }
 
@@ -13579,4 +13568,73 @@ h1,h2,h3,blockquote {
 
     font-size: 13px !important;
   }
+}
+/* =========================================================
+   BACK TO TOP — SURFACE COLORS
+   ========================================================= */
+
+/* Koyu / fotoğraflı zemin */
+.site-footer .back-to-top.back-to-top-light {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+/* Beyaz / açık zemin */
+.site-footer .back-to-top.back-to-top-dark {
+  color: var(--ink);
+  border-color: rgba(48, 49, 47, 0.6);
+}
+
+.site-footer .back-to-top.back-to-top-light:hover {
+  background: #fff;
+  color: var(--ink);
+  border-color: #fff;
+}
+
+.site-footer .back-to-top.back-to-top-dark:hover {
+  background: var(--ink);
+  color: #fff;
+  border-color: var(--ink);
+}
+/* =========================================================
+   EXTERNAL LINK ARROW — CROSS PLATFORM
+   ========================================================= */
+
+.external-arrow {
+  position: relative;
+  display: inline-block;
+  width: 0.72em;
+  height: 0.72em;
+  margin-left: 0.22em;
+  vertical-align: 0.02em;
+  flex: 0 0 auto;
+}
+
+.external-arrow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 0.48em;
+  height: 0.48em;
+
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+}
+
+.external-arrow::after {
+  content: "";
+  position: absolute;
+
+  width: 0.72em;
+  height: 1.5px;
+
+  top: 50%;
+  left: 0;
+
+  background: currentColor;
+
+  transform: rotate(-45deg);
+  transform-origin: center;
 }

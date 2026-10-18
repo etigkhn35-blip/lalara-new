@@ -78,6 +78,8 @@ export default function Footer({
 
   const [showBackToTop, setShowBackToTop] =
     useState(false);
+    const [backToTopDark, setBackToTopDark] =
+  useState(false);
 
   const isTR = locale === "tr";
 
@@ -170,29 +172,65 @@ export default function Footer({
   /* =========================================================
      BACK TO TOP
      ========================================================= */
+useEffect(() => {
+  const handleScroll = () => {
+    setShowBackToTop(window.scrollY > 500);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowBackToTop(
-        window.scrollY > 500
+    const x = window.innerWidth - 50;
+    const y = window.innerHeight - 50;
+
+    const button = document.querySelector(
+      ".back-to-top"
+    ) as HTMLElement | null;
+
+    if (!button) return;
+
+    const previousPointerEvents =
+      button.style.pointerEvents;
+
+    button.style.pointerEvents = "none";
+
+    const elementBehind =
+      document.elementFromPoint(x, y);
+
+    button.style.pointerEvents =
+      previousPointerEvents;
+
+    if (!elementBehind) return;
+
+    const darkSection =
+      elementBehind.closest(
+        ".site-footer, .opaque-section, .dark-section"
       );
-    };
 
-    handleScroll();
+    setBackToTopDark(!darkSection);
+  };
 
-    window.addEventListener(
+  handleScroll();
+
+  window.addEventListener(
+    "scroll",
+    handleScroll,
+    { passive: true }
+  );
+
+  window.addEventListener(
+    "resize",
+    handleScroll
+  );
+
+  return () => {
+    window.removeEventListener(
       "scroll",
-      handleScroll,
-      { passive: true }
+      handleScroll
     );
 
-    return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-    };
-  }, []);
+    window.removeEventListener(
+      "resize",
+      handleScroll
+    );
+  };
+}, []);
 
   /* =========================================================
      CMS HELPERS
@@ -432,23 +470,35 @@ export default function Footer({
                   )}
             </p>
 
-            <a
-              href={
-                address?.buttonLink ||
-                mapsHref
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              style={styleFor(
-                "footer-address",
-                "button"
-              )}
-            >
-              {address?.buttonLabel ||
-                (isTR
-                  ? "YOL TARİFİ AL ↗"
-                  : "GET DIRECTIONS ↗")}
-            </a>
+           <a
+  href={address?.buttonLink || mapsHref}
+  target="_blank"
+  rel="noopener noreferrer"
+  style={styleFor(
+    "footer-address",
+    "button"
+  )}
+>
+  {address?.buttonLabel
+    ? address.buttonLabel.replace(/[↗️]+/g, "").trim()
+    : isTR
+      ? "YOL TARİFİ AL"
+      : "GET DIRECTIONS"}{" "}
+  <span
+    aria-hidden="true"
+    style={{
+      display: "inline-block",
+      marginLeft: "2px",
+      fontFamily: "Arial, Helvetica, sans-serif",
+      fontSize: "0.78em",
+      fontWeight: 400,
+      lineHeight: 1,
+      verticalAlign: "0.08em",
+    }}
+  >
+    {"↗\uFE0E"}
+  </span>
+</a>
 
             <a href={telHref}>
               {settings.phone}
@@ -706,11 +756,13 @@ export default function Footer({
 
       <button
         type="button"
-        className={`back-to-top ${
-          showBackToTop
-            ? "is-visible"
-            : ""
-        }`}
+      className={`back-to-top ${
+  showBackToTop ? "is-visible" : ""
+} ${
+  backToTopDark
+    ? "back-to-top-dark"
+    : "back-to-top-light"
+}`}
         onClick={scrollToTop}
         aria-label={
           isTR
