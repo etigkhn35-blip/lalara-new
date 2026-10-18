@@ -578,6 +578,32 @@ export default function FoodMenuContent({
   const [locale, setLocale] =
     useState<Locale>("en");
 
+    useEffect(() => {
+  const savedLocale =
+    localStorage.getItem("lalara-locale");
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const queryLocale =
+    params.get("lang");
+
+  const nextLocale: Locale =
+    queryLocale === "tr" ||
+    queryLocale === "en"
+      ? queryLocale
+      : savedLocale === "tr"
+        ? "tr"
+        : "en";
+
+  setLocale(nextLocale);
+
+  localStorage.setItem(
+    "lalara-locale",
+    nextLocale
+  );
+}, []);
+
   const [firestoreSections, setFirestoreSections] =
     useState<Record<Locale, MenuSection[]>>({
       en: [],
@@ -900,7 +926,10 @@ export default function FoodMenuContent({
       : menu[locale];
 
   return (
-    <main className="restaurant-menu-page">
+    <main
+  className="restaurant-menu-page"
+  lang={locale === "tr" ? "tr" : "en"}
+>
 
       {/* PHOTO HEADER */}
 

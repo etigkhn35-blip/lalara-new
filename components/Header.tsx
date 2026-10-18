@@ -51,6 +51,8 @@ export default function Header({
 
   const isTR = locale === "tr";
 
+const LANGUAGE_STORAGE_KEY = "lalara-locale";
+
   /* =========================================================
      LOAD NAVIGATION CMS
      ========================================================= */
@@ -356,23 +358,27 @@ export default function Header({
     setMenuOpen(false);
   };
 
-  const handleLocaleClick = (
-    event:
-      React.MouseEvent<HTMLAnchorElement>,
-    nextLocale: Locale
-  ) => {
-    if (onLocaleChange) {
-      event.preventDefault();
+ const handleLocaleClick = (
+  event: React.MouseEvent<HTMLAnchorElement>,
+  nextLocale: Locale
+) => {
+  localStorage.setItem(
+    LANGUAGE_STORAGE_KEY,
+    nextLocale
+  );
 
-      onLocaleChange(nextLocale);
+  if (onLocaleChange) {
+    event.preventDefault();
 
-      setMenuOpen(false);
-
-      return;
-    }
+    onLocaleChange(nextLocale);
 
     setMenuOpen(false);
-  };
+
+    return;
+  }
+
+  setMenuOpen(false);
+};
 
   return (
     <>
