@@ -99,6 +99,26 @@ function renderLines(value: string) {
     ));
 }
 
+function ExternalArrow() {
+  return (
+  <span
+  aria-hidden="true"
+  style={{
+    marginLeft: "4px",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "0.9em",
+    fontWeight: 400,
+  }}
+>
+  {"→\uFE0E"}
+</span>
+  );
+}
+
+function cleanExternalArrowLabel(value: string) {
+  return value.replace(/[↗➡⬈⤴︎️]/g, "").replace(/\s+/g, " ").trim();
+}
+
 export default function IletisimContent({
   initialMedia,
 }: IletisimContentProps) {
@@ -448,7 +468,7 @@ export default function IletisimContent({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Yol tarifi al ↗
+                Yol tarifi al <ExternalArrow />
               </a>
             </div>
 
@@ -752,8 +772,11 @@ export default function IletisimContent({
                 "button"
               )}
             >
-              {map?.buttonLabel ||
-                "Google Maps'te Aç ↗"}
+              {cleanExternalArrowLabel(
+                map?.buttonLabel ||
+                  "Google Maps'te Aç"
+              )}{" "}
+              <ExternalArrow />
             </a>
           </div>
 

@@ -99,6 +99,26 @@ function renderLines(value: string) {
     ));
 }
 
+function ExternalArrow() {
+  return (
+    <span
+  aria-hidden="true"
+  style={{
+    marginLeft: "4px",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    fontSize: "0.9em",
+    fontWeight: 400,
+  }}
+>
+  {"→\uFE0E"}
+</span>
+  );
+}
+
+function cleanExternalArrowLabel(value: string) {
+  return value.replace(/[↗➡⬈⤴︎️]/g, "").replace(/\s+/g, " ").trim();
+}
+
 export default function ContactContent({
   initialMedia,
 }: ContactContentProps) {
@@ -427,7 +447,7 @@ export default function ContactContent({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Get directions ↗
+                Get directions <ExternalArrow />
               </a>
             </div>
 
@@ -838,8 +858,11 @@ export default function ContactContent({
                 "button"
               )}
             >
-              {map?.buttonLabel ||
-                "Open in Google Maps ↗"}
+              {cleanExternalArrowLabel(
+                map?.buttonLabel ||
+                  "Open in Google Maps"
+              )}{" "}
+              <ExternalArrow />
             </a>
           </div>
 
