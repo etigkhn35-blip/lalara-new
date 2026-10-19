@@ -365,69 +365,65 @@ export default function HomeTR() {
       cms[key]?.visible !== false
     );
   }
+function cmsStyle(
+  key: string,
+  kind:
+    | "eyebrow"
+    | "heading"
+    | "text"
+    | "button"
+) {
+  const item = cms[key];
 
-  function cmsStyle(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-      | "button"
-  ) {
-    const item = cms[key];
+  if (!item) return undefined;
 
-    if (!item) {
-      return undefined;
-    }
+  const size =
+    kind === "eyebrow"
+      ? item.eyebrowSize
+      : kind === "heading"
+        ? item.headingSize
+        : kind === "button"
+          ? item.buttonSize
+          : item.textSize;
 
-    const size =
-      kind === "eyebrow"
-        ? item.eyebrowSize
-        : kind === "heading"
-          ? item.headingSize
-          : kind === "button"
-            ? item.buttonSize
-            : item.textSize;
+  const fontFamily =
+    item.fontFamily === "sans"
+      ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
+      : '"Iowan Old Style", Baskerville, "Times New Roman", serif';
 
-    return {
-      ...(size
-        ? {
-            fontSize: `${size}px`,
-          }
-        : {}),
+  return {
+    ...(size !== undefined
+      ? {
+          fontSize: `${size}px`,
+        }
+      : {}),
 
-      ...(item.fontFamily
-        ? {
-            fontFamily:
-              item.fontFamily ===
-              "sans"
-                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
-                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
-          }
-        : {}),
+    ...(item.fontFamily
+      ? {
+          fontFamily,
+        }
+      : {}),
 
-      ...(item.fontWeight
-        ? {
-            fontWeight:
-              item.fontWeight,
-          }
-        : {}),
+    ...(item.fontWeight !== undefined
+      ? {
+          fontWeight: item.fontWeight,
+          fontSynthesis: "none",
+        }
+      : {}),
 
-      ...(item.lineHeight
-        ? {
-            lineHeight:
-              item.lineHeight,
-          }
-        : {}),
+    ...(item.lineHeight !== undefined
+      ? {
+          lineHeight: item.lineHeight,
+        }
+      : {}),
 
-      ...(item.letterSpacing !==
-      undefined
-        ? {
-            letterSpacing: `${item.letterSpacing}px`,
-          }
-        : {}),
-    };
-  }
+    ...(item.letterSpacing !== undefined
+      ? {
+          letterSpacing: `${item.letterSpacing}px`,
+        }
+      : {}),
+  };
+}
 
   /* =======================================================
      SETTINGS
@@ -466,6 +462,12 @@ export default function HomeTR() {
     content(
       "experience-gallery"
     );
+
+  const foodCard = content("homepage-food-card");
+  const drinksCard = content("homepage-drinks-card");
+  const breakfastCard = content("homepage-breakfast-card");
+  const storyDetail = content("homepage-story-detail");
+  const privateEvents = content("homepage-private-events");
 
   const reservation =
     content(
@@ -693,17 +695,15 @@ export default function HomeTR() {
                 )}
               </div>
 
-              <p className="kicker">
-                Akdeniz
-              </p>
+              <p className="kicker" style={cmsStyle("homepage-food-card", "eyebrow")}>{foodCard?.eyebrow || "Akdeniz"}</p>
 
-              <h3>Yemek</h3>
+              <h3 style={cmsStyle("homepage-food-card", "heading")}>{foodCard?.heading || "Yemek"}</h3>
 
               <a
                 className="line-link"
-                href="/food-menu?lang=tr"
+                href={foodCard?.buttonLink || "/food-menu?lang=tr"}
               >
-                MENÜYÜ GÖR{" "}
+                {foodCard?.buttonLabel || "MENÜYÜ GÖR"}{" "}
                 <span>→</span>
               </a>
             </article>
@@ -721,17 +721,15 @@ export default function HomeTR() {
                 )}
               </div>
 
-              <p className="kicker">
-                Bar
-              </p>
+              <p className="kicker" style={cmsStyle("homepage-drinks-card", "eyebrow")}>{drinksCard?.eyebrow || "Bar"}</p>
 
-              <h3>İçecek</h3>
+              <h3 style={cmsStyle("homepage-drinks-card", "heading")}>{drinksCard?.heading || "İçecek"}</h3>
 
               <a
                 className="line-link"
-                href="/drinks-menu?lang=tr"
+                href={drinksCard?.buttonLink || "/drinks-menu?lang=tr"}
               >
-                MENÜYÜ GÖR{" "}
+                {drinksCard?.buttonLabel || "MENÜYÜ GÖR"}{" "}
                 <span>→</span>
               </a>
             </article>
@@ -751,17 +749,15 @@ export default function HomeTR() {
                 )}
               </div>
 
-              <p className="kicker">
-                Sabah
-              </p>
+              <p className="kicker" style={cmsStyle("homepage-breakfast-card", "eyebrow")}>{breakfastCard?.eyebrow || "Sabah"}</p>
 
-              <h3>Kahvaltı</h3>
+              <h3 style={cmsStyle("homepage-breakfast-card", "heading")}>{breakfastCard?.heading || "Kahvaltı"}</h3>
 
               <a
                 className="line-link"
-                href="/breakfast-menu?lang=tr"
+                href={breakfastCard?.buttonLink || "/breakfast-menu?lang=tr"}
               >
-                MENÜYÜ GÖR{" "}
+                {breakfastCard?.buttonLabel || "MENÜYÜ GÖR"}{" "}
                 <span>→</span>
               </a>
             </article>
@@ -793,9 +789,8 @@ export default function HomeTR() {
                   "Hikâyemiz"}
               </p>
 
-              <span>
-                La Lara&apos;nın
-                Hikâyesi
+              <span style={cmsStyle("homepage-story-detail", "eyebrow")}>
+                {storyDetail?.eyebrow || "La Lara'nın Hikâyesi"}
               </span>
             </div>
 
@@ -836,10 +831,8 @@ export default function HomeTR() {
             </div>
 
             <div className="story-copy">
-              <h3>
-                İsmin Ardındaki
-                <br />
-                Kadın.
+              <h3 style={cmsStyle("homepage-story-detail", "heading")}>
+                {storyDetail?.heading ? renderLines(storyDetail.heading) : <>İsmin Ardındaki<br />Kadın.</>}
               </h3>
 
               {story?.body ? (
@@ -1083,36 +1076,20 @@ export default function HomeTR() {
         </div>
 
         <div className="split-copy">
-          <p className="eyebrow">
-            Özel Davetler
+          <p className="eyebrow" style={cmsStyle("homepage-private-events", "eyebrow")}>
+            {privateEvents?.eyebrow || "Özel Davetler"}
           </p>
 
-          <h2>
-            Özel Yemekler
-            <br />
-            &amp; Etkinlikler
+          <h2 style={cmsStyle("homepage-private-events", "heading")}>
+            {privateEvents?.heading ? renderLines(privateEvents.heading) : <>Özel Yemekler<br />&amp; Etkinlikler</>}
           </h2>
 
-          <p>
-            Yalıkavak Körfezi&apos;ne karşı
-            düğünler, doğum günleri,
-            özel yemekler ve davetler.
+          <p style={{...cmsStyle("homepage-private-events", "text"), whiteSpace: "pre-line"}}>
+            {privateEvents?.body || "Yalıkavak Körfezi'ne karşı düğünler, doğum günleri, özel yemekler ve davetler.\n\nNasıl bir etkinlik planladığınızı bize anlatın; ekibimiz davetinizi size ve misafirlerinize göre şekillendirsin."}
           </p>
 
-          <p>
-            Nasıl bir etkinlik
-            planladığınızı bize anlatın;
-            ekibimiz davetinizi size ve
-            misafirlerinize göre
-            şekillendirsin.
-          </p>
-
-          <a
-            href="/tr/ozel-etkinlikler"
-            className="line-link"
-          >
-            ETKİNLİĞİNİZİ PLANLAYIN{" "}
-            <span>→</span>
+          <a href={privateEvents?.buttonLink || "/tr/ozel-etkinlikler"} className="line-link" style={cmsStyle("homepage-private-events", "button")}>
+            {privateEvents?.buttonLabel || "ETKİNLİĞİNİZİ PLANLAYIN"}{" "}<span>→</span>
           </a>
         </div>
       </section>

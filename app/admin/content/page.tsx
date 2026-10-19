@@ -54,8 +54,13 @@ const pageSections: Record<PageType, string[]> = {
   Homepage: [
     "Hero",
     "Menus",
+    "Homepage Food Card",
+    "Homepage Drinks Card",
+    "Homepage Breakfast Card",
     "Homepage Our Story",
+    "Homepage Story Detail",
     "Experience Gallery",
+    "Homepage Private Events",
     "Reservation Contact",
   ],
 
@@ -202,9 +207,52 @@ const defaults: Record<
       eyebrow: "Our Story",
       heading: "A Family Story,\nA Shared Table.",
       body:
-        "Long before La Lara became a restaurant, there was a table where everyone felt at home.\n\nIt belonged to our grandmother, Lara — a woman of warmth, character and a little bit of diva spirit. Her love of food, family and bringing people together became the inspiration behind everything we wanted La Lara to be.\n\nSome stories are too special to leave untold.",
-      buttonLabel: "DISCOVER OUR STORY",
+        "Long before La Lara became a restaurant, there was a table where everyone felt at home.\n\nIt belonged to our grandmother, Lara — a career woman with a big personality, a love of bringing people together and, admittedly, a little bit of diva spirit.\n\nHer kitchen was a place for long conversations, laughter, stories and food meant to be shared. That feeling became the inspiration behind La Lara.",
+      buttonLabel: "READ OUR STORY",
       buttonLink: "/our-story",
+      eyebrowSize: 13,
+      headingSize: 40,
+      textSize: 17,
+      buttonSize: 14,
+    },
+
+    "Homepage Food Card": {
+      heading: "Food",
+      buttonLabel: "VIEW MENU",
+      buttonLink: "/food-menu?lang=en",
+      headingSize: 28,
+      buttonSize: 14,
+    },
+
+    "Homepage Drinks Card": {
+      heading: "Drinks",
+      buttonLabel: "VIEW MENU",
+      buttonLink: "/drinks-menu?lang=en",
+      headingSize: 28,
+      buttonSize: 14,
+    },
+
+    "Homepage Breakfast Card": {
+      heading: "Breakfast",
+      buttonLabel: "VIEW MENU",
+      buttonLink: "/breakfast-menu?lang=en",
+      headingSize: 28,
+      buttonSize: 14,
+    },
+
+    "Homepage Story Detail": {
+      eyebrow: "The story behind La Lara",
+      heading: "The story behind\nLa Lara.",
+      eyebrowSize: 13,
+      headingSize: 34,
+    },
+
+    "Homepage Private Events": {
+      eyebrow: "Private Events",
+      heading: "Private Dining\n& Events",
+      body: "Weddings, celebrations, private dinners and gatherings overlooking Yalıkavak Bay.\n\nTell us what you are planning and our team will help shape the occasion around your guests.",
+      buttonLabel: "PLAN YOUR EVENT",
+      buttonLink: "/private-events",
       eyebrowSize: 13,
       headingSize: 40,
       textSize: 17,
@@ -600,9 +648,55 @@ const defaults: Record<
       heading:
         "Bir Aile Hikâyesi,\nPaylaşılan Bir Sofra.",
       body:
-        "La Lara bir restoran olmadan çok önce, herkesin kendini evinde hissettiği bir sofra vardı.\n\nBu sofra büyükannemiz Lara’ya aitti. Sıcaklığı, güçlü karakteri ve biraz da diva ruhuyla Lara’nın yemeğe, aileye ve insanları bir araya getirmeye duyduğu sevgi, La Lara’da yaratmak istediğimiz her şeyin ilhamı oldu.\n\nBazı hikâyeler anlatılmadan bırakılamayacak kadar özeldir.",
+        "La Lara bir restoran olmadan çok önce, herkesin kendini evinde hissettiği bir sofra vardı.\n\nBu sofra büyükannemiz Lara’ya aitti. Sıcak, karakterli ve biraz da diva ruhuna sahip bir kadındı. Yemeğe, ailesine ve insanları bir araya getirmeye duyduğu sevgi, La Lara’da yaratmak istediğimiz her şeyin ilhamı oldu.\n\nBazı hikâyeler anlatılmadan bırakılamayacak kadar özeldir.",
       buttonLabel: "HİKÂYEMİZİ KEŞFET",
       buttonLink: "/tr/hikayemiz",
+      eyebrowSize: 13,
+      headingSize: 40,
+      textSize: 17,
+      buttonSize: 14,
+    },
+
+    "Homepage Food Card": {
+      eyebrow: "Akdeniz",
+      heading: "Yemek",
+      buttonLabel: "MENÜYÜ GÖR",
+      buttonLink: "/food-menu?lang=tr",
+      headingSize: 28,
+      buttonSize: 14,
+    },
+
+    "Homepage Drinks Card": {
+      eyebrow: "Bar",
+      heading: "İçecek",
+      buttonLabel: "MENÜYÜ GÖR",
+      buttonLink: "/drinks-menu?lang=tr",
+      headingSize: 28,
+      buttonSize: 14,
+    },
+
+    "Homepage Breakfast Card": {
+      eyebrow: "Sabah",
+      heading: "Kahvaltı",
+      buttonLabel: "MENÜYÜ GÖR",
+      buttonLink: "/breakfast-menu?lang=tr",
+      headingSize: 28,
+      buttonSize: 14,
+    },
+
+    "Homepage Story Detail": {
+      eyebrow: "La Lara'nın Hikâyesi",
+      heading: "İsmin Ardındaki\nKadın.",
+      eyebrowSize: 13,
+      headingSize: 34,
+    },
+
+    "Homepage Private Events": {
+      eyebrow: "Özel Davetler",
+      heading: "Özel Yemekler\n& Etkinlikler",
+      body: "Yalıkavak Körfezi'ne karşı düğünler, doğum günleri, özel yemekler ve davetler.\n\nNasıl bir etkinlik planladığınızı bize anlatın; ekibimiz davetinizi size ve misafirlerinize göre şekillendirsin.",
+      buttonLabel: "ETKİNLİĞİNİZİ PLANLAYIN",
+      buttonLink: "/tr/ozel-etkinlikler",
       eyebrowSize: 13,
       headingSize: 40,
       textSize: 17,
@@ -1476,25 +1570,22 @@ export default function ContentPage() {
                   </span>
 
                   <select
-                    value={
-                      form.fontFamily
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "fontFamily",
-                        event.target
-                          .value as FormData["fontFamily"]
-                      )
-                    }
-                  >
-                    <option value="display">
-                      Display / Serif
-                    </option>
+  value={form.fontFamily}
+  onChange={(event) => {
+    const nextFont =
+      event.target.value as FormData["fontFamily"];
 
-                    <option value="sans">
-                      Sans Serif
-                    </option>
-                  </select>
+    updateField("fontFamily", nextFont);
+  }}
+>
+  <option value="display">
+    Display / Serif
+  </option>
+
+  <option value="sans">
+    Sans Serif
+  </option>
+</select>
                 </label>
 
                 <label className="admin-field">

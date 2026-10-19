@@ -209,20 +209,32 @@ function cmsStyle(
           ? item.buttonSize
           : item.textSize;
 
+  const fontFamily =
+    item.fontFamily === "sans"
+      ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
+      : '"Iowan Old Style", Baskerville, "Times New Roman", serif';
+
   return {
-    ...(size
+    ...(size !== undefined
       ? {
           fontSize: `${size}px`,
         }
       : {}),
 
-    ...(item.fontWeight
+    ...(item.fontFamily
       ? {
-          fontWeight: item.fontWeight,
+          fontFamily,
         }
       : {}),
 
-    ...(item.lineHeight
+    ...(item.fontWeight !== undefined
+      ? {
+          fontWeight: item.fontWeight,
+          fontSynthesis: "none",
+        }
+      : {}),
+
+    ...(item.lineHeight !== undefined
       ? {
           lineHeight: item.lineHeight,
         }
@@ -274,6 +286,21 @@ function cmsStyle(
 
   const reservation =
     content("reservation-contact");
+
+  const storyDetail =
+    content("homepage-story-detail");
+
+  const foodCard =
+    content("homepage-food-card");
+
+  const drinksCard =
+    content("homepage-drinks-card");
+
+  const breakfastCard =
+    content("homepage-breakfast-card");
+
+  const privateEvents =
+    content("homepage-private-events");
 
   return (
     <main className="home-page">
@@ -486,13 +513,14 @@ function cmsStyle(
                 )}
               </div>
 
-              <h3>Food</h3>
+              <h3 style={cmsStyle("homepage-food-card", "heading")}>{foodCard?.heading || "Food"}</h3>
 
               <a
                 className="line-link"
-                href="/food-menu?lang=en"
+                href={foodCard?.buttonLink || "/food-menu?lang=en"}
+                              style={cmsStyle("homepage-food-card", "button")}
               >
-                VIEW MENU{" "}
+                {foodCard?.buttonLabel || "VIEW MENU"}{" "}
                 <span>→</span>
               </a>
             </article>
@@ -510,13 +538,14 @@ function cmsStyle(
                 )}
               </div>
 
-              <h3>Drinks</h3>
+              <h3 style={cmsStyle("homepage-drinks-card", "heading")}>{drinksCard?.heading || "Drinks"}</h3>
 
               <a
                 className="line-link"
-                href="/drinks-menu?lang=en"
+                href={drinksCard?.buttonLink || "/drinks-menu?lang=en"}
+                              style={cmsStyle("homepage-drinks-card", "button")}
               >
-                VIEW MENU{" "}
+                {drinksCard?.buttonLabel || "VIEW MENU"}{" "}
                 <span>→</span>
               </a>
             </article>
@@ -534,13 +563,14 @@ function cmsStyle(
                 )}
               </div>
 
-              <h3>Breakfast</h3>
+              <h3 style={cmsStyle("homepage-breakfast-card", "heading")}>{breakfastCard?.heading || "Breakfast"}</h3>
 
               <a
                 className="line-link"
-                href="/breakfast-menu?lang=en"
+                href={breakfastCard?.buttonLink || "/breakfast-menu?lang=en"}
+                              style={cmsStyle("homepage-breakfast-card", "button")}
               >
-                VIEW MENU{" "}
+                {breakfastCard?.buttonLabel || "VIEW MENU"}{" "}
                 <span>→</span>
               </a>
             </article>
@@ -572,8 +602,8 @@ function cmsStyle(
                   "Our Story"}
               </p>
 
-              <span>
-                The story behind La Lara
+              <span style={cmsStyle("homepage-story-detail", "eyebrow")}>
+                {storyDetail?.eyebrow || "The story behind La Lara"}
               </span>
             </div>
 
@@ -611,10 +641,10 @@ function cmsStyle(
             </div>
 
             <div className="story-copy">
-              <h3>
-                The story behind
-                <br />
-                La Lara.
+              <h3 style={cmsStyle("homepage-story-detail", "heading")}>
+                {storyDetail?.heading
+                  ? renderLines(storyDetail.heading)
+                  : (<>The story behind<br />La Lara.</>)}
               </h3>
 
               {story?.body ? (
@@ -667,7 +697,7 @@ function cmsStyle(
                   "/our-story"
                 }
                 className="line-link"
-               
+                style={cmsStyle("homepage-our-story", "button")}
               >
                 {story?.buttonLabel ||
                   "READ OUR STORY"}{" "}
@@ -759,7 +789,7 @@ function cmsStyle(
                   "/gallery"
                 }
                 className="line-link light-link"
-                
+                style={cmsStyle("experience-gallery", "button")}
               >
                 {experience?.buttonLabel ||
                   "VIEW GALLERY"}{" "}
@@ -827,34 +857,27 @@ function cmsStyle(
         </div>
 
         <div className="split-copy">
-          <p className="eyebrow">
-            Private Events
+          <p className="eyebrow" style={cmsStyle("homepage-private-events", "eyebrow")}>
+            {privateEvents?.eyebrow || "Private Events"}
           </p>
 
-          <h2>
-            Private Dining
-            <br />
-            &amp; Events
+          <h2 style={cmsStyle("homepage-private-events", "heading")}>
+            {privateEvents?.heading
+              ? renderLines(privateEvents.heading)
+              : (<>Private Dining<br />&amp; Events</>)}
           </h2>
 
-          <p>
-            Weddings, celebrations,
-            private dinners and gatherings
-            overlooking Yalıkavak Bay.
-          </p>
-
-          <p>
-            Tell us what you are planning
-            and our team will help shape
-            the occasion around your
-            guests.
+          <p style={{ ...cmsStyle("homepage-private-events", "text"), whiteSpace: "pre-line" }}>
+            {privateEvents?.body ||
+              "Weddings, celebrations, private dinners and gatherings overlooking Yalıkavak Bay.\n\nTell us what you are planning and our team will help shape the occasion around your guests."}
           </p>
 
           <a
-            href="/private-events"
+            href={privateEvents?.buttonLink || "/private-events"}
             className="line-link"
+            style={cmsStyle("homepage-private-events", "button")}
           >
-            PLAN YOUR EVENT{" "}
+            {privateEvents?.buttonLabel || "PLAN YOUR EVENT"}{" "}
             <span>→</span>
           </a>
         </div>
@@ -928,7 +951,7 @@ function cmsStyle(
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              
+              style={cmsStyle("reservation-contact", "button")}
             >
               {reservation?.buttonLabel ||
                 "REQUEST VIA WHATSAPP"}
