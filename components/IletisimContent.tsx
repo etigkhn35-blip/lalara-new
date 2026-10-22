@@ -2,37 +2,17 @@
 
 import { useEffect, useState } from "react";
 import {
-  collection,
   doc,
   getDoc,
-  getDocs,
 } from "firebase/firestore";
 import Image from "next/image";
 
 import { db } from "@/lib/firebase";
 import Header from "@/components/Header";
+import { useSiteContent } from "@/lib/cms/useSiteContent";
+import { contactOriginals } from "@/lib/cms/contact";
 import Footer from "@/components/Footer";
 
-type CmsRecord = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-  buttonLabel?: string;
-  buttonLink?: string;
-
-  eyebrowSize?: number;
-  headingSize?: number;
-  textSize?: number;
-  buttonSize?: number;
-
-  fontFamily?: "display" | "sans";
-  fontWeight?: number;
-  lineHeight?: number;
-  letterSpacing?: number;
-
-  visible?: boolean;
-  status?: string;
-};
 
 type ContactSettings = {
   address?: string;
@@ -86,7 +66,7 @@ function normalizeWhatsApp(
   return value.replace(/\D/g, "");
 }
 
-function renderLines(value: string) {
+function renderLines(value = "") {
   return value
     .split("\n")
     .map((line, index, all) => (
@@ -122,8 +102,6 @@ function cleanExternalArrowLabel(value: string) {
 export default function IletisimContent({
   initialMedia,
 }: IletisimContentProps) {
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
 
   const [contact, setContact] =
     useState<ContactSettings>(
@@ -137,162 +115,46 @@ export default function IletisimContent({
     initialMedia.reservation;
 
   useEffect(() => {
-    async function loadCms() {
+    async function loadContactSettings() {
       try {
-        /* =====================================================
-           WEBSITE CONTENT
-           ===================================================== */
+        const contactSnapshot = await getDoc(doc(db, "siteSettings", "contact"));
 
-        const snapshot =
-          await getDocs(
-            collection(
-              db,
-              "siteContent"
-            )
-          );
-
-        const next: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        snapshot.forEach((item) => {
-          const data =
-            item.data() as CmsRecord;
-
-          if (
-            item.id.startsWith("tr-") &&
-            data.status === "published"
-          ) {
-            next[
-              item.id.replace(
-                "tr-",
-                ""
-              )
-            ] = data;
-          }
-        });
-
-        setCms(next);
-
-        /* =====================================================
-           CONTACT SETTINGS
-           ===================================================== */
-
-        const contactSnapshot =
-          await getDoc(
-            doc(
-              db,
-              "siteSettings",
-              "contact"
-            )
-          );
-
-        if (
-          contactSnapshot.exists()
-        ) {
-          const data =
-            contactSnapshot.data() as ContactSettings;
-
+        if (contactSnapshot.exists()) {
+          const data = contactSnapshot.data() as ContactSettings;
           setContact({
             ...DEFAULT_CONTACT,
             ...data,
           });
         }
       } catch (error) {
-        console.error(
-          "TR Contact CMS load error:",
-          error
-        );
+        console.error("TR Contact settings load error:", error);
       }
     }
 
-    loadCms();
+    loadContactSettings();
   }, []);
 
-  function content(key: string) {
-    return cms[key];
-  }
+  const { ready, getContent, isVisible, styleFor } = useSiteContent({
+    locale: "tr",
+    originals: contactOriginals.tr,
+  });
 
-  function isVisible(key: string) {
-    return cms[key]?.visible !== false;
-  }
-
-  function styleFor(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-      | "button"
-  ) {
-    const item = cms[key];
-
-    if (!item) {
-      return undefined;
-    }
-
-    const size =
-      kind === "eyebrow"
-        ? item.eyebrowSize
-        : kind === "heading"
-          ? item.headingSize
-          : kind === "button"
-            ? item.buttonSize
-            : item.textSize;
-
-    return {
-      ...(size
-        ? {
-            fontSize: `${size}px`,
-          }
-        : {}),
-
-      ...(item.fontFamily
-        ? {
-            fontFamily:
-              item.fontFamily === "sans"
-                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
-                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
-          }
-        : {}),
-
-      ...(item.fontWeight
-        ? {
-            fontWeight:
-              item.fontWeight,
-          }
-        : {}),
-
-      ...(item.lineHeight
-        ? {
-            lineHeight:
-              item.lineHeight,
-          }
-        : {}),
-
-      ...(item.letterSpacing !== undefined
-        ? {
-            letterSpacing: `${item.letterSpacing}px`,
-          }
-        : {}),
-    };
-  }
+  const hero = getContent("contact-hero");
 
   const information =
-    content("contact-information");
+    getContent("contact-information");
 
   const reservations =
-    content("reservations");
+    getContent("reservations");
 
   const social =
-    content("social");
+    getContent("social");
 
   const map =
-    content("contact-map");
+    getContent("contact-map");
 
   const reservationCta =
-    content("reservation-cta");
+    getContent("reservation-cta");
 
   const phone =
     contact.phone ||
@@ -330,6 +192,8 @@ export default function IletisimContent({
 
       <Header locale="tr" />
 
+      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
+
       {/* =====================================================
           HERO
           ===================================================== */}
@@ -353,20 +217,16 @@ export default function IletisimContent({
         <div className="contact-hero-overlay" />
 
         <div className="contact-hero-content">
-          <p className="eyebrow light">
-            La Lara · Yalıkavak
+          <p className="eyebrow light" style={styleFor("contact-hero", "eyebrow")}>
+            {hero?.eyebrow}
           </p>
 
-          <h1>
-            Sofranız
-            <br />
-            sizi bekliyor.
+          <h1 style={styleFor("contact-hero", "heading")}>
+            {renderLines(hero?.heading)}
           </h1>
 
-          <p>
-            İyi yemekler, uzun sohbetler
-            <br />
-            ve Yalıkavak akşamları.
+          <p style={styleFor("contact-hero", "text")}>
+            {renderLines(hero?.body)}
           </p>
         </div>
       </section>
@@ -388,8 +248,7 @@ export default function IletisimContent({
                   "eyebrow"
                 )}
               >
-                {information?.eyebrow ||
-                  "İletişim"}
+                {information?.eyebrow}
               </p>
 
               <span
@@ -403,22 +262,16 @@ export default function IletisimContent({
             </div>
 
             <h2
-              style={styleFor(
-                "contact-information",
-                "heading"
-              )}
+              style={{
+                fontFamily: '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+                fontSize: "clamp(44px, 5.8vw, 78px)",
+                fontWeight: 400,
+                lineHeight: 0.92,
+                letterSpacing: "-0.05em",
+                ...styleFor("contact-information", "heading"),
+              }}
             >
-              {information?.heading
-                ? renderLines(
-                    information.heading
-                  )
-                : (
-                  <>
-                    Sizi La Lara&apos;da
-                    <br />
-                    görmek isteriz.
-                  </>
-                )}
+              {renderLines(information?.heading)}
             </h2>
           </div>
 
@@ -485,8 +338,7 @@ export default function IletisimContent({
                     "eyebrow"
                   )}
                 >
-                  {reservations?.eyebrow ||
-                    "Rezervasyon"}
+                  {reservations?.eyebrow}
                 </span>
 
                 <h3
@@ -495,8 +347,7 @@ export default function IletisimContent({
                     "heading"
                   )}
                 >
-                  {reservations?.heading ||
-                    "Masa ayırtın"}
+                  {reservations?.heading}
                 </h3>
 
                 <p
@@ -505,18 +356,7 @@ export default function IletisimContent({
                     "text"
                   )}
                 >
-                  {reservations?.body
-                    ? renderLines(
-                        reservations.body
-                      )
-                    : (
-                      <>
-                        Rezervasyon ve bilgi için
-                        <br />
-                        bizi arayabilir veya
-                        e-posta gönderebilirsiniz.
-                      </>
-                    )}
+                  {renderLines(reservations?.body)}
                 </p>
 
                 <a
@@ -550,8 +390,7 @@ export default function IletisimContent({
                     "eyebrow"
                   )}
                 >
-                  {social?.eyebrow ||
-                    "Takip Et"}
+                  {social?.eyebrow}
                 </span>
 
                 <h3
@@ -560,8 +399,7 @@ export default function IletisimContent({
                     "heading"
                   )}
                 >
-                  {social?.heading ||
-                    "Bağlantıda kalın"}
+                  {social?.heading}
                 </h3>
 
                 <p
@@ -570,18 +408,7 @@ export default function IletisimContent({
                     "text"
                   )}
                 >
-                  {social?.body
-                    ? renderLines(
-                        social.body
-                      )
-                    : (
-                      <>
-                        La Lara&apos;dan lezzetler,
-                        gün batımları
-                        <br />
-                        ve Yalıkavak&apos;tan anlar.
-                      </>
-                    )}
+                  {renderLines(social?.body)}
                 </p>
 
                 <div className="footer-social contact-follow-social">
@@ -723,8 +550,7 @@ export default function IletisimContent({
                 "eyebrow"
               )}
             >
-              {map?.eyebrow ||
-                "Konum"}
+              {map?.eyebrow}
             </p>
 
             <h2
@@ -733,17 +559,7 @@ export default function IletisimContent({
                 "heading"
               )}
             >
-              {map?.heading
-                ? renderLines(
-                    map.heading
-                  )
-                : (
-                  <>
-                    Yalıkavak&apos;ın
-                    <br />
-                    kalbinde.
-                  </>
-                )}
+              {renderLines(map?.heading)}
             </h2>
 
             {map?.body && (
@@ -772,10 +588,7 @@ export default function IletisimContent({
                 "button"
               )}
             >
-              {cleanExternalArrowLabel(
-                map?.buttonLabel ||
-                  "Google Maps'te Aç"
-              )}{" "}
+              {cleanExternalArrowLabel(map?.buttonLabel || "")}{" "}
               <ExternalArrow />
             </a>
           </div>
@@ -824,8 +637,7 @@ export default function IletisimContent({
                 "eyebrow"
               )}
             >
-              {reservationCta?.eyebrow ||
-                "Rezervasyon"}
+              {reservationCta?.eyebrow}
             </p>
 
             <h2
@@ -834,17 +646,7 @@ export default function IletisimContent({
                 "heading"
               )}
             >
-              {reservationCta?.heading
-                ? renderLines(
-                    reservationCta.heading
-                  )
-                : (
-                  <>
-                    Masanız
-                    <br />
-                    sizi bekliyor.
-                  </>
-                )}
+              {renderLines(reservationCta?.heading)}
             </h2>
 
             <p
@@ -853,18 +655,7 @@ export default function IletisimContent({
                 "text"
               )}
             >
-              {reservationCta?.body
-                ? renderLines(
-                    reservationCta.body
-                  )
-                : (
-                  <>
-                    Manzara için gelin. Yemek,
-                    insanlar
-                    <br />
-                    ve gece için kalın.
-                  </>
-                )}
+              {renderLines(reservationCta?.body)}
             </p>
 
             <div className="contact-actions">
@@ -881,8 +672,7 @@ export default function IletisimContent({
                   "button"
                 )}
               >
-                {reservationCta?.buttonLabel ||
-                  "REZERVASYON TALEBİ"}
+                {reservationCta?.buttonLabel}
               </a>
 
               <a
@@ -895,6 +685,8 @@ export default function IletisimContent({
           </div>
         </section>
       )}
+
+            </div>
 
       <Footer locale="tr" />
 

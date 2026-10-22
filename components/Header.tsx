@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   collection,
-  getDocs,
+  onSnapshot,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
@@ -58,46 +58,37 @@ const LANGUAGE_STORAGE_KEY = "lalara-locale";
      ========================================================= */
 
   useEffect(() => {
-    async function loadNavigation() {
-      try {
-        const snapshot = await getDocs(
-          collection(db, "siteContent")
-        );
+    const prefix =
+      locale === "tr"
+        ? "tr-"
+        : "en-";
 
-        const nextCms: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        const prefix =
-          locale === "tr"
-            ? "tr-"
-            : "en-";
+    return onSnapshot(
+      collection(db, "siteContent"),
+      (snapshot) => {
+        const nextCms: Record<string, CmsRecord> = {};
 
         snapshot.forEach((item) => {
-          const data =
-            item.data() as CmsRecord;
+          const data = item.data() as CmsRecord;
 
           if (
             item.id.startsWith(prefix) &&
-            data.status === "published"
+            (!data.status || data.status === "published")
           ) {
-            nextCms[
-              item.id.replace(prefix, "")
-            ] = data;
+            nextCms[item.id.replace(prefix, "")] = data;
           }
         });
 
         setCms(nextCms);
-      } catch (error) {
+      },
+      (error) => {
         console.error(
-          "La Lara navigation CMS load error:",
+          "La Lara navigation CMS live load error:",
           error
         );
+        setCms({});
       }
-    }
-
-    loadNavigation();
+    );
   }, [locale]);
 
   /* =========================================================

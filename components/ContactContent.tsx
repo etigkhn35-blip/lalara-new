@@ -2,37 +2,17 @@
 
 import { useEffect, useState } from "react";
 import {
-  collection,
   doc,
   getDoc,
-  getDocs,
 } from "firebase/firestore";
 import Image from "next/image";
 
 import { db } from "@/lib/firebase";
 import Header from "@/components/Header";
+import { useSiteContent } from "@/lib/cms/useSiteContent";
+import { contactOriginals } from "@/lib/cms/contact";
 import Footer from "@/components/Footer";
 
-type CmsRecord = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-  buttonLabel?: string;
-  buttonLink?: string;
-
-  eyebrowSize?: number;
-  headingSize?: number;
-  textSize?: number;
-  buttonSize?: number;
-
-  fontFamily?: "display" | "sans";
-  fontWeight?: number;
-  lineHeight?: number;
-  letterSpacing?: number;
-
-  visible?: boolean;
-  status?: string;
-};
 
 type ContactSettings = {
   address?: string;
@@ -86,7 +66,7 @@ function normalizeWhatsApp(
   return value.replace(/\D/g, "");
 }
 
-function renderLines(value: string) {
+function renderLines(value = "") {
   return value
     .split("\n")
     .map((line, index, all) => (
@@ -122,8 +102,6 @@ function cleanExternalArrowLabel(value: string) {
 export default function ContactContent({
   initialMedia,
 }: ContactContentProps) {
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
 
   const [contact, setContact] =
     useState<ContactSettings>(
@@ -141,141 +119,48 @@ export default function ContactContent({
     initialMedia.reservation;
 
   useEffect(() => {
-    async function loadCms() {
+    async function loadContactSettings() {
       try {
-        /* =====================================================
-           WEBSITE CONTENT
-           ===================================================== */
+        const contactSnapshot = await getDoc(doc(db, "siteSettings", "contact"));
 
-        const snapshot =
-          await getDocs(
-            collection(
-              db,
-              "siteContent"
-            )
-          );
-
-        const next: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        snapshot.forEach((item) => {
-          const data =
-            item.data() as CmsRecord;
-
-          if (
-            item.id.startsWith("en-") &&
-            data.status === "published"
-          ) {
-            next[
-              item.id.replace(
-                "en-",
-                ""
-              )
-            ] = data;
-          }
-        });
-
-        setCms(next);
-
-        /* =====================================================
-           CONTACT SETTINGS
-           ===================================================== */
-
-        const contactSnapshot =
-          await getDoc(
-            doc(
-              db,
-              "siteSettings",
-              "contact"
-            )
-          );
-
-        if (
-          contactSnapshot.exists()
-        ) {
-          const data =
-            contactSnapshot.data() as ContactSettings;
-
+        if (contactSnapshot.exists()) {
+          const data = contactSnapshot.data() as ContactSettings;
           setContact({
             ...DEFAULT_CONTACT,
             ...data,
           });
         }
       } catch (error) {
-        console.error(
-          "Contact CMS load error:",
-          error
-        );
+        console.error("Contact settings load error:", error);
       }
     }
 
-    loadCms();
+    loadContactSettings();
   }, []);
 
-  function content(key: string) {
-    return cms[key];
-  }
+  const { ready, getContent, isVisible, styleFor } = useSiteContent({
+    locale: "en",
+    originals: contactOriginals.en,
+  });
 
-  function isVisible(key: string) {
-    return (
-      cms[key]?.visible !== false
-    );
-  }
-
-  function styleFor(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-      | "button"
-  ) {
-    void key;
-    void kind;
-
-    return undefined;
-  }
-
-  /*
-   * Admin → Website → Contact
-   *
-   * Contact Hero
-   * → contact-hero
-   *
-   * Contact Information
-   * → contact-information
-   *
-   * Reservations
-   * → reservations
-   *
-   * Social
-   * → social
-   *
-   * Contact Map
-   * → contact-map
-   *
-   * Reservation CTA
-   * → reservation-cta
-   */
+  const hero = getContent("contact-hero");
 
   const information =
-    content(
+    getContent(
       "contact-information"
     );
 
   const reservations =
-    content("reservations");
+    getContent("reservations");
 
   const social =
-    content("social");
+    getContent("social");
 
   const map =
-    content("contact-map");
+    getContent("contact-map");
 
   const reservationCta =
-    content("reservation-cta");
+    getContent("reservation-cta");
 
   const phone =
     contact.phone ||
@@ -313,6 +198,8 @@ export default function ContactContent({
 
       <Header locale="en" />
 
+      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
+
       {/* =====================================================
           HERO
           ===================================================== */}
@@ -336,20 +223,16 @@ export default function ContactContent({
         <div className="contact-hero-overlay" />
 
         <div className="contact-hero-content">
-          <p className="eyebrow light">
-            La Lara · Yalıkavak
+          <p className="eyebrow light" style={styleFor("contact-hero", "eyebrow")}>
+            {hero?.eyebrow}
           </p>
 
-          <h1>
-            Come find
-            <br />
-            your table.
+          <h1 style={styleFor("contact-hero", "heading")}>
+            {renderLines(hero?.heading)}
           </h1>
 
-          <p>
-            Good food, long conversations
-            <br />
-            and Yalıkavak evenings.
+          <p style={styleFor("contact-hero", "text")}>
+            {renderLines(hero?.body)}
           </p>
         </div>
       </section>
@@ -371,8 +254,7 @@ export default function ContactContent({
                   "eyebrow"
                 )}
               >
-                {information?.eyebrow ||
-                  "Contact"}
+                {information?.eyebrow}
               </p>
 
               <span
@@ -386,28 +268,26 @@ export default function ContactContent({
             </div>
 
             <h2
-              style={styleFor(
-                "contact-information",
-                "heading"
-              )}
+              style={{
+                fontFamily: '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+                fontSize: "clamp(44px, 5.8vw, 78px)",
+                fontWeight: 400,
+                lineHeight: 0.92,
+                letterSpacing: "-0.05em",
+                ...styleFor("contact-information", "heading"),
+              }}
             >
-              {information?.heading
-                ? renderLines(
-                    information.heading
-                  )
-                : (
-                  <>
-                    We&apos;d love
-                    <br />
-                    to see you.
-                  </>
-                )}
+              {renderLines(information?.heading)}
             </h2>
           </div>
 
           {information?.body && (
             <div
               style={{
+                ...styleFor(
+                  "contact-information",
+                  "text"
+                ),
                 whiteSpace:
                   "pre-line",
                 marginBottom:
@@ -464,8 +344,7 @@ export default function ContactContent({
                     "eyebrow"
                   )}
                 >
-                  {reservations?.eyebrow ||
-                    "Reservations"}
+                  {reservations?.eyebrow}
                 </span>
 
                 <h3
@@ -474,8 +353,7 @@ export default function ContactContent({
                     "heading"
                   )}
                 >
-                  {reservations?.heading ||
-                    "Book a table"}
+                  {reservations?.heading}
                 </h3>
 
                 <p
@@ -484,19 +362,7 @@ export default function ContactContent({
                     "text"
                   )}
                 >
-                  {reservations?.body
-                    ? renderLines(
-                        reservations.body
-                      )
-                    : (
-                      <>
-                        For reservations and
-                        enquiries,
-                        <br />
-                        call or email our
-                        team.
-                      </>
-                    )}
+                  {renderLines(reservations?.body)}
                 </p>
 
                 <a
@@ -530,8 +396,7 @@ export default function ContactContent({
                     "eyebrow"
                   )}
                 >
-                  {social?.eyebrow ||
-                    "Follow"}
+                  {social?.eyebrow}
                 </span>
 
                 <h3
@@ -540,8 +405,7 @@ export default function ContactContent({
                     "heading"
                   )}
                 >
-                  {social?.heading ||
-                    "Stay connected"}
+                  {social?.heading}
                 </h3>
 
                 <p
@@ -550,19 +414,7 @@ export default function ContactContent({
                     "text"
                   )}
                 >
-                  {social?.body
-                    ? renderLines(
-                        social.body
-                      )
-                    : (
-                      <>
-                        Follow La Lara for
-                        food,
-                        <br />
-                        sunsets and moments
-                        from Yalıkavak.
-                      </>
-                    )}
+                  {renderLines(social?.body)}
                 </p>
 
                 <div className="footer-social contact-follow-social">
@@ -721,8 +573,7 @@ export default function ContactContent({
                 "eyebrow"
               )}
             >
-              {reservationCta?.eyebrow ||
-                "Reservations"}
+              {reservationCta?.eyebrow}
             </p>
 
             <h2
@@ -731,17 +582,7 @@ export default function ContactContent({
                 "heading"
               )}
             >
-              {reservationCta?.heading
-                ? renderLines(
-                    reservationCta.heading
-                  )
-                : (
-                  <>
-                    Your table
-                    <br />
-                    awaits.
-                  </>
-                )}
+              {renderLines(reservationCta?.heading)}
             </h2>
 
             <p
@@ -750,18 +591,7 @@ export default function ContactContent({
                 "text"
               )}
             >
-              {reservationCta?.body
-                ? renderLines(
-                    reservationCta.body
-                  )
-                : (
-                  <>
-                    Come for the view. Stay
-                    for the food,
-                    <br />
-                    the people and the night.
-                  </>
-                )}
+              {renderLines(reservationCta?.body)}
             </p>
 
             <div className="contact-actions">
@@ -778,8 +608,7 @@ export default function ContactContent({
                   "button"
                 )}
               >
-                {reservationCta?.buttonLabel ||
-                  "REQUEST A RESERVATION"}
+                {reservationCta?.buttonLabel}
               </a>
 
               <a
@@ -809,8 +638,7 @@ export default function ContactContent({
                 "eyebrow"
               )}
             >
-              {map?.eyebrow ||
-                "Find Us"}
+              {map?.eyebrow}
             </p>
 
             <h2
@@ -819,17 +647,7 @@ export default function ContactContent({
                 "heading"
               )}
             >
-              {map?.heading
-                ? renderLines(
-                    map.heading
-                  )
-                : (
-                  <>
-                    In the heart of
-                    <br />
-                    Yalıkavak.
-                  </>
-                )}
+              {renderLines(map?.heading)}
             </h2>
 
             {map?.body && (
@@ -858,10 +676,7 @@ export default function ContactContent({
                 "button"
               )}
             >
-              {cleanExternalArrowLabel(
-                map?.buttonLabel ||
-                  "Open in Google Maps"
-              )}{" "}
+              {cleanExternalArrowLabel(map?.buttonLabel || "")}{" "}
               <ExternalArrow />
             </a>
           </div>
@@ -882,6 +697,8 @@ export default function ContactContent({
           </div>
         </section>
       )}
+
+            </div>
 
       <Footer locale="en" />
 

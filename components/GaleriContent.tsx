@@ -1,40 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  collection,
-  getDocs,
-} from "firebase/firestore";
 
-import { db } from "@/lib/firebase";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useSiteContent } from "@/lib/cms/useSiteContent";
+import { galleryOriginals } from "@/lib/cms/gallery";
 
 /* =========================================================
    TYPES
    ========================================================= */
 
-type CmsRecord = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
 
-  buttonLabel?: string;
-  buttonLink?: string;
-
-  eyebrowSize?: number;
-  headingSize?: number;
-  textSize?: number;
-
-  fontWeight?: number;
-  lineHeight?: number;
-  letterSpacing?: number;
-
-  visible?: boolean;
-  status?: string;
-};
 
 export type GalleryMedia = {
   hero: string;
@@ -49,7 +28,7 @@ type GaleriContentProps = {
    HELPERS
    ========================================================= */
 
-function renderLines(value: string) {
+function renderLines(value = "") {
   const lines = value.split("\n");
 
   return lines.map((line, index) => (
@@ -67,138 +46,14 @@ function renderLines(value: string) {
 export default function GaleriContent({
   initialMedia,
 }: GaleriContentProps) {
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
-
   const media = initialMedia;
+  const { ready, getContent, isVisible, styleFor } = useSiteContent({
+    locale: "tr",
+    originals: galleryOriginals.tr,
+  });
 
-  /* =======================================================
-     LOAD CMS ONLY
-     ======================================================= */
-
-  useEffect(() => {
-    async function loadContent() {
-      try {
-        const contentSnapshot =
-          await getDocs(
-            collection(
-              db,
-              "siteContent"
-            )
-          );
-
-        const nextCms: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        contentSnapshot.forEach(
-          (item) => {
-            const data =
-              item.data() as CmsRecord;
-
-            if (
-              item.id.startsWith(
-                "tr-"
-              ) &&
-              data.status ===
-                "published"
-            ) {
-              nextCms[
-                item.id.replace(
-                  "tr-",
-                  ""
-                )
-              ] = data;
-            }
-          }
-        );
-
-        setCms(nextCms);
-      } catch (error) {
-        console.error(
-          "Galeri CMS yükleme hatası:",
-          error
-        );
-      }
-    }
-
-    loadContent();
-  }, []);
-
-  /* =======================================================
-     CMS HELPERS
-     ======================================================= */
-
-  function content(key: string) {
-    return cms[key];
-  }
-
-  function isVisible(key: string) {
-    return (
-      cms[key]?.visible !== false
-    );
-  }
-
-  function cmsStyle(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-  ) {
-    const item = cms[key];
-
-    if (!item) {
-      return undefined;
-    }
-
-    const size =
-      kind === "eyebrow"
-        ? item.eyebrowSize
-        : kind === "heading"
-          ? item.headingSize
-          : item.textSize;
-
-    return {
-      ...(size
-        ? {
-            fontSize: `${size}px`,
-          }
-        : {}),
-
-      ...(item.fontWeight
-        ? {
-            fontWeight:
-              item.fontWeight,
-          }
-        : {}),
-
-      ...(item.lineHeight
-        ? {
-            lineHeight:
-              item.lineHeight,
-          }
-        : {}),
-
-      ...(item.letterSpacing !==
-      undefined
-        ? {
-            letterSpacing: `${item.letterSpacing}px`,
-          }
-        : {}),
-    };
-  }
-
-  /* =======================================================
-     CMS CONTENT
-     ======================================================= */
-
-  const hero =
-    content("gallery-hero");
-
-  const cta =
-    content("gallery-cta");
+  const hero = getContent("gallery-hero");
+  const cta = getContent("gallery-cta");
 
   /* =======================================================
      RESERVATION
@@ -222,6 +77,8 @@ export default function GaleriContent({
           =================================================== */}
 
       <Header locale="tr" />
+
+      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
 
       {/* ===================================================
           HERO
@@ -251,56 +108,35 @@ export default function GaleriContent({
             <div className="image-overlay" />
 
             <div className="gallery-page-hero-content">
+
               <p
                 className="eyebrow light"
-                style={cmsStyle(
+                style={styleFor(
                   "gallery-hero",
                   "eyebrow"
                 )}
               >
-                {hero?.eyebrow ||
-                  "La Lara · Yalıkavak"}
+                {hero?.eyebrow}
               </p>
 
               <h1
-                style={cmsStyle(
+                style={styleFor(
                   "gallery-hero",
                   "heading"
                 )}
               >
-                {hero?.heading
-                  ? renderLines(
-                      hero.heading
-                    )
-                  : (
-                    <>
-                      La Lara&apos;dan
-                      <br />
-                      Anlar
-                    </>
-                  )}
+                {renderLines(hero?.heading)}
               </h1>
 
               <p
-                style={cmsStyle(
+                style={styleFor(
                   "gallery-hero",
                   "text"
                 )}
               >
-                {hero?.body
-                  ? renderLines(
-                      hero.body
-                    )
-                  : (
-                    <>
-                      Sakin sabahlardan
-                      gün batımı sofralarına
-                      ve Yalıkavak
-                      Körfezi&apos;ne karşı
-                      uzayan akşamlara.
-                    </>
-                  )}
+                {renderLines(hero?.body)}
               </p>
+
             </div>
           </section>
         )}
@@ -309,8 +145,7 @@ export default function GaleriContent({
           GALLERY GRID — SINIRSIZ FOTOĞRAF
           =================================================== */}
 
-      {media.photos.length >
-        0 && (
+      {media.photos.length > 0 && (
         <section className="gallery-page-grid">
           {media.photos.map(
             (src, index) => (
@@ -343,39 +178,29 @@ export default function GaleriContent({
         "gallery-cta"
       ) && (
         <section className="gallery-page-cta">
+
           <p
             className="eyebrow"
-            style={cmsStyle(
+            style={styleFor(
               "gallery-cta",
               "eyebrow"
             )}
           >
-            {cta?.eyebrow ||
-              "Masanız Sizi Bekliyor"}
+            {cta?.eyebrow}
           </p>
 
           <h2
-            style={cmsStyle(
+            style={styleFor(
               "gallery-cta",
               "heading"
             )}
           >
-            {cta?.heading
-              ? renderLines(
-                  cta.heading
-                )
-              : (
-                <>
-                  La Lara&apos;yı
-                  <br />
-                  deneyimleyin.
-                </>
-              )}
+            {renderLines(cta?.heading)}
           </h2>
 
           {cta?.body && (
             <p
-              style={cmsStyle(
+              style={styleFor(
                 "gallery-cta",
                 "text"
               )}
@@ -387,6 +212,7 @@ export default function GaleriContent({
           )}
 
           <div className="gallery-page-actions">
+
             <Link
               href="/tr#menus"
               className="line-link"
@@ -404,9 +230,9 @@ export default function GaleriContent({
               rel="noopener noreferrer"
               className="outline-button gallery-dark-button"
             >
-              {cta?.buttonLabel ||
-                "REZERVASYON TALEBİ"}
+              {cta?.buttonLabel}
             </a>
+
           </div>
         </section>
       )}
@@ -415,7 +241,10 @@ export default function GaleriContent({
           FOOTER
           =================================================== */}
 
+            </div>
+
       <Footer locale="tr" />
+
     </main>
   );
 }

@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  collection,
   doc,
   getDoc,
+  getDocs,
   serverTimestamp,
   setDoc,
 } from "firebase/firestore";
@@ -19,7 +21,8 @@ type PageType =
   | "Gallery"
   | "Private Events"
   | "Contact"
-  | "Footer";
+  | "Footer"
+  | "Unmapped";
 
 type FormData = {
   eyebrow: string;
@@ -33,13 +36,66 @@ type FormData = {
   textSize: number;
   buttonSize: number;
 
+  // Legacy shared typography — old Firestore records keep working.
   fontFamily: "display" | "sans";
   fontWeight: number;
   lineHeight: number;
   letterSpacing: number;
 
+  // Each visible text role is independently editable.
+  eyebrowFontFamily: "display" | "sans";
+  headingFontFamily: "display" | "sans";
+  textFontFamily: "display" | "sans";
+  buttonFontFamily: "display" | "sans";
+
+  eyebrowFontWeight: number;
+  headingFontWeight: number;
+  textFontWeight: number;
+  buttonFontWeight: number;
+
+  eyebrowLineHeight: number;
+  headingLineHeight: number;
+  textLineHeight: number;
+  buttonLineHeight: number;
+
+  eyebrowLetterSpacing: number;
+  headingLetterSpacing: number;
+  textLetterSpacing: number;
+  buttonLetterSpacing: number;
+
   visible: boolean;
 };
+
+const TYPOGRAPHY_FIELDS = [
+  "eyebrowSize",
+  "headingSize",
+  "textSize",
+  "buttonSize",
+  "eyebrowFontFamily",
+  "headingFontFamily",
+  "textFontFamily",
+  "buttonFontFamily",
+  "eyebrowFontWeight",
+  "headingFontWeight",
+  "textFontWeight",
+  "buttonFontWeight",
+  "eyebrowLineHeight",
+  "headingLineHeight",
+  "textLineHeight",
+  "buttonLineHeight",
+  "eyebrowLetterSpacing",
+  "headingLetterSpacing",
+  "textLetterSpacing",
+  "buttonLetterSpacing",
+] as const;
+
+type TypographyField = (typeof TYPOGRAPHY_FIELDS)[number];
+
+function isTypographyField(
+  key: keyof FormData
+): key is TypographyField {
+  return (TYPOGRAPHY_FIELDS as readonly string[]).includes(key);
+}
 
 const pageSections: Record<PageType, string[]> = {
   Navigation: [
@@ -66,7 +122,10 @@ const pageSections: Record<PageType, string[]> = {
 
   "Our Story": [
     "Story Hero",
-    "The Woman Behind the Name",
+    "Story Woman Intro",
+    "Story Lara Detail",
+    "Story Quote",
+    "Story Place",
     "Pink Elephant",
     "The People Behind Our Story",
     "Story CTA",
@@ -102,6 +161,8 @@ const pageSections: Record<PageType, string[]> = {
     "Footer Social",
     "Footer Bottom",
   ],
+
+  Unmapped: [],
 };
 
 const blank: FormData = {
@@ -120,6 +181,26 @@ const blank: FormData = {
   fontWeight: 400,
   lineHeight: 1.2,
   letterSpacing: 0,
+
+  eyebrowFontFamily: "sans",
+  headingFontFamily: "display",
+  textFontFamily: "sans",
+  buttonFontFamily: "sans",
+
+  eyebrowFontWeight: 500,
+  headingFontWeight: 400,
+  textFontWeight: 400,
+  buttonFontWeight: 500,
+
+  eyebrowLineHeight: 1.2,
+  headingLineHeight: 1.08,
+  textLineHeight: 1.65,
+  buttonLineHeight: 1.2,
+
+  eyebrowLetterSpacing: 1.4,
+  headingLetterSpacing: 0,
+  textLetterSpacing: 0,
+  buttonLetterSpacing: 0.8,
 
   visible: true,
 };
@@ -300,11 +381,36 @@ const defaults: Record<
       textSize: 18,
     },
 
-    "The Woman Behind the Name": {
+    "Story Woman Intro": {
       eyebrow: "Where It Began",
       heading: "The Woman\nBehind the Name",
       body:
-        "Every family has someone who brings everyone together. In ours, that person was Lara.\n\nOur grandmother was far from ordinary. She was a career woman with a strong personality, an unmistakable sense of style and, we must admit, a little bit of a diva.\n\nShe loved to cook, but what she enjoyed even more was having people around her table.\n\nThere was always room for another guest, another story, another conversation. Meals had a wonderful habit of lasting longer than planned. People came together to laugh, to share news, sometimes to solve a problem, and always to enjoy something delicious.\n\nFor Lara, hospitality was never about making a grand impression. It was about making people feel welcome, comfortable and cared for.\n\nAnd somehow, she made it look effortless.\n\nYears later, when we began imagining our own restaurant, we kept returning to those memories. Not because we wanted to recreate her home, but because we wanted to bring that same feeling to a new place.\n\nA place where good food brings people together. Where conversations are never rushed. Where the atmosphere feels elegant without ever feeling formal.\n\nWarm, spirited and full of character.\nJust like Lara.",
+        "Every family has someone who brings everyone together. In ours, that person was Lara.",
+      eyebrowSize: 16,
+      headingSize: 40,
+      textSize: 17,
+    },
+
+    "Story Lara Detail": {
+      heading: "Warm, spirited\nand full of character.",
+      body:
+        "Our grandmother was far from ordinary. She was a career woman with a strong personality, an unmistakable sense of style and, we must admit, a little bit of a diva.\n\nShe loved to cook, but what she enjoyed even more was having people around her table.\n\nThere was always room for another guest, another story, another conversation. Meals had a wonderful habit of lasting longer than planned. People came together to laugh, to share news, sometimes to solve a problem, and always to enjoy something delicious.\n\nFor Lara, hospitality was never about making a grand impression. It was about making people feel welcome, comfortable and cared for.\n\nAnd somehow, she made it look effortless.",
+      headingSize: 40,
+      textSize: 17,
+    },
+
+    "Story Quote": {
+      body:
+        "When we began imagining our own restaurant,\nwe kept returning to those memories.",
+      textSize: 28,
+      fontFamily: "display",
+    },
+
+    "Story Place": {
+      eyebrow: "A Place of Our Own",
+      heading: "That feeling,\ncarried forward.",
+      body:
+        "Our aim was never to recreate her home. We wanted to carry the feeling of that table into a new place.\n\nA place where good food brings people together. Where conversations are never rushed. Where the atmosphere feels elegant without ever feeling formal.\n\nWarm, spirited and full of character.\n\nJust like Lara.",
       eyebrowSize: 16,
       headingSize: 40,
       textSize: 17,
@@ -462,22 +568,24 @@ const defaults: Record<
        ===================================================== */
 
     "Contact Hero": {
+      eyebrow: "La Lara · Yalıkavak",
       heading: "Come find\nyour table.",
       body:
         "Good food, long conversations\nand Yalıkavak evenings.",
+      eyebrowSize: 13,
       headingSize: 58,
       textSize: 18,
     },
 
     "Contact Information": {
-      eyebrow: "Visit",
-      heading: "La Lara",
-      body:
-        "Geriş Mah., 2026. Sokak No:5\nYalıkavak, 48990 Bodrum\nMuğla · Türkiye",
-      buttonLabel: "GET DIRECTIONS ↗",
+      eyebrow: "Contact",
+      heading: "We'd love\nto see you.",
       eyebrowSize: 13,
-      headingSize: 40,
-      textSize: 17,
+      headingSize: 78,
+      headingFontFamily: "display",
+      headingFontWeight: 400,
+      headingLineHeight: 0.92,
+      headingLetterSpacing: -3.9,
     },
 
     "Reservations": {
@@ -744,11 +852,36 @@ const defaults: Record<
       textSize: 18,
     },
 
-    "The Woman Behind the Name": {
+    "Story Woman Intro": {
       eyebrow: "Her Şeyin Başladığı Yer",
       heading: "İsmin Ardındaki\nKadın",
       body:
-        "Her ailede herkesi bir araya getiren biri vardır. Bizim ailemizde bu kişi Lara’ydı.\n\nBüyükannemiz sıradan biri olmaktan çok uzaktı. Kariyer sahibi, güçlü karakterli, kendine özgü bir stile sahip ve kabul etmek gerekir ki biraz da diva ruhluydu.\n\nYemek yapmayı severdi ama insanları sofrasında ağırlamayı daha da çok severdi.\n\nMasasında her zaman bir misafire, yeni bir hikâyeye ve uzun bir sohbete yer vardı. Yemekler çoğu zaman planlanandan daha uzun sürerdi. İnsanlar gülmek, haberlerini paylaşmak, bazen bir problemi çözmek ve her zaman güzel bir şeyler yemek için bir araya gelirdi.\n\nLara için misafirperverlik büyük bir gösteri yapmak değildi. İnsanların kendilerini hoş karşılanmış, rahat ve değerli hissetmelerini sağlamaktı.\n\nVe bunu son derece doğal yapardı.\n\nYıllar sonra kendi restoranımızı hayal etmeye başladığımızda, tekrar tekrar bu anılara döndük.\n\nİyi yemeğin insanları bir araya getirdiği, sohbetlerin aceleye gelmediği, zarif ama asla resmî hissettirmeyen bir yer.\n\nSıcak, karakterli ve hayat dolu.\nTıpkı Lara gibi.",
+        "Her ailede herkesi bir araya getiren biri vardır. Bizim ailemizde bu kişi Lara’ydı.",
+      eyebrowSize: 16,
+      headingSize: 40,
+      textSize: 17,
+    },
+
+    "Story Lara Detail": {
+      heading: "Sıcak, zarif\nve karakter dolu.",
+      body:
+        "Büyükannemiz hiç de hayal edebileceğiniz geleneksel büyükannelerden biri değildi. Kariyer sahibi, güçlü bir kişiliğe ve kendine özgü bir stile sahipti; kabul etmek gerekir ki biraz da diva ruhu vardı.\n\nYemek yapmayı severdi ama insanları sofrasında ağırlamayı daha da çok severdi.\n\nMasasında her zaman bir misafire, yeni bir hikâyeye ve başka bir sohbete yer vardı. Yemekler çoğu zaman planlanandan daha uzun sürerdi. İnsanlar gülmek, haberleri paylaşmak, bazen bir problemi çözmek ve her zaman güzel bir şeyler yemek için bir araya gelirdi.\n\nLara için misafirperverlik büyük bir gösteri yapmak değildi. İnsanların kendilerini rahat, değerli ve evlerinde hissetmelerini sağlamaktı.\n\nVe bunu son derece doğal bir şekilde yapardı.",
+      headingSize: 40,
+      textSize: 17,
+    },
+
+    "Story Quote": {
+      body:
+        "Kendi restoranımızı hayal etmeye başladığımızda,\ntekrar tekrar o anılara döndük.",
+      textSize: 28,
+      fontFamily: "display",
+    },
+
+    "Story Place": {
+      eyebrow: "La Lara",
+      heading: "O hissi\nyaşatmak.",
+      body:
+        "Amacımız onun evini yeniden yaratmak değildi. O sofradaki hissi yeni bir yere taşımak istedik.\n\nİyi yemeklerin insanları bir araya getirdiği bir yer. Sohbetlerin aceleye gelmediği, atmosferin zarif ama hiçbir zaman fazla resmi olmadığı bir yer.\n\nSıcak, canlı ve karakter dolu.\n\nTıpkı Lara gibi.",
       eyebrowSize: 16,
       headingSize: 40,
       textSize: 17,
@@ -909,22 +1042,24 @@ const defaults: Record<
        ===================================================== */
 
     "Contact Hero": {
+      eyebrow: "La Lara · Yalıkavak",
       heading: "Sofranız\nsizi bekliyor.",
       body:
         "İyi yemekler, uzun sohbetler\nve Yalıkavak akşamları.",
+      eyebrowSize: 13,
       headingSize: 58,
       textSize: 18,
     },
 
     "Contact Information": {
-      eyebrow: "Adres",
-      heading: "La Lara",
-      body:
-        "Geriş Mah., 2026. Sokak No:5\nYalıkavak, 48990 Bodrum\nMuğla · Türkiye",
-      buttonLabel: "YOL TARİFİ AL ↗",
+      eyebrow: "İletişim",
+      heading: "Sizi La Lara'da\ngörmek isteriz.",
       eyebrowSize: 13,
-      headingSize: 40,
-      textSize: 17,
+      headingSize: 78,
+      headingFontFamily: "display",
+      headingFontWeight: 400,
+      headingLineHeight: 0.92,
+      headingLetterSpacing: -3.9,
     },
 
     "Reservations": {
@@ -1051,22 +1186,263 @@ export default function ContentPage() {
   const [saveState, setSaveState] =
     useState("");
 
-  const sections = useMemo(
-    () => pageSections[page],
-    [page]
-  );
+  // Typography is only written to Firestore when the editor actually
+  // changes that specific typography control. Editing text alone must
+  // never create style overrides on the live website.
+  const [dirtyTypography, setDirtyTypography] =
+    useState<Set<TypographyField>>(
+      () => new Set()
+    );
+
+  const [discoveredSections, setDiscoveredSections] =
+    useState<Record<PageType, string[]>>(() => ({
+      Navigation: [],
+      Homepage: [],
+      "Our Story": [],
+      Gallery: [],
+      "Private Events": [],
+      Contact: [],
+      Footer: [],
+      Unmapped: [],
+    }));
+
+  const [documentIds, setDocumentIds] =
+    useState<Record<string, string>>({});
+
+  const [discoveryReady, setDiscoveryReady] =
+    useState(false);
+
+  function normalizePage(
+    value: unknown,
+    sectionName: string
+  ): PageType {
+    const raw =
+      typeof value === "string"
+        ? value.trim().toLowerCase()
+        : "";
+
+    const compact = raw.replace(/[\s_-]+/g, "");
+
+    if (
+      compact === "navigation" ||
+      compact === "nav"
+    ) {
+      return "Navigation";
+    }
+
+    if (
+      compact === "homepage" ||
+      compact === "home"
+    ) {
+      return "Homepage";
+    }
+
+    if (
+      compact === "ourstory" ||
+      compact === "story"
+    ) {
+      return "Our Story";
+    }
+
+    if (compact === "gallery") {
+      return "Gallery";
+    }
+
+    if (
+      compact === "privateevents" ||
+      compact === "events"
+    ) {
+      return "Private Events";
+    }
+
+    if (compact === "contact") {
+      return "Contact";
+    }
+
+    if (compact === "footer") {
+      return "Footer";
+    }
+
+    // Older records sometimes have missing/inconsistent page values.
+    // If the section is one of our known sections, recover its page here.
+    for (const [knownPage, knownSections] of Object.entries(pageSections)) {
+      if (
+        knownPage !== "Unmapped" &&
+        knownSections.includes(sectionName)
+      ) {
+        return knownPage as PageType;
+      }
+    }
+
+    return "Unmapped";
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function discoverContent() {
+      setDiscoveryReady(false);
+
+      try {
+        const snapshot = await getDocs(
+          collection(db, "siteContent")
+        );
+
+        if (cancelled) return;
+
+        const nextSections: Record<PageType, string[]> = {
+          Navigation: [],
+          Homepage: [],
+          "Our Story": [],
+          Gallery: [],
+          "Private Events": [],
+          Contact: [],
+          Footer: [],
+          Unmapped: [],
+        };
+
+        const nextIds: Record<string, string> = {};
+
+        snapshot.forEach((item) => {
+          const data = item.data();
+
+          const idLanguage: Language | null =
+            item.id.startsWith("en-")
+              ? "EN"
+              : item.id.startsWith("tr-")
+                ? "TR"
+                : data.language === "en"
+                  ? "EN"
+                  : data.language === "tr"
+                    ? "TR"
+                    : null;
+
+          if (!idLanguage) return;
+
+          const sectionName =
+            typeof data.section === "string" &&
+            data.section.trim()
+              ? data.section.trim()
+              : item.id
+                  .replace(/^en-/, "")
+                  .replace(/^tr-/, "");
+
+          const resolvedPage =
+            normalizePage(
+              data.page,
+              sectionName
+            );
+
+          if (
+            !nextSections[resolvedPage].includes(
+              sectionName
+            )
+          ) {
+            nextSections[resolvedPage].push(
+              sectionName
+            );
+          }
+
+          nextIds[
+            `${idLanguage}:${sectionName}`
+          ] = item.id;
+        });
+
+        for (const key of Object.keys(
+          nextSections
+        ) as PageType[]) {
+          nextSections[key].sort((a, b) => {
+            const known =
+              pageSections[key] ?? [];
+
+            const ai = known.indexOf(a);
+            const bi = known.indexOf(b);
+
+            if (ai !== -1 && bi !== -1) {
+              return ai - bi;
+            }
+
+            if (ai !== -1) return -1;
+            if (bi !== -1) return 1;
+
+            return a.localeCompare(b);
+          });
+        }
+
+        setDiscoveredSections(nextSections);
+        setDocumentIds(nextIds);
+      } catch (error) {
+        console.error(
+          "Could not discover siteContent:",
+          error
+        );
+
+        setSaveState(
+          "Could not discover Firestore content."
+        );
+      } finally {
+        if (!cancelled) {
+          setDiscoveryReady(true);
+        }
+      }
+    }
+
+    discoverContent();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sections = useMemo(() => {
+    const known =
+      pageSections[page] ?? [];
+
+    const discovered =
+      discoveredSections[page] ?? [];
+
+    // Old design stays the same, but Firestore records are merged in.
+    return Array.from(
+      new Set([
+        ...known,
+        ...discovered,
+      ])
+    );
+  }, [page, discoveredSections]);
 
   const documentId =
+    documentIds[
+      `${language}:${section}`
+    ] ??
     `${language.toLowerCase()}-${sectionKey(section)}`;
 
   useEffect(() => {
-    setSection(pageSections[page][0]);
-  }, [page]);
+    const available =
+      Array.from(
+        new Set([
+          ...(pageSections[page] ?? []),
+          ...(discoveredSections[page] ?? []),
+        ])
+      );
+
+    if (available.length > 0) {
+      setSection(available[0]);
+    } else {
+      setSection("");
+    }
+  }, [page, discoveredSections]);
+
 
   useEffect(() => {
     async function loadContent() {
+      if (!discoveryReady || !section) {
+        setLoading(!discoveryReady);
+        return;
+      }
+
       setLoading(true);
       setSaveState("");
+      setDirtyTypography(new Set());
 
       try {
         const snapshot = await getDoc(
@@ -1132,6 +1508,42 @@ export default function ContentPage() {
               data.letterSpacing ??
               fallback.letterSpacing,
 
+            eyebrowFontFamily:
+              data.eyebrowFontFamily ?? data.fontFamily ?? fallback.eyebrowFontFamily,
+            headingFontFamily:
+              data.headingFontFamily ?? data.fontFamily ?? fallback.headingFontFamily,
+            textFontFamily:
+              data.textFontFamily ?? data.fontFamily ?? fallback.textFontFamily,
+            buttonFontFamily:
+              data.buttonFontFamily ?? data.fontFamily ?? fallback.buttonFontFamily,
+
+            eyebrowFontWeight:
+              data.eyebrowFontWeight ?? data.fontWeight ?? fallback.eyebrowFontWeight,
+            headingFontWeight:
+              data.headingFontWeight ?? data.fontWeight ?? fallback.headingFontWeight,
+            textFontWeight:
+              data.textFontWeight ?? data.fontWeight ?? fallback.textFontWeight,
+            buttonFontWeight:
+              data.buttonFontWeight ?? data.fontWeight ?? fallback.buttonFontWeight,
+
+            eyebrowLineHeight:
+              data.eyebrowLineHeight ?? data.lineHeight ?? fallback.eyebrowLineHeight,
+            headingLineHeight:
+              data.headingLineHeight ?? data.lineHeight ?? fallback.headingLineHeight,
+            textLineHeight:
+              data.textLineHeight ?? data.lineHeight ?? fallback.textLineHeight,
+            buttonLineHeight:
+              data.buttonLineHeight ?? data.lineHeight ?? fallback.buttonLineHeight,
+
+            eyebrowLetterSpacing:
+              data.eyebrowLetterSpacing ?? data.letterSpacing ?? fallback.eyebrowLetterSpacing,
+            headingLetterSpacing:
+              data.headingLetterSpacing ?? data.letterSpacing ?? fallback.headingLetterSpacing,
+            textLetterSpacing:
+              data.textLetterSpacing ?? data.letterSpacing ?? fallback.textLetterSpacing,
+            buttonLetterSpacing:
+              data.buttonLetterSpacing ?? data.letterSpacing ?? fallback.buttonLetterSpacing,
+
             visible:
               data.visible ??
               fallback.visible,
@@ -1159,6 +1571,7 @@ export default function ContentPage() {
     documentId,
     language,
     section,
+    discoveryReady,
   ]);
 
   function updateField<
@@ -1171,6 +1584,14 @@ export default function ContentPage() {
       ...current,
       [key]: value,
     }));
+
+    if (isTypographyField(key)) {
+      setDirtyTypography((current) => {
+        const next = new Set(current);
+        next.add(key);
+        return next;
+      });
+    }
   }
 
   async function saveContent(
@@ -1180,47 +1601,70 @@ export default function ContentPage() {
       setSaveState(
         "Please sign in again."
       );
+      return;
+    }
 
+    if (!section) {
+      setSaveState(
+        "No section selected."
+      );
       return;
     }
 
     setSaveState("Saving...");
 
     try {
+      // IMPORTANT:
+      // Text/content is always safe to publish.
+      // Typography is sparse: only controls explicitly changed during
+      // this edit session are written. This keeps the website's original
+      // CSS as the source of truth when the user only edits copy.
+      const payload: Record<string, unknown> = {
+        eyebrow: form.eyebrow,
+        heading: form.heading,
+        body: form.body,
+        buttonLabel: form.buttonLabel,
+        buttonLink: form.buttonLink,
+        visible: form.visible,
+
+        language:
+          language.toLowerCase(),
+
+        page:
+          page.toLowerCase(),
+
+        section,
+        status,
+
+        updatedBy:
+          auth.currentUser.uid,
+
+        updatedAt:
+          serverTimestamp(),
+      };
+
+      dirtyTypography.forEach((key) => {
+        payload[key] = form[key];
+      });
+
       await setDoc(
         doc(
           db,
           "siteContent",
           documentId
         ),
-        {
-          ...form,
-
-          language:
-            language.toLowerCase(),
-
-          page:
-            page.toLowerCase(),
-
-          section,
-
-          status,
-
-          updatedBy:
-            auth.currentUser.uid,
-
-          updatedAt:
-            serverTimestamp(),
-        },
+        payload,
         {
           merge: true,
         }
       );
 
+      setDirtyTypography(new Set());
+
       setSaveState(
         status === "published"
-          ? "Published successfully."
-          : "Draft saved."
+          ? "Published successfully. Original site typography was preserved unless you changed a typography control."
+          : "Draft saved. Original site typography was preserved unless you changed a typography control."
       );
     } catch (error) {
       console.error(error);
@@ -1231,10 +1675,47 @@ export default function ContentPage() {
     }
   }
 
-  const previewFont =
-    form.fontFamily === "sans"
-      ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
-      : '"Iowan Old Style", Baskerville, "Times New Roman", serif';
+  const previewStyle = (
+    role: "eyebrow" | "heading" | "text" | "button"
+  ) => {
+    const family =
+      role === "eyebrow" ? form.eyebrowFontFamily :
+      role === "heading" ? form.headingFontFamily :
+      role === "text" ? form.textFontFamily : form.buttonFontFamily;
+
+    const size =
+      role === "eyebrow" ? form.eyebrowSize :
+      role === "heading" ? form.headingSize :
+      role === "text" ? form.textSize : form.buttonSize;
+
+    const weight =
+      role === "eyebrow" ? form.eyebrowFontWeight :
+      role === "heading" ? form.headingFontWeight :
+      role === "text" ? form.textFontWeight : form.buttonFontWeight;
+
+    const lineHeight =
+      role === "eyebrow" ? form.eyebrowLineHeight :
+      role === "heading" ? form.headingLineHeight :
+      role === "text" ? form.textLineHeight : form.buttonLineHeight;
+
+    const letterSpacing =
+      role === "eyebrow" ? form.eyebrowLetterSpacing :
+      role === "heading" ? form.headingLetterSpacing :
+      role === "text" ? form.textLetterSpacing : form.buttonLetterSpacing;
+
+    return {
+      fontFamily:
+        family === "sans"
+          ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
+          : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+      fontSize: `${size}px`,
+      fontWeight: weight,
+      lineHeight,
+      letterSpacing: `${letterSpacing}px`,
+      fontSynthesis: "none" as const,
+      whiteSpace: "pre-line" as const,
+    };
+  };
 
   return (
     <AdminShell
@@ -1250,6 +1731,9 @@ export default function ContentPage() {
           <h1>
             Edit the website.
           </h1>
+          <p className="admin-save-message">
+            Firestore siteContent records are discovered automatically. Text changes preserve the website's original CSS typography. Font, size, weight, line height and letter spacing are only published when you explicitly change those controls.
+          </p>
         </div>
 
         <div className="admin-segmented">
@@ -1463,220 +1947,119 @@ export default function ContentPage() {
                 </label>
               </div>
 
-              {/* TYPOGRAPHY */}
-
-              <div className="editor-subheading">
-                <span>
-                  Typography
-                </span>
-              </div>
-
+              {/* TYPOGRAPHY — every visible text role is independent */}
+              <div className="editor-subheading"><span>Eyebrow typography</span></div>
               <div className="admin-field-grid">
                 <label className="admin-field">
-                  <span>
-                    Eyebrow size
-                  </span>
-
-                  <input
-                    type="number"
-                    min="8"
-                    max="40"
-                    value={
-                      form.eyebrowSize
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "eyebrowSize",
-                        Number(
-                          event.target.value
-                        )
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="admin-field">
-                  <span>
-                    Heading size
-                  </span>
-
-                  <input
-                    type="number"
-                    min="12"
-                    max="160"
-                    value={
-                      form.headingSize
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "headingSize",
-                        Number(
-                          event.target.value
-                        )
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="admin-field">
-                  <span>
-                    Text size
-                  </span>
-
-                  <input
-                    type="number"
-                    min="8"
-                    max="40"
-                    value={
-                      form.textSize
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "textSize",
-                        Number(
-                          event.target.value
-                        )
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="admin-field">
-                  <span>
-                    Button size
-                  </span>
-
-                  <input
-                    type="number"
-                    min="8"
-                    max="32"
-                    value={
-                      form.buttonSize
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "buttonSize",
-                        Number(
-                          event.target.value
-                        )
-                      )
-                    }
-                  />
-                </label>
-
-                <label className="admin-field">
-                  <span>
-                    Font family
-                  </span>
-
-                  <select
-  value={form.fontFamily}
-  onChange={(event) => {
-    const nextFont =
-      event.target.value as FormData["fontFamily"];
-
-    updateField("fontFamily", nextFont);
-  }}
->
-  <option value="display">
-    Display / Serif
-  </option>
-
-  <option value="sans">
-    Sans Serif
-  </option>
-</select>
-                </label>
-
-                <label className="admin-field">
-                  <span>
-                    Font weight
-                  </span>
-
-                  <select
-                    value={
-                      form.fontWeight
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "fontWeight",
-                        Number(
-                          event.target.value
-                        )
-                      )
-                    }
-                  >
-                    <option value="300">
-                      Light 300
-                    </option>
-
-                    <option value="400">
-                      Regular 400
-                    </option>
-
-                    <option value="500">
-                      Medium 500
-                    </option>
-
-                    <option value="600">
-                      Semi Bold 600
-                    </option>
-
-                    <option value="700">
-                      Bold 700
-                    </option>
+                  <span>Font family</span>
+                  <select value={form.eyebrowFontFamily} onChange={(e) => updateField("eyebrowFontFamily", e.target.value as FormData["eyebrowFontFamily"])}>
+                    <option value="display">Display / Serif</option>
+                    <option value="sans">Sans Serif</option>
                   </select>
                 </label>
-
                 <label className="admin-field">
-                  <span>
-                    Line height
-                  </span>
-
-                  <input
-                    type="number"
-                    min="0.8"
-                    max="2.5"
-                    step="0.05"
-                    value={
-                      form.lineHeight
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "lineHeight",
-                        Number(
-                          event.target.value
-                        )
-                      )
-                    }
-                  />
+                  <span>Size (px)</span>
+                  <input type="number" min="8" max="60" value={form.eyebrowSize} onChange={(e) => updateField("eyebrowSize", Number(e.target.value))} />
                 </label>
-
                 <label className="admin-field">
-                  <span>
-                    Letter spacing
-                  </span>
-
-                  <input
-                    type="number"
-                    min="-5"
-                    max="20"
-                    step="0.1"
-                    value={
-                      form.letterSpacing
-                    }
-                    onChange={(event) =>
-                      updateField(
-                        "letterSpacing",
-                        Number(
-                          event.target.value
-                        )
-                      )
-                    }
-                  />
+                  <span>Weight</span>
+                  <select value={form.eyebrowFontWeight} onChange={(e) => updateField("eyebrowFontWeight", Number(e.target.value))}>
+                    <option value="300">Light 300</option><option value="400">Regular 400</option><option value="500">Medium 500</option><option value="600">Semi Bold 600</option><option value="700">Bold 700</option>
+                  </select>
+                </label>
+                <label className="admin-field">
+                  <span>Line height</span>
+                  <input type="number" min="0.8" max="2.5" step="0.05" value={form.eyebrowLineHeight} onChange={(e) => updateField("eyebrowLineHeight", Number(e.target.value))} />
+                </label>
+                <label className="admin-field">
+                  <span>Letter spacing (px)</span>
+                  <input type="number" min="-5" max="20" step="0.1" value={form.eyebrowLetterSpacing} onChange={(e) => updateField("eyebrowLetterSpacing", Number(e.target.value))} />
                 </label>
               </div>
-
+              <div className="editor-subheading"><span>Heading typography</span></div>
+              <div className="admin-field-grid">
+                <label className="admin-field">
+                  <span>Font family</span>
+                  <select value={form.headingFontFamily} onChange={(e) => updateField("headingFontFamily", e.target.value as FormData["headingFontFamily"])}>
+                    <option value="display">Display / Serif</option>
+                    <option value="sans">Sans Serif</option>
+                  </select>
+                </label>
+                <label className="admin-field">
+                  <span>Size (px)</span>
+                  <input type="number" min="8" max="180" value={form.headingSize} onChange={(e) => updateField("headingSize", Number(e.target.value))} />
+                </label>
+                <label className="admin-field">
+                  <span>Weight</span>
+                  <select value={form.headingFontWeight} onChange={(e) => updateField("headingFontWeight", Number(e.target.value))}>
+                    <option value="300">Light 300</option><option value="400">Regular 400</option><option value="500">Medium 500</option><option value="600">Semi Bold 600</option><option value="700">Bold 700</option>
+                  </select>
+                </label>
+                <label className="admin-field">
+                  <span>Line height</span>
+                  <input type="number" min="0.8" max="2.5" step="0.05" value={form.headingLineHeight} onChange={(e) => updateField("headingLineHeight", Number(e.target.value))} />
+                </label>
+                <label className="admin-field">
+                  <span>Letter spacing (px)</span>
+                  <input type="number" min="-5" max="20" step="0.1" value={form.headingLetterSpacing} onChange={(e) => updateField("headingLetterSpacing", Number(e.target.value))} />
+                </label>
+              </div>
+              <div className="editor-subheading"><span>Body typography</span></div>
+              <div className="admin-field-grid">
+                <label className="admin-field">
+                  <span>Font family</span>
+                  <select value={form.textFontFamily} onChange={(e) => updateField("textFontFamily", e.target.value as FormData["textFontFamily"])}>
+                    <option value="display">Display / Serif</option>
+                    <option value="sans">Sans Serif</option>
+                  </select>
+                </label>
+                <label className="admin-field">
+                  <span>Size (px)</span>
+                  <input type="number" min="8" max="80" value={form.textSize} onChange={(e) => updateField("textSize", Number(e.target.value))} />
+                </label>
+                <label className="admin-field">
+                  <span>Weight</span>
+                  <select value={form.textFontWeight} onChange={(e) => updateField("textFontWeight", Number(e.target.value))}>
+                    <option value="300">Light 300</option><option value="400">Regular 400</option><option value="500">Medium 500</option><option value="600">Semi Bold 600</option><option value="700">Bold 700</option>
+                  </select>
+                </label>
+                <label className="admin-field">
+                  <span>Line height</span>
+                  <input type="number" min="0.8" max="2.5" step="0.05" value={form.textLineHeight} onChange={(e) => updateField("textLineHeight", Number(e.target.value))} />
+                </label>
+                <label className="admin-field">
+                  <span>Letter spacing (px)</span>
+                  <input type="number" min="-5" max="20" step="0.1" value={form.textLetterSpacing} onChange={(e) => updateField("textLetterSpacing", Number(e.target.value))} />
+                </label>
+              </div>
+              <div className="editor-subheading"><span>Button typography</span></div>
+              <div className="admin-field-grid">
+                <label className="admin-field">
+                  <span>Font family</span>
+                  <select value={form.buttonFontFamily} onChange={(e) => updateField("buttonFontFamily", e.target.value as FormData["buttonFontFamily"])}>
+                    <option value="display">Display / Serif</option>
+                    <option value="sans">Sans Serif</option>
+                  </select>
+                </label>
+                <label className="admin-field">
+                  <span>Size (px)</span>
+                  <input type="number" min="8" max="60" value={form.buttonSize} onChange={(e) => updateField("buttonSize", Number(e.target.value))} />
+                </label>
+                <label className="admin-field">
+                  <span>Weight</span>
+                  <select value={form.buttonFontWeight} onChange={(e) => updateField("buttonFontWeight", Number(e.target.value))}>
+                    <option value="300">Light 300</option><option value="400">Regular 400</option><option value="500">Medium 500</option><option value="600">Semi Bold 600</option><option value="700">Bold 700</option>
+                  </select>
+                </label>
+                <label className="admin-field">
+                  <span>Line height</span>
+                  <input type="number" min="0.8" max="2.5" step="0.05" value={form.buttonLineHeight} onChange={(e) => updateField("buttonLineHeight", Number(e.target.value))} />
+                </label>
+                <label className="admin-field">
+                  <span>Letter spacing (px)</span>
+                  <input type="number" min="-5" max="20" step="0.1" value={form.buttonLetterSpacing} onChange={(e) => updateField("buttonLetterSpacing", Number(e.target.value))} />
+                </label>
+              </div>
               {saveState && (
                 <p className="admin-save-message">
                   {saveState}
@@ -1736,10 +2119,7 @@ export default function ContentPage() {
           >
             {form.eyebrow && (
               <span
-                style={{
-                  fontSize:
-                    form.eyebrowSize,
-                }}
+                style={previewStyle("eyebrow")}
               >
                 {form.eyebrow}
               </span>
@@ -1747,28 +2127,7 @@ export default function ContentPage() {
 
             {form.heading && (
               <h3
-                style={{
-                  fontFamily:
-                    previewFont,
-
-                  fontSize:
-                    `${Math.min(
-                      form.headingSize,
-                      80
-                    )}px`,
-
-                  fontWeight:
-                    form.fontWeight,
-
-                  lineHeight:
-                    form.lineHeight,
-
-                  letterSpacing:
-                    `${form.letterSpacing}px`,
-
-                  whiteSpace:
-                    "pre-line",
-                }}
+                style={previewStyle("heading")}
               >
                 {form.heading}
               </h3>
@@ -1776,22 +2135,7 @@ export default function ContentPage() {
 
             {form.body && (
               <p
-                style={{
-                  fontSize:
-                    `${Math.min(
-                      form.textSize,
-                      22
-                    )}px`,
-
-                  lineHeight:
-                    form.lineHeight,
-
-                  letterSpacing:
-                    `${form.letterSpacing}px`,
-
-                  whiteSpace:
-                    "pre-line",
-                }}
+                style={previewStyle("text")}
               >
                 {form.body}
               </p>
@@ -1803,10 +2147,7 @@ export default function ContentPage() {
                 <button
                   type="button"
                   className="admin-button secondary"
-                  style={{
-                    fontSize:
-                      form.buttonSize,
-                  }}
+                  style={previewStyle("button")}
                 >
                   {form.buttonLabel ||
                     "Button"}

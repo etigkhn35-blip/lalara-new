@@ -1,40 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  collection,
-  getDocs,
-} from "firebase/firestore";
-
-import { db } from "@/lib/firebase";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EventSlider from "@/components/EventSlider";
-
-/* =========================================================
-   TYPES
-   ========================================================= */
-
-type CmsRecord = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-
-  buttonLabel?: string;
-  buttonLink?: string;
-
-  eyebrowSize?: number;
-  headingSize?: number;
-  textSize?: number;
-
-  fontWeight?: number;
-  lineHeight?: number;
-  letterSpacing?: number;
-
-  visible?: boolean;
-  status?: string;
-};
+import { useSiteContent } from "@/lib/cms/useSiteContent";
+import { privateEventsOriginals } from "@/lib/cms/privateEvents";
 
 type SliderImage = {
   src: string;
@@ -56,7 +27,7 @@ type OzelEtkinliklerContentProps = {
    HELPERS
    ========================================================= */
 
-function renderLines(value: string) {
+function renderLines(value = "") {
   const lines = value.split("\n");
 
   return lines.map((line, index) => (
@@ -67,7 +38,7 @@ function renderLines(value: string) {
   ));
 }
 
-function renderParagraphs(value: string) {
+function renderParagraphs(value = "") {
   return value
     .split(/\n\s*\n/)
     .filter((paragraph) => paragraph.trim())
@@ -95,14 +66,7 @@ function createSliderImages(
 export default function OzelEtkinliklerContent({
   initialMedia,
 }: OzelEtkinliklerContentProps) {
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
-
   const media = initialMedia;
-
-  /* =======================================================
-     WHATSAPP
-     ======================================================= */
 
   const whatsappHref =
     "https://wa.me/905458941838?text=" +
@@ -110,139 +74,17 @@ export default function OzelEtkinliklerContent({
       "Merhaba La Lara, özel bir etkinlik düzenlemek hakkında bilgi almak istiyorum.\n\nEtkinlik türü:\nTercih edilen tarih:\nMisafir sayısı:"
     );
 
-  /* =======================================================
-     LOAD CMS ONLY
-     ======================================================= */
+  const { ready, getContent, isVisible, styleFor } = useSiteContent({
+    locale: "tr",
+    originals: privateEventsOriginals.tr,
+  });
 
-  useEffect(() => {
-    async function loadContent() {
-      try {
-        const contentSnapshot =
-          await getDocs(
-            collection(
-              db,
-              "siteContent"
-            )
-          );
-
-        const nextCms: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        contentSnapshot.forEach(
-          (item) => {
-            const data =
-              item.data() as CmsRecord;
-
-            if (
-              item.id.startsWith("tr-") &&
-              data.status === "published"
-            ) {
-              nextCms[
-                item.id.replace(
-                  "tr-",
-                  ""
-                )
-              ] = data;
-            }
-          }
-        );
-
-        setCms(nextCms);
-      } catch (error) {
-        console.error(
-          "Özel etkinlikler CMS yükleme hatası:",
-          error
-        );
-      }
-    }
-
-    loadContent();
-  }, []);
-
-  /* =======================================================
-     CMS HELPERS
-     ======================================================= */
-
-  function content(key: string) {
-    return cms[key];
-  }
-
-  function isVisible(key: string) {
-    return cms[key]?.visible !== false;
-  }
-
-  function cmsStyle(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-  ) {
-    const item = cms[key];
-
-    if (!item) {
-      return undefined;
-    }
-
-    const size =
-      kind === "eyebrow"
-        ? item.eyebrowSize
-        : kind === "heading"
-          ? item.headingSize
-          : item.textSize;
-
-    return {
-      ...(size
-        ? {
-            fontSize: `${size}px`,
-          }
-        : {}),
-
-      ...(item.fontWeight
-        ? {
-            fontWeight:
-              item.fontWeight,
-          }
-        : {}),
-
-      ...(item.lineHeight
-        ? {
-            lineHeight:
-              item.lineHeight,
-          }
-        : {}),
-
-      ...(item.letterSpacing !== undefined
-        ? {
-            letterSpacing: `${item.letterSpacing}px`,
-          }
-        : {}),
-    };
-  }
-
-  /* =======================================================
-     CMS RECORDS
-     ======================================================= */
-
-  const hero =
-    content("private-events-hero");
-
-  const intro =
-    content("private-events-intro");
-
-  const lounge =
-    content("private-events-lounge");
-
-  const privateEvents =
-    content("private-events-restaurant");
-
-  const weddings =
-    content("private-events-weddings");
-
-  const finalCta =
-    content("private-events-cta");
+  const hero = getContent("private-events-hero");
+  const intro = getContent("private-events-intro");
+  const lounge = getContent("private-events-lounge");
+  const privateEvents = getContent("private-events-restaurant");
+  const weddings = getContent("private-events-weddings");
+  const finalCta = getContent("private-events-cta");
 
   /* =======================================================
      SLIDER IMAGES
@@ -274,6 +116,8 @@ export default function OzelEtkinliklerContent({
     <main className="events-page">
 
       <Header locale="tr" />
+
+      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
 
       {/* ===================================================
           HERO
@@ -307,7 +151,7 @@ export default function OzelEtkinliklerContent({
           <div className="events-page-hero-content">
             <p
               className="eyebrow light"
-              style={cmsStyle(
+              style={styleFor(
                 "private-events-hero",
                 "eyebrow"
               )}
@@ -317,7 +161,7 @@ export default function OzelEtkinliklerContent({
             </p>
 
             <h1
-              style={cmsStyle(
+              style={styleFor(
                 "private-events-hero",
                 "heading"
               )}
@@ -336,7 +180,7 @@ export default function OzelEtkinliklerContent({
             </h1>
 
             <p
-              style={cmsStyle(
+              style={styleFor(
                 "private-events-hero",
                 "text"
               )}
@@ -386,7 +230,7 @@ export default function OzelEtkinliklerContent({
         >
           <p
             className="eyebrow"
-            style={cmsStyle(
+            style={styleFor(
               "private-events-intro",
               "eyebrow"
             )}
@@ -396,7 +240,7 @@ export default function OzelEtkinliklerContent({
           </p>
 
           <h2
-            style={cmsStyle(
+            style={styleFor(
               "private-events-intro",
               "heading"
             )}
@@ -415,7 +259,7 @@ export default function OzelEtkinliklerContent({
           </h2>
 
           <p
-            style={cmsStyle(
+            style={styleFor(
               "private-events-intro",
               "text"
             )}
@@ -469,7 +313,7 @@ export default function OzelEtkinliklerContent({
 
               <p
                 className="eyebrow"
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-lounge",
                   "eyebrow"
                 )}
@@ -479,7 +323,7 @@ export default function OzelEtkinliklerContent({
               </p>
 
               <h2
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-lounge",
                   "heading"
                 )}
@@ -499,7 +343,7 @@ export default function OzelEtkinliklerContent({
 
               <div
                 className="event-editorial-text"
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-lounge",
                   "text"
                 )}
@@ -597,7 +441,7 @@ export default function OzelEtkinliklerContent({
 
               <p
                 className="eyebrow"
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-restaurant",
                   "eyebrow"
                 )}
@@ -607,7 +451,7 @@ export default function OzelEtkinliklerContent({
               </p>
 
               <h2
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-restaurant",
                   "heading"
                 )}
@@ -627,7 +471,7 @@ export default function OzelEtkinliklerContent({
 
               <div
                 className="event-editorial-text"
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-restaurant",
                   "text"
                 )}
@@ -726,7 +570,7 @@ export default function OzelEtkinliklerContent({
 
               <p
                 className="eyebrow"
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-weddings",
                   "eyebrow"
                 )}
@@ -736,7 +580,7 @@ export default function OzelEtkinliklerContent({
               </p>
 
               <h2
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-weddings",
                   "heading"
                 )}
@@ -756,7 +600,7 @@ export default function OzelEtkinliklerContent({
 
               <div
                 className="event-editorial-text"
-                style={cmsStyle(
+                style={styleFor(
                   "private-events-weddings",
                   "text"
                 )}
@@ -855,7 +699,7 @@ export default function OzelEtkinliklerContent({
 
           <p
             className="eyebrow"
-            style={cmsStyle(
+            style={styleFor(
               "private-events-cta",
               "eyebrow"
             )}
@@ -865,7 +709,7 @@ export default function OzelEtkinliklerContent({
           </p>
 
           <h2
-            style={cmsStyle(
+            style={styleFor(
               "private-events-cta",
               "heading"
             )}
@@ -884,7 +728,7 @@ export default function OzelEtkinliklerContent({
           </h2>
 
           <p
-            style={cmsStyle(
+            style={styleFor(
               "private-events-cta",
               "text"
             )}
@@ -931,6 +775,8 @@ export default function OzelEtkinliklerContent({
 
         </section>
       )}
+
+      </div>
 
       <Footer locale="tr" />
 

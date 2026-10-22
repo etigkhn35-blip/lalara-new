@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
-  collection,
   doc,
   getDoc,
-  getDocs,
 } from "firebase/firestore";
 
 import { db } from "@/lib/firebase";
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { homepageOriginals } from "@/lib/cms/homepage";
+import { useSiteContent } from "@/lib/cms/useSiteContent";
 
 type HomepageMedia = {
   hero?: string;
@@ -24,27 +24,6 @@ type HomepageMedia = {
   sunset?: string;
 };
 
-type CmsRecord = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-
-  buttonLabel?: string;
-  buttonLink?: string;
-
-  eyebrowSize?: number;
-  headingSize?: number;
-  textSize?: number;
-  buttonSize?: number;
-
-  fontFamily?: "display" | "sans";
-  fontWeight?: number;
-  lineHeight?: number;
-  letterSpacing?: number;
-
-  visible?: boolean;
-  status?: string;
-};
 
 type SiteSettings = {
   phone: string;
@@ -83,8 +62,6 @@ function renderLines(value: string) {
 }
 
 export default function Home() {
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
 
   const [settings, setSettings] =
     useState<SiteSettings>(defaultSettings);
@@ -92,46 +69,22 @@ export default function Home() {
   const [photos, setPhotos] =
     useState<HomepageMedia | null>(null);
 
+  const [gallery, setGallery] =
+    useState<string[]>([]);
+
   useEffect(() => {
-    async function loadCms() {
+    async function loadSettingsAndMedia() {
       try {
-        /* =====================================================
-           CONTENT
-           ===================================================== */
-
-        const contentSnapshot = await getDocs(
-          collection(db, "siteContent")
-        );
-
-        const nextCms: Record<string, CmsRecord> = {};
-
-        contentSnapshot.forEach((item) => {
-          const data = item.data() as CmsRecord;
-
-          if (
-            item.id.startsWith("en-") &&
-            data.status === "published"
-          ) {
-            nextCms[
-              item.id.replace("en-", "")
-            ] = data;
-          }
-        });
-
-        setCms(nextCms);
-
-        /* =====================================================
-           SETTINGS / MEDIA
-           ===================================================== */
-
         const [
           contactSnapshot,
           socialSnapshot,
           homepageMediaSnapshot,
+          galleryMediaSnapshot,
         ] = await Promise.all([
           getDoc(doc(db, "siteSettings", "contact")),
           getDoc(doc(db, "siteSettings", "social")),
           getDoc(doc(db, "pageMedia", "homepage")),
+          getDoc(doc(db, "pageMedia", "gallery")),
         ]);
 
         setSettings({
@@ -160,93 +113,53 @@ export default function Home() {
             defaultSettings.tripadvisor,
         });
 
-        const fields = homepageMediaSnapshot.exists()
-          ? (homepageMediaSnapshot.data()?.fields as HomepageMedia | undefined)
-          : undefined;
+        const homepageFields =
+          homepageMediaSnapshot.exists()
+            ? (homepageMediaSnapshot.data()
+                ?.fields as HomepageMedia | undefined)
+            : undefined;
 
-        setPhotos(fields || {});
+        setPhotos(homepageFields || {});
+
+        const galleryFields =
+          galleryMediaSnapshot.exists()
+            ? galleryMediaSnapshot.data()
+                ?.fields || {}
+            : {};
+
+        const savedGallery =
+          Array.isArray(galleryFields.photos)
+            ? galleryFields.photos.filter(
+                (
+                  url: unknown
+                ): url is string =>
+                  typeof url === "string" &&
+                  url.length > 0
+              )
+            : [];
+
+        setGallery(savedGallery);
       } catch (error) {
         console.error(
-          "La Lara CMS load error:",
+          "La Lara EN settings/media load error:",
           error
         );
       }
     }
 
-    loadCms();
+    loadSettingsAndMedia();
+
   }, []);
 
-  /* =========================================================
-     CMS HELPERS
-     ========================================================= */
-
-  function content(key: string) {
-    return cms[key];
-  }
-
-  function isVisible(key: string) {
-    return cms[key]?.visible !== false;
-  }
-
-function cmsStyle(
-  key: string,
-  kind:
-    | "eyebrow"
-    | "heading"
-    | "text"
-    | "button"
-) {
-  const item = cms[key];
-
-  if (!item) return undefined;
-
-  const size =
-    kind === "eyebrow"
-      ? item.eyebrowSize
-      : kind === "heading"
-        ? item.headingSize
-        : kind === "button"
-          ? item.buttonSize
-          : item.textSize;
-
-  const fontFamily =
-    item.fontFamily === "sans"
-      ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
-      : '"Iowan Old Style", Baskerville, "Times New Roman", serif';
-
-  return {
-    ...(size !== undefined
-      ? {
-          fontSize: `${size}px`,
-        }
-      : {}),
-
-    ...(item.fontFamily
-      ? {
-          fontFamily,
-        }
-      : {}),
-
-    ...(item.fontWeight !== undefined
-      ? {
-          fontWeight: item.fontWeight,
-          fontSynthesis: "none",
-        }
-      : {}),
-
-    ...(item.lineHeight !== undefined
-      ? {
-          lineHeight: item.lineHeight,
-        }
-      : {}),
-
-    ...(item.letterSpacing !== undefined
-      ? {
-          letterSpacing: `${item.letterSpacing}px`,
-        }
-      : {}),
-  };
-}
+  const {
+    ready: cmsReady,
+    getContent: content,
+    isVisible,
+    styleFor: cmsStyle,
+  } = useSiteContent({
+    locale: "en",
+    originals: homepageOriginals.en,
+  });
 
   /* =========================================================
      SETTINGS
@@ -265,8 +178,6 @@ function cmsStyle(
     encodeURIComponent(
       "Hello La Lara, I would like to request a reservation.\n\nDate:\nTime:\nNumber of guests:"
     );
-
-  const galleryPhotos = photos?.moments ? [photos.moments] : [];
 
   /* =========================================================
      CMS KEYS
@@ -301,6 +212,11 @@ function cmsStyle(
 
   const privateEvents =
     content("homepage-private-events");
+
+  // Prevent original -> Firebase content/style flash on refresh.
+  if (!cmsReady) {
+    return <main className="home-page" aria-busy="true" />;
+  }
 
   return (
     <main className="home-page">
@@ -800,10 +716,11 @@ function cmsStyle(
 
           {/* COMPACT GALLERY */}
 
-          <section className="menus transparent-section">
-            <div className="menu-grid">
-              {galleryPhotos
-                .slice(1, 4)
+          {gallery.length > 0 && (
+            <section className="menus transparent-section">
+              <div className="menu-grid">
+                {gallery
+                  .slice(0, 3)
                 .map(
                   (
                     photo,
@@ -831,8 +748,9 @@ function cmsStyle(
                     </article>
                   )
                 )}
-            </div>
-          </section>
+              </div>
+            </section>
+          )}
         </>
       )}
 
@@ -840,10 +758,11 @@ function cmsStyle(
           PRIVATE EVENTS
           ===================================================== */}
 
-      <section
-        id="events"
-        className="split-section opaque-section"
-      >
+      {isVisible("homepage-private-events") && (
+        <section
+          id="events"
+          className="split-section opaque-section"
+        >
         <div className="split-image">
           {photos?.sunset && (
             <Image
@@ -881,7 +800,8 @@ function cmsStyle(
             <span>→</span>
           </a>
         </div>
-      </section>
+        </section>
+      )}
 
       {/* =====================================================
           05 — RESERVATION

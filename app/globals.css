@@ -10331,7 +10331,7 @@ h1,h2,h3,blockquote {
    ========================================================= */
 
 .contact-main .eyebrow,
-.contact-main .contact-heading span,
+.contact-main .contact-heading > div > span,
 .contact-main .contact-label,
 .contact-main .contact-column p,
 .contact-main .contact-text-link,
@@ -13664,4 +13664,19 @@ h1,h2,h3,blockquote {
 .tr-site .footer-grid span,
 .tr-site .footer-bottom {
   text-transform: uppercase;
+}
+
+/* =========================================================
+   FOOTER SOCIAL NAMES — KEEP ORIGINAL CASE
+   ========================================================= */
+
+.site-footer .footer-social .social-name {
+  text-transform: none !important;
+}
+/* Drinks Menu - tüm fiyatları bold yap */
+.restaurant-menu-page .restaurant-menu-item strong,
+.restaurant-menu-page .restaurant-menu-item-price,
+.restaurant-menu-page .restaurant-menu-price,
+.restaurant-menu-page .restaurant-menu-prices span {
+  font-weight: 700 !important;
 }

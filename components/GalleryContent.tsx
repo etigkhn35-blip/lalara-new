@@ -1,40 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  collection,
-  getDocs,
-} from "firebase/firestore";
 
-import { db } from "@/lib/firebase";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useSiteContent } from "@/lib/cms/useSiteContent";
+import { galleryOriginals } from "@/lib/cms/gallery";
 
 /* =========================================================
    TYPES
    ========================================================= */
 
-type CmsRecord = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
 
-  buttonLabel?: string;
-  buttonLink?: string;
-
-  eyebrowSize?: number;
-  headingSize?: number;
-  textSize?: number;
-
-  fontWeight?: number;
-  lineHeight?: number;
-  letterSpacing?: number;
-
-  visible?: boolean;
-  status?: string;
-};
 
 export type GalleryMedia = {
   hero: string;
@@ -49,7 +28,7 @@ type GalleryContentProps = {
    HELPERS
    ========================================================= */
 
-function renderLines(value: string) {
+function renderLines(value = "") {
   const lines = value.split("\n");
 
   return lines.map((line, index) => (
@@ -67,145 +46,14 @@ function renderLines(value: string) {
 export default function GalleryContent({
   initialMedia,
 }: GalleryContentProps) {
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
-
   const media = initialMedia;
+  const { ready, getContent, isVisible, styleFor } = useSiteContent({
+    locale: "en",
+    originals: galleryOriginals.en,
+  });
 
-  /* =======================================================
-     LOAD CMS ONLY
-     ======================================================= */
-
-  useEffect(() => {
-    async function loadContent() {
-      try {
-        const contentSnapshot =
-          await getDocs(
-            collection(
-              db,
-              "siteContent"
-            )
-          );
-
-        const nextCms: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        contentSnapshot.forEach(
-          (item) => {
-            const data =
-              item.data() as CmsRecord;
-
-            if (
-              item.id.startsWith("en-") &&
-              data.status === "published"
-            ) {
-              nextCms[
-                item.id.replace(
-                  "en-",
-                  ""
-                )
-              ] = data;
-            }
-          }
-        );
-
-        setCms(nextCms);
-      } catch (error) {
-        console.error(
-          "Gallery CMS load error:",
-          error
-        );
-      }
-    }
-
-    loadContent();
-  }, []);
-
-  /* =======================================================
-     CMS HELPERS
-     ======================================================= */
-
-  function content(key: string) {
-    return cms[key];
-  }
-
-  function isVisible(key: string) {
-    return (
-      cms[key]?.visible !== false
-    );
-  }
-
-  /*
-   * Font family is intentionally NOT
-   * controlled by CMS.
-   *
-   * Button typography is also NOT
-   * controlled by CMS.
-   *
-   * This preserves the website's
-   * existing typography.
-   */
-
-  function cmsStyle(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-  ) {
-    const item = cms[key];
-
-    if (!item) {
-      return undefined;
-    }
-
-    const size =
-      kind === "eyebrow"
-        ? item.eyebrowSize
-        : kind === "heading"
-          ? item.headingSize
-          : item.textSize;
-
-    return {
-      ...(size
-        ? {
-            fontSize: `${size}px`,
-          }
-        : {}),
-
-      ...(item.fontWeight
-        ? {
-            fontWeight:
-              item.fontWeight,
-          }
-        : {}),
-
-      ...(item.lineHeight
-        ? {
-            lineHeight:
-              item.lineHeight,
-          }
-        : {}),
-
-      ...(item.letterSpacing !== undefined
-        ? {
-            letterSpacing: `${item.letterSpacing}px`,
-          }
-        : {}),
-    };
-  }
-
-  /* =======================================================
-     CMS CONTENT
-     ======================================================= */
-
-  const hero =
-    content("gallery-hero");
-
-  const cta =
-    content("gallery-cta");
+  const hero = getContent("gallery-hero");
+  const cta = getContent("gallery-cta");
 
   /* =======================================================
      RESERVATION
@@ -229,6 +77,8 @@ export default function GalleryContent({
           =================================================== */}
 
       <Header locale="en" />
+
+      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
 
       {/* ===================================================
           HERO
@@ -261,53 +111,30 @@ export default function GalleryContent({
 
               <p
                 className="eyebrow light"
-                style={cmsStyle(
+                style={styleFor(
                   "gallery-hero",
                   "eyebrow"
                 )}
               >
-                {hero?.eyebrow ||
-                  "La Lara · Yalıkavak"}
+                {hero?.eyebrow}
               </p>
 
               <h1
-                style={cmsStyle(
+                style={styleFor(
                   "gallery-hero",
                   "heading"
                 )}
               >
-                {hero?.heading
-                  ? renderLines(
-                      hero.heading
-                    )
-                  : (
-                    <>
-                      Moments
-                      <br />
-                      at La Lara
-                    </>
-                  )}
+                {renderLines(hero?.heading)}
               </h1>
 
               <p
-                style={cmsStyle(
+                style={styleFor(
                   "gallery-hero",
                   "text"
                 )}
               >
-                {hero?.body
-                  ? renderLines(
-                      hero.body
-                    )
-                  : (
-                    <>
-                      From quiet mornings
-                      to sunset dinners
-                      and evenings
-                      overlooking
-                      Yalıkavak Bay.
-                    </>
-                  )}
+                {renderLines(hero?.body)}
               </p>
 
             </div>
@@ -354,37 +181,26 @@ export default function GalleryContent({
 
           <p
             className="eyebrow"
-            style={cmsStyle(
+            style={styleFor(
               "gallery-cta",
               "eyebrow"
             )}
           >
-            {cta?.eyebrow ||
-              "Your Table Awaits"}
+            {cta?.eyebrow}
           </p>
 
           <h2
-            style={cmsStyle(
+            style={styleFor(
               "gallery-cta",
               "heading"
             )}
           >
-            {cta?.heading
-              ? renderLines(
-                  cta.heading
-                )
-              : (
-                <>
-                  Experience La Lara
-                  <br />
-                  for yourself.
-                </>
-              )}
+            {renderLines(cta?.heading)}
           </h2>
 
           {cta?.body && (
             <p
-              style={cmsStyle(
+              style={styleFor(
                 "gallery-cta",
                 "text"
               )}
@@ -414,8 +230,7 @@ export default function GalleryContent({
               rel="noopener noreferrer"
               className="outline-button gallery-dark-button"
             >
-              {cta?.buttonLabel ||
-                "REQUEST A RESERVATION"}
+              {cta?.buttonLabel}
             </a>
 
           </div>
@@ -425,6 +240,8 @@ export default function GalleryContent({
       {/* ===================================================
           FOOTER
           =================================================== */}
+
+            </div>
 
       <Footer locale="en" />
 

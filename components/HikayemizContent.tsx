@@ -1,39 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  collection,
-  getDocs,
-} from "firebase/firestore";
-
-import { db } from "@/lib/firebase";
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-
-type CmsRecord = {
-  eyebrow?: string;
-  heading?: string;
-  body?: string;
-
-  buttonLabel?: string;
-  buttonLink?: string;
-
-  eyebrowSize?: number;
-  headingSize?: number;
-  textSize?: number;
-  buttonSize?: number;
-
-  fontFamily?: "display" | "sans";
-  fontWeight?: number;
-  lineHeight?: number;
-  letterSpacing?: number;
-
-  visible?: boolean;
-  status?: string;
-};
+import { useSiteContent } from "@/lib/cms/useSiteContent";
+import { storyOriginals } from "@/lib/cms/story";
 
 export type StoryMedia = {
   hero: string;
@@ -42,14 +14,10 @@ export type StoryMedia = {
   people: string;
 };
 
-type HikayemizContentProps = {
-  initialMedia: StoryMedia;
-};
+type HikayemizContentProps = { initialMedia: StoryMedia };
 
-function renderLines(value: string) {
-  const lines = value.split("\n");
-
-  return lines.map((line, index) => (
+function renderLines(value = "") {
+  return value.split("\n").map((line, index, lines) => (
     <span key={`${line}-${index}`}>
       {line}
       {index < lines.length - 1 && <br />}
@@ -57,721 +25,150 @@ function renderLines(value: string) {
   ));
 }
 
-export default function HikayemizContent({
-  initialMedia,
-}: HikayemizContentProps) {
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
+function splitParagraphs(value = "") {
+  return value.split(/\n\s*\n/).filter(Boolean);
+}
 
+function renderPinkElephant(value = "") {
+  return splitParagraphs(value).map((paragraph, index) =>
+    index === 2 ? (
+      <blockquote key={index}>{renderLines(paragraph)}</blockquote>
+    ) : (
+      <p key={index}>{renderLines(paragraph)}</p>
+    )
+  );
+}
+
+function renderPeople(value = "") {
+  const paragraphs = splitParagraphs(value);
+  return paragraphs.map((paragraph, index) =>
+    index === paragraphs.length - 1 ? (
+      <strong key={index}>{renderLines(paragraph)}</strong>
+    ) : (
+      <p key={index}>{renderLines(paragraph)}</p>
+    )
+  );
+}
+
+export default function HikayemizContent({ initialMedia }: HikayemizContentProps) {
   const media = initialMedia;
+  const { ready, getContent, isVisible, styleFor } = useSiteContent({
+    locale: "tr",
+    originals: storyOriginals.tr,
+  });
 
-  useEffect(() => {
-    async function loadContent() {
-      try {
-        const contentSnapshot =
-          await getDocs(
-            collection(
-              db,
-              "siteContent"
-            )
-          );
+  const hero = getContent("story-hero");
+  const womanIntro = getContent("story-woman-intro");
+  const laraDetail = getContent("story-lara-detail");
+  const storyQuote = getContent("story-quote");
+  const storyPlace = getContent("story-place");
+  const elephant = getContent("pink-elephant");
+  const people = getContent("the-people-behind-our-story");
+  const cta = getContent("story-cta");
 
-        const nextCms: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        contentSnapshot.forEach(
-          (item) => {
-            const data =
-              item.data() as CmsRecord;
-
-            if (
-              item.id.startsWith("tr-") &&
-              data.status === "published"
-            ) {
-              nextCms[
-                item.id.replace(
-                  "tr-",
-                  ""
-                )
-              ] = data;
-            }
-          }
-        );
-
-        setCms(nextCms);
-      } catch (error) {
-        console.error(
-          "La Lara TR story CMS load error:",
-          error
-        );
-      }
-    }
-
-    loadContent();
-  }, []);
-
-  function content(key: string) {
-    return cms[key];
-  }
-
-  function isVisible(key: string) {
-    return cms[key]?.visible !== false;
-  }
-
-  function cmsStyle(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-  ) {
-    const item = cms[key];
-
-    if (!item) {
-      return undefined;
-    }
-
-    const size =
-      kind === "eyebrow"
-        ? item.eyebrowSize
-        : kind === "heading"
-          ? item.headingSize
-          : item.textSize;
-
-    return {
-      ...(size
-        ? {
-            fontSize: `${size}px`,
-          }
-        : {}),
-
-      ...(item.fontFamily
-        ? {
-            fontFamily:
-              item.fontFamily ===
-              "sans"
-                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
-                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
-          }
-        : {}),
-
-      ...(item.fontWeight
-        ? {
-            fontWeight:
-              item.fontWeight,
-          }
-        : {}),
-
-      ...(item.lineHeight
-        ? {
-            lineHeight:
-              item.lineHeight,
-          }
-        : {}),
-
-      ...(item.letterSpacing !== undefined
-        ? {
-            letterSpacing: `${item.letterSpacing}px`,
-          }
-        : {}),
-    };
-  }
-
-  const lara =
-    content(
-      "the-woman-behind-the-name"
-    );
-
-  const elephant =
-    content("pink-elephant");
-
-  const people =
-    content(
-      "the-people-behind-our-story"
-    );
-
-  const cta =
-    content("story-cta");
-
-  const whatsappHref =
-    "https://wa.me/905458941838?text=" +
-    encodeURIComponent(
-      "Merhaba La Lara, rezervasyon talebinde bulunmak istiyorum.\n\nTarih:\nSaat:\nKişi sayısı:"
-    );
+  const whatsappHref = "https://wa.me/905458941838?text=" + encodeURIComponent("Merhaba La Lara, rezervasyon talebinde bulunmak istiyorum.\n\nTarih:\nSaat:\nKişi sayısı:");
 
   return (
     <main className="story-page">
       <Header locale="tr" />
 
-      {/* =====================================================
-          HERO
-          ===================================================== */}
-
-      {media.hero && (
-        <section
-          className="story-page-hero"
-          style={{
-            background: "transparent",
-          }}
-        >
-          <Image
-            src={media.hero}
-            alt="La Lara Restaurant & Bar Yalıkavak"
-            fill
-            priority
-            fetchPriority="high"
-            sizes="100vw"
-            className="cover"
-          />
-
-          <div className="image-overlay" />
-
-          <div className="story-page-hero-content">
-            <p className="eyebrow light">
-              La Lara · Yalıkavak
-            </p>
-
-            <h1>Hikâyemiz</h1>
-
-            <p>
-              La Lara&apos;yı var eden insanlar, anılar
-              <br />
-              ve küçük detaylar.
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* =====================================================
-          THE WOMAN BEHIND THE NAME
-          ===================================================== */}
-
-      {isVisible(
-        "the-woman-behind-the-name"
-      ) && (
-        <>
-          <section className="story-page-intro">
-            <p
-              className="eyebrow"
-              style={cmsStyle(
-                "the-woman-behind-the-name",
-                "eyebrow"
-              )}
-            >
-              {lara?.eyebrow ||
-                "Her Şeyin Başladığı Yer"}
-            </p>
-
-            <h2
-              style={cmsStyle(
-                "the-woman-behind-the-name",
-                "heading"
-              )}
-            >
-              {lara?.heading
-                ? renderLines(
-                    lara.heading
-                  )
-                : (
-                  <>
-                    İsmin Ardındaki
-                    <br />
-                    Kadın
-                  </>
-                )}
-            </h2>
-
-            <p className="story-page-lead">
-              Her ailede herkesi bir araya
-              getiren biri vardır.
-              <br />
-              Bizim ailemizde bu kişi
-              Lara&apos;ydı.
-            </p>
-          </section>
-
-          {/* =================================================
-              LARA
-              ================================================= */}
-
-          <section className="story-page-section story-page-section-lara">
-            <div className="story-page-image">
-              {media.lara && (
-                <Image
-                  src={media.lara}
-                  alt="Lara ve La Lara'nın ilham veren hikâyesi"
-                  fill
-                  sizes="(max-width:900px) 100vw,50vw"
-                  className="cover"
-                />
-              )}
+      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
+        {media.hero && isVisible("story-hero") && (
+          <section className="story-page-hero" style={{ background: "transparent" }}>
+            <Image src={media.hero} alt="La Lara Restaurant & Bar Yalıkavak" fill priority fetchPriority="high" sizes="100vw" className="cover" />
+            <div className="image-overlay" />
+            <div className="story-page-hero-content">
+              <p className="eyebrow light" style={styleFor("story-hero", "eyebrow")}>{hero?.eyebrow}</p>
+              <h1 style={styleFor("story-hero", "heading")}>{renderLines(hero?.heading)}</h1>
+              <p style={styleFor("story-hero", "text")}>{renderLines(hero?.body)}</p>
             </div>
+          </section>
+        )}
 
-            <div className="story-page-copy">
-              <h2>
-                Sıcak, zarif
-                <br />
-                ve karakter dolu.
-              </h2>
+        {isVisible("story-woman-intro") && (
+          <>
+            <section className="story-page-intro">
+              <p className="eyebrow" style={styleFor("story-woman-intro", "eyebrow")}>{womanIntro?.eyebrow}</p>
+              <h2 style={styleFor("story-woman-intro", "heading")}>{renderLines(womanIntro?.heading)}</h2>
+              <p className="story-page-lead" style={styleFor("story-woman-intro", "text")}>{renderLines(womanIntro?.body)}</p>
+            </section>
 
-              {lara?.body ? (
-                <div
-                  style={{
-                    ...cmsStyle(
-                      "the-woman-behind-the-name",
-                      "text"
-                    ),
-                    whiteSpace:
-                      "pre-line",
-                  }}
-                >
-                  {lara.body}
+            {isVisible("story-lara-detail") && (
+              <section className="story-page-section story-page-section-lara">
+                <div className="story-page-image">
+                  {media.lara && <Image src={media.lara} alt="Lara ve La Lara'nın ilham veren hikâyesi" fill sizes="(max-width:900px) 100vw,50vw" className="cover" />}
                 </div>
-              ) : (
-                <>
-                  <p>
-                    Büyükannemiz hiç de hayal
-                    edebileceğiniz geleneksel
-                    büyükannelerden biri
-                    değildi. Kariyer sahibi,
-                    güçlü bir kişiliğe ve
-                    kendine özgü bir stile
-                    sahipti; kabul etmek
-                    gerekir ki biraz da diva
-                    ruhu vardı.
-                  </p>
-
-                  <p>
-                    Yemek yapmayı severdi ama
-                    insanları sofrasında
-                    ağırlamayı daha da çok
-                    severdi.
-                  </p>
-
-                  <p>
-                    Masasında her zaman bir
-                    misafire, yeni bir
-                    hikâyeye ve başka bir
-                    sohbete yer vardı.
-                    Yemekler çoğu zaman
-                    planlanandan daha uzun
-                    sürerdi. İnsanlar gülmek,
-                    haberleri paylaşmak, bazen
-                    bir problemi çözmek ve her
-                    zaman güzel bir şeyler
-                    yemek için bir araya
-                    gelirdi.
-                  </p>
-
-                  <p>
-                    Lara için misafirperverlik
-                    büyük bir gösteri yapmak
-                    değildi. İnsanların
-                    kendilerini rahat, değerli
-                    ve evlerinde
-                    hissetmelerini sağlamaktı.
-                  </p>
-
-                  <p>
-                    Ve bunu son derece doğal
-                    bir şekilde yapardı.
-                  </p>
-                </>
-              )}
-            </div>
-          </section>
-
-          {/* =================================================
-              QUOTE
-              ================================================= */}
-
-          <section className="story-page-quote">
-            <p>
-              “Kendi restoranımızı hayal
-              etmeye başladığımızda,
-              <br />
-              tekrar tekrar o anılara döndük.”
-            </p>
-          </section>
-
-          {/* =================================================
-              RESTAURANT
-              ================================================= */}
-
-          <section className="story-page-section story-page-section-reverse">
-            <div className="story-page-copy">
-              <p className="eyebrow">
-                La Lara
-              </p>
-
-              <h2>
-                O hissi
-                <br />
-                yaşatmak.
-              </h2>
-
-              <p>
-                Amacımız onun evini yeniden
-                yaratmak değildi. O sofradaki
-                hissi yeni bir yere taşımak
-                istedik.
-              </p>
-
-              <p>
-                İyi yemeklerin insanları bir
-                araya getirdiği bir yer.
-                Sohbetlerin aceleye gelmediği,
-                atmosferin zarif ama hiçbir
-                zaman fazla resmi olmadığı
-                bir yer.
-              </p>
-
-              <p>
-                Sıcak, canlı ve karakter
-                dolu.
-              </p>
-
-              <p>
-                Tıpkı Lara gibi.
-              </p>
-            </div>
-
-            <div className="story-page-image">
-              {media.restaurant && (
-                <Image
-                  src={media.restaurant}
-                  alt="La Lara Restaurant Yalıkavak atmosferi"
-                  fill
-                  sizes="(max-width:900px) 100vw,50vw"
-                  className="cover"
-                />
-              )}
-            </div>
-          </section>
-        </>
-      )}
-
-      {/* =====================================================
-          PINK ELEPHANT
-          ===================================================== */}
-
-      {isVisible("pink-elephant") && (
-        <section className="story-page-elephant">
-          <div className="story-page-elephant-heading">
-            <p
-              className="eyebrow"
-              style={cmsStyle(
-                "pink-elephant",
-                "eyebrow"
-              )}
-            >
-              {elephant?.eyebrow ||
-                "Bir Aile Geleneği"}
-            </p>
-
-            <h2
-              style={cmsStyle(
-                "pink-elephant",
-                "heading"
-              )}
-            >
-              {elephant?.heading
-                ? renderLines(
-                    elephant.heading
-                  )
-                : (
-                  <>
-                    Pembe Filler
-                    <br />
-                    Görmen Dileğiyle
-                  </>
-                )}
-            </h2>
-          </div>
-
-          <div className="story-page-elephant-grid">
-            <div
-              className="story-page-elephant-mark"
-              aria-hidden="true"
-            >
-              <Image
-                src="/pink-elephant.ico"
-                alt=""
-                width={150}
-                height={150}
-              />
-            </div>
-
-            <div
-              className="story-page-elephant-copy"
-              style={cmsStyle(
-                "pink-elephant",
-                "text"
-              )}
-            >
-              {elephant?.body ? (
-                <div
-                  style={{
-                    whiteSpace:
-                      "pre-line",
-                  }}
-                >
-                  {elephant.body}
+                <div className="story-page-copy">
+                  <h2 style={styleFor("story-lara-detail", "heading")}>{renderLines(laraDetail?.heading)}</h2>
+                  {splitParagraphs(laraDetail?.body).map((paragraph, index) => (
+                    <p key={index} style={styleFor("story-lara-detail", "text")}>{renderLines(paragraph)}</p>
+                  ))}
                 </div>
-              ) : (
-                <>
-                  <p>
-                    Çocukken, yatmadan önce
-                    büyükannemiz hep
-                    &quot;Pembe filler görmen
-                    dileğiyle&quot; derdi.
-                  </p>
-
-                  <p>
-                    Bunun ne anlama geldiğini
-                    hiç sorgulamadık. Sadece
-                    ona özgü, biraz tuhaf ama
-                    sevgi dolu
-                    alışkanlıklardan biriydi;
-                    kişisel, eğlenceli ve
-                    biraz da gizemli.
-                  </p>
-
-                  <blockquote>
-                    “Pembe filler görmen
-                    dileğiyle.”
-                  </blockquote>
-
-                  <p>
-                    Bugün, onun bu sözlerine
-                    yeni bir anlam katmayı
-                    seviyoruz. &quot;Pembe
-                    filler görmen
-                    dileğiyle&quot; sözü;
-                    meraklı kalmanın,
-                    görünenin ötesini
-                    düşünmenin ve biraz daha
-                    büyük hayaller kurmanın
-                    bir hatırlatıcısı bizim
-                    için.
-                  </p>
-
-                  <p>
-                    Pembe fil, restoranımızın
-                    simgesi haline geldi.
-                    Başkalarına belki son
-                    derece rastgele bir seçim
-                    gibi görünebilir; ama
-                    bizim için o, evimizden
-                    küçük bir parça taşıyor.
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* =====================================================
-          PEOPLE
-          ===================================================== */}
-
-      {isVisible(
-        "the-people-behind-our-story"
-      ) && (
-        <section className="story-page-people">
-          <div className="story-page-people-image">
-            {media.people && (
-              <Image
-                src={media.people}
-                alt="La Lara'nın aileden ilham alan misafirperverliği"
-                fill
-                sizes="(max-width:900px) 100vw,50vw"
-                className="cover"
-              />
+              </section>
             )}
 
-            {media.people && (
-              <div className="image-overlay" />
+            {isVisible("story-quote") && (
+              <section className="story-page-quote">
+                <p style={styleFor("story-quote", "text")}>{renderLines(storyQuote?.body)}</p>
+              </section>
             )}
-          </div>
 
-          <div className="story-page-people-content">
-            <div>
-              <p
-                className="eyebrow light"
-                style={cmsStyle(
-                  "the-people-behind-our-story",
-                  "eyebrow"
-                )}
-              >
-                {people?.eyebrow ||
-                  "Emeği Geçenler"}
-              </p>
-
-              <h2
-                style={cmsStyle(
-                  "the-people-behind-our-story",
-                  "heading"
-                )}
-              >
-                {people?.heading
-                  ? renderLines(
-                      people.heading
-                    )
-                  : (
-                    <>
-                      Bir aileden,
-                      <br />
-                      bir sofraya.
-                    </>
-                  )}
-              </h2>
-            </div>
-
-            <div
-              className="story-page-people-copy"
-              style={cmsStyle(
-                "the-people-behind-our-story",
-                "text"
-              )}
-            >
-              {people?.body ? (
-                <div
-                  style={{
-                    whiteSpace:
-                      "pre-line",
-                  }}
-                >
-                  {people.body}
+            {isVisible("story-place") && (
+              <section className="story-page-section story-page-section-reverse">
+                <div className="story-page-copy">
+                  <p className="eyebrow" style={styleFor("story-place", "eyebrow")}>{storyPlace?.eyebrow}</p>
+                  <h2 style={styleFor("story-place", "heading")}>{renderLines(storyPlace?.heading)}</h2>
+                  {splitParagraphs(storyPlace?.body).map((paragraph, index) => (
+                    <p key={index} style={styleFor("story-place", "text")}>{renderLines(paragraph)}</p>
+                  ))}
                 </div>
-              ) : (
-                <>
-                  <p>
-                    Restoran adını
-                    Lara&apos;dan alsa da, bu
-                    hikâye tek bir kişiye ait
-                    değil.
-                  </p>
+                <div className="story-page-image">
+                  {media.restaurant && <Image src={media.restaurant} alt="La Lara Restaurant Yalıkavak atmosferi" fill sizes="(max-width:900px) 100vw,50vw" className="cover" />}
+                </div>
+              </section>
+            )}
+          </>
+        )}
 
-                  <p>
-                    Bu hikâye aynı zamanda
-                    çocukluğumuzu şekillendiren
-                    ve mutfaklarında
-                    büyüdüğümüz tüm
-                    büyükannelerimiz ve
-                    büyükbabalarımız için.
-                  </p>
-
-                  <p>
-                    Onların her biri bize
-                    hiçbir tarifin tam olarak
-                    anlatamayacağı bir şey
-                    bıraktı: Bir sofrayı
-                    paylaşmanın yemekten çok
-                    daha fazlası olduğunu.
-                  </p>
-
-                  <p>
-                    La Lara, bu anıları
-                    geleceğe taşıma ve
-                    soframıza katılan
-                    insanlarla yeni anılar
-                    yaratma biçimimiz.
-                  </p>
-
-                  <p>
-                    Yani burası, kendine has
-                    bir şekilde, bir teşekkür
-                    niteliğinde.
-                  </p>
-
-                  <strong>
-                    Lara, Vova, Vitali ve
-                    Raya&apos;ya...
-                  </strong>
-                </>
-              )}
+        {isVisible("pink-elephant") && (
+          <section className="story-page-elephant">
+            <div className="story-page-elephant-heading">
+              <p className="eyebrow" style={styleFor("pink-elephant", "eyebrow")}>{elephant?.eyebrow}</p>
+              <h2 style={styleFor("pink-elephant", "heading")}>{renderLines(elephant?.heading)}</h2>
             </div>
-          </div>
-        </section>
-      )}
+            <div className="story-page-elephant-grid">
+              <div className="story-page-elephant-mark" aria-hidden="true"><Image src="/pink-elephant.ico" alt="" width={150} height={150} /></div>
+              <div className="story-page-elephant-copy" style={styleFor("pink-elephant", "text")}>{renderPinkElephant(elephant?.body)}</div>
+            </div>
+          </section>
+        )}
 
-      {/* =====================================================
-          CTA
-          ===================================================== */}
+        {isVisible("the-people-behind-our-story") && (
+          <section className="story-page-people">
+            <div className="story-page-people-image">
+              {media.people && <Image src={media.people} alt="La Lara'nın aileden ilham alan misafirperverliği" fill sizes="(max-width:900px) 100vw,50vw" className="cover" />}
+              {media.people && <div className="image-overlay" />}
+            </div>
+            <div className="story-page-people-content">
+              <p className="eyebrow light" style={styleFor("the-people-behind-our-story", "eyebrow")}>{people?.eyebrow}</p>
+              <h2 style={styleFor("the-people-behind-our-story", "heading")}>{renderLines(people?.heading)}</h2>
+              <div className="story-page-people-copy" style={styleFor("the-people-behind-our-story", "text")}>{renderPeople(people?.body)}</div>
+            </div>
+          </section>
+        )}
 
-      {isVisible("story-cta") && (
-        <section className="story-page-cta">
-          <p
-            className="eyebrow"
-            style={cmsStyle(
-              "story-cta",
-              "eyebrow"
-            )}
-          >
-            {cta?.eyebrow ||
-              "La Lara · Yalıkavak"}
-          </p>
-
-          <h2
-            style={cmsStyle(
-              "story-cta",
-              "heading"
-            )}
-          >
-            {cta?.heading
-              ? renderLines(
-                  cta.heading
-                )
-              : (
-                <>
-                  Şimdi kendi
-                  <br />
-                  anılarınızı yaratın.
-                </>
-              )}
-          </h2>
-
-          {cta?.body && (
-            <p
-              style={cmsStyle(
-                "story-cta",
-                "text"
-              )}
-            >
-              {renderLines(
-                cta.body
-              )}
-            </p>
-          )}
-
-          <div className="story-page-cta-actions">
-            <Link
-              href="/tr#menus"
-              className="line-link"
-            >
-              MENÜLERİMİZİ GÖRÜN{" "}
-              <span>→</span>
-            </Link>
-
-            <a
-              href={
-                cta?.buttonLink ||
-                whatsappHref
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="outline-button story-page-dark-button tr-uppercase"
-            >
-              {cta?.buttonLabel ||
-                "REZERVASYON TALEBİ"}
-            </a>
-          </div>
-        </section>
-      )}
+        {isVisible("story-cta") && (
+          <section className="story-page-cta">
+            <p className="eyebrow" style={styleFor("story-cta", "eyebrow")}>{cta?.eyebrow}</p>
+            <h2 style={styleFor("story-cta", "heading")}>{renderLines(cta?.heading)}</h2>
+            {cta?.body && <p style={styleFor("story-cta", "text")}>{renderLines(cta.body)}</p>}
+            <div className="story-page-cta-actions">
+              <Link href="/tr#menus" className="line-link">MENÜLERİMİZİ GÖRÜN <span>→</span></Link>
+              <a href={cta?.buttonLink || whatsappHref} target="_blank" rel="noopener noreferrer" className="outline-button story-page-dark-button tr-uppercase" style={styleFor("story-cta", "button")}>{cta?.buttonLabel}</a>
+            </div>
+          </section>
+        )}
+      </div>
 
       <Footer locale="tr" />
     </main>

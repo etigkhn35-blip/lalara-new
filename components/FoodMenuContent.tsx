@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   collection,
   getDocs,
+  onSnapshot,
 } from "firebase/firestore";
 
 import Header from "@/components/Header";
@@ -625,6 +626,9 @@ export default function FoodMenuContent({
   const [cmsReady, setCmsReady] =
     useState(false);
 
+  const [menuLoaded, setMenuLoaded] =
+    useState(false);
+
   const isTR =
     locale === "tr";
 
@@ -908,10 +912,54 @@ export default function FoodMenuContent({
         setCmsReady(
           false
         );
+      } finally {
+        setMenuLoaded(true);
       }
     }
 
+    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+    let initialSnapshots = 0;
+
+    const scheduleRefresh = () => {
+      initialSnapshots += 1;
+
+      // Ignore the initial snapshot from each listener. The first loadMenu()
+      // call already reads the same three collections.
+      if (initialSnapshots <= 3) return;
+
+      if (refreshTimer) clearTimeout(refreshTimer);
+
+      refreshTimer = setTimeout(() => {
+        void loadMenu();
+      }, 80);
+    };
+
     void loadMenu();
+
+    const unsubscribeCategories = onSnapshot(
+      collection(db, "menuCategories"),
+      scheduleRefresh,
+      (error) => console.error("Food categories live listener error:", error)
+    );
+
+    const unsubscribeItems = onSnapshot(
+      collection(db, "menuItems"),
+      scheduleRefresh,
+      (error) => console.error("Food items live listener error:", error)
+    );
+
+    const unsubscribeSettings = onSnapshot(
+      collection(db, "menuSettings"),
+      scheduleRefresh,
+      (error) => console.error("Food settings live listener error:", error)
+    );
+
+    return () => {
+      if (refreshTimer) clearTimeout(refreshTimer);
+      unsubscribeCategories();
+      unsubscribeItems();
+      unsubscribeSettings();
+    };
   }, []);
 
   /*
@@ -927,9 +975,10 @@ export default function FoodMenuContent({
 
   return (
     <main
-  className="restaurant-menu-page"
-  lang={locale === "tr" ? "tr" : "en"}
->
+      className="restaurant-menu-page"
+      lang={locale === "tr" ? "tr" : "en"}
+      style={{ visibility: menuLoaded ? "visible" : "hidden" }}
+    >
 
       {/* PHOTO HEADER */}
 

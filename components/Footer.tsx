@@ -7,7 +7,7 @@ import {
   collection,
   doc,
   getDoc,
-  getDocs,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -88,85 +88,82 @@ export default function Footer({
      ========================================================= */
 
   useEffect(() => {
-    async function loadFooter() {
-      try {
-        const [
-          contactSnapshot,
-          socialSnapshot,
-          contentSnapshot,
-        ] = await Promise.all([
-          getDoc(
-            doc(db, "siteSettings", "contact")
-          ),
-          getDoc(
-            doc(db, "siteSettings", "social")
-          ),
-          getDocs(
-            collection(db, "siteContent")
-          ),
-        ]);
+    let active = true;
 
-        /* SETTINGS */
+    async function loadSettings() {
+      try {
+        const [contactSnapshot, socialSnapshot] =
+          await Promise.all([
+            getDoc(doc(db, "siteSettings", "contact")),
+            getDoc(doc(db, "siteSettings", "social")),
+          ]);
+
+        if (!active) return;
 
         setSettings({
           phone:
             contactSnapshot.data()?.phone ??
             defaultSettings.phone,
-
           email:
             contactSnapshot.data()?.email ??
             defaultSettings.email,
-
           address:
             contactSnapshot.data()?.address ??
             defaultSettings.address,
-
           instagram:
             socialSnapshot.data()?.instagram ??
             defaultSettings.instagram,
-
           facebook:
             socialSnapshot.data()?.facebook ??
             defaultSettings.facebook,
-
           tripadvisor:
             socialSnapshot.data()?.tripadvisor ??
             defaultSettings.tripadvisor,
         });
-
-        /* CMS */
-
-        const prefix = isTR ? "tr-" : "en-";
-
-        const next: Record<
-          string,
-          CmsRecord
-        > = {};
-
-        contentSnapshot.forEach((item) => {
-          const data =
-            item.data() as CmsRecord;
-
-          if (
-            item.id.startsWith(prefix) &&
-            data.status === "published"
-          ) {
-            next[
-              item.id.replace(prefix, "")
-            ] = data;
-          }
-        });
-
-        setCms(next);
       } catch (error) {
         console.error(
-          "Footer CMS load error:",
+          "Footer settings load error:",
           error
         );
       }
     }
 
-    loadFooter();
+    void loadSettings();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const prefix = isTR ? "tr-" : "en-";
+
+    return onSnapshot(
+      collection(db, "siteContent"),
+      (snapshot) => {
+        const next: Record<string, CmsRecord> = {};
+
+        snapshot.forEach((item) => {
+          const data = item.data() as CmsRecord;
+
+          if (
+            item.id.startsWith(prefix) &&
+            (!data.status || data.status === "published")
+          ) {
+            next[item.id.replace(prefix, "")] = data;
+          }
+        });
+
+        setCms(next);
+      },
+      (error) => {
+        console.error(
+          "Footer CMS live load error:",
+          error
+        );
+        setCms({});
+      }
+    );
   }, [isTR]);
 
   /* =========================================================
@@ -266,7 +263,7 @@ useEffect(() => {
             : item.textSize;
 
     return {
-      ...(size
+      ...(size !== undefined
         ? {
             fontSize: `${size}px`,
           }
@@ -281,14 +278,14 @@ useEffect(() => {
           }
         : {}),
 
-      ...(item.fontWeight
+      ...(item.fontWeight !== undefined
         ? {
             fontWeight:
               item.fontWeight,
           }
         : {}),
 
-      ...(item.lineHeight
+      ...(item.lineHeight !== undefined
         ? {
             lineHeight:
               item.lineHeight,
