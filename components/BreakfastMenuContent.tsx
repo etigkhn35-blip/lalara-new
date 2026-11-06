@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import "./restaurant-menu-reference.css";
 
 import {
   collection,
@@ -767,34 +768,10 @@ const isTR = locale === "tr";
 
       {/* FOOD / DRINKS / BREAKFAST */}
 
-      <nav
-        className="restaurant-menu-tabs"
-        aria-label="Menu navigation"
-      >
-        <Link
-          href={`/food-menu?lang=${locale}`}
-        >
-          {isTR
-            ? "YEMEK"
-            : "FOOD"}
-        </Link>
-
-        <Link
-          href={`/drinks-menu?lang=${locale}`}
-        >
-          {isTR
-            ? "İÇECEK"
-            : "DRINKS"}
-        </Link>
-
-        <Link
-          href={`/breakfast-menu?lang=${locale}`}
-          className="active"
-        >
-          {isTR
-            ? "KAHVALTI"
-            : "BREAKFAST"}
-        </Link>
+      <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
+        <Link href={`/breakfast-menu?lang=${locale}`} className="active">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
+        <Link href={`/food-menu?lang=${locale}`} className="">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
+        <Link href={`/drinks-menu?lang=${locale}`} className="">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -814,13 +791,8 @@ const isTR = locale === "tr";
       {/* TITLE */}
 
       <section className="restaurant-menu-heading">
-        <h1>
-          {menuTitle[locale]}
-        </h1>
-
-        <span>
-          {menuSubtitle[locale]}
-        </span>
+        <h1>{isTR ? "Kahvaltı Menüsü" : "Breakfast Menu"}</h1>
+        <span>{isTR ? "ACELE ETMEYİN" : "TAKE YOUR TIME"}</span>
       </section>
 
       {/* MENU */}

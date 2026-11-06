@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import "./restaurant-menu-reference.css";
 
 import {
   collection,
@@ -1000,34 +1001,10 @@ export default function FoodMenuContent({
 
       {/* FOOD / DRINKS / BREAKFAST */}
 
-      <nav
-        className="restaurant-menu-tabs"
-        aria-label="Menu navigation"
-      >
-        <Link
-          href={`/food-menu?lang=${locale}`}
-          className="active"
-        >
-          {isTR
-            ? "YEMEK"
-            : "FOOD"}
-        </Link>
-
-        <Link
-          href={`/drinks-menu?lang=${locale}`}
-        >
-          {isTR
-            ? "İÇECEK"
-            : "DRINKS"}
-        </Link>
-
-        <Link
-          href={`/breakfast-menu?lang=${locale}`}
-        >
-          {isTR
-            ? "KAHVALTI"
-            : "BREAKFAST"}
-        </Link>
+      <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
+        <Link href={`/breakfast-menu?lang=${locale}`} className="">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
+        <Link href={`/food-menu?lang=${locale}`} className="active">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
+        <Link href={`/drinks-menu?lang=${locale}`} className="">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -1047,17 +1024,8 @@ export default function FoodMenuContent({
       {/* TITLE */}
 
       <section className="restaurant-menu-heading">
-        <h1>
-          {menuTitle[
-            locale
-          ]}
-        </h1>
-
-        <span>
-          {menuSubtitle[
-            locale
-          ]}
-        </span>
+        <h1>{isTR ? "Öğle & Akşam Menüsü" : "Lunch & Dinner Menu"}</h1>
+        <span>{isTR ? "BİR ARAYA GELMEK İÇİN BİR NEDEN." : "A REASON TO GATHER."}</span>
       </section>
 
       {/* MENU */}

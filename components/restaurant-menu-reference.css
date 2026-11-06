@@ -1,0 +1,72 @@
+/* LA LARA — MENU PAGE DESIGN */
+
+.restaurant-menu-reference {
+  background: #f8f6f2;
+  color: #302f2b;
+}
+
+.restaurant-menu-reference .menu-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 65px;
+  flex-wrap: wrap;
+}
+
+.restaurant-menu-reference .menu-tabs a {
+  color: #302f2b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+}
+
+.restaurant-menu-reference .menu-tabs a.active {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.restaurant-menu-reference .menu-heading {
+  text-align: center;
+  padding: 60px 20px 75px;
+}
+
+.restaurant-menu-reference .menu-heading h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(42px, 5vw, 76px);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.restaurant-menu-reference .menu-heading p {
+  margin-top: 16px;
+  color: #77736d;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .restaurant-menu-reference .menu-tabs {
+    gap: 20px;
+  }
+
+  .restaurant-menu-reference .menu-tabs a {
+    font-size: 10px;
+  }
+
+  .restaurant-menu-reference .menu-heading {
+    padding: 45px 16px 55px;
+  }
+}
+/* DRINKS — reference grouping. Append to components/restaurant-menu-reference.css */
+.restaurant-menu-page .drinks-menu-groups { position: relative; z-index: 2; padding: 16px 0 88px; }
+.restaurant-menu-page .drinks-menu-group { max-width: 1540px; padding: 0 clamp(22px, 3vw, 48px); margin: 0 auto 58px; }
+.restaurant-menu-page .drinks-menu-group-title { font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif; font-size: clamp(30px, 2.7vw, 42px); line-height: 1.2; letter-spacing: -.025em; font-weight: 400; color: #30302d; margin: 0 0 30px; }
+.restaurant-menu-page .drinks-menu-group .restaurant-menu-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 54px 6%; width: 100%; max-width: none; padding: 0; margin: 0; align-items: start; }
+.restaurant-menu-page .drinks-menu-group .restaurant-menu-section { min-width: 0; }
+.restaurant-menu-page .drinks-menu-group .restaurant-menu-section > h2 { color: #c18d89; font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding-bottom: 13px; margin: 0 0 18px; border-bottom: 1px solid #dedbd6; }
+.restaurant-menu-page .drinks-menu-group .restaurant-menu-item h3 { font-weight: 700; }
+.restaurant-menu-page .drinks-menu-group .restaurant-menu-item p { color: #77736e; }
+@media (max-width: 850px) { .restaurant-menu-page .drinks-menu-group .restaurant-menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 42px 6%; } }
+@media (max-width: 600px) { .restaurant-menu-page .drinks-menu-group .restaurant-menu-grid { grid-template-columns: 1fr; gap: 36px; } .restaurant-menu-page .drinks-menu-group { margin-bottom: 50px; } }

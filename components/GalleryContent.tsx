@@ -1,6 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import Link from "next/link";
 
 
@@ -46,7 +48,24 @@ function renderLines(value = "") {
 export default function GalleryContent({
   initialMedia,
 }: GalleryContentProps) {
-  const media = initialMedia;
+  const [media, setMedia] = useState<GalleryMedia>(initialMedia ?? { hero: "", photos: [] });
+
+  useEffect(() => {
+    return onSnapshot(
+      doc(db, "pageMedia", "gallery"),
+      (snapshot) => {
+        if (!snapshot.exists()) return;
+        const fields = snapshot.data()?.fields;
+        setMedia({
+          hero: typeof fields?.hero === "string" ? fields.hero : "",
+          photos: Array.isArray(fields?.photos)
+            ? fields.photos.filter((url: unknown): url is string => typeof url === "string" && url.length > 0)
+            : [],
+        });
+      },
+      (error) => console.error("Gallery media:", error)
+    );
+  }, []);
   const { ready, getContent, isVisible, styleFor } = useSiteContent({
     locale: "en",
     originals: galleryOriginals.en,
@@ -90,19 +109,15 @@ export default function GalleryContent({
         media.hero && (
           <section
             className="gallery-page-hero"
-            style={{
-              background:
-                "transparent",
-            }}
+            style={{ background: "transparent", height: "auto", minHeight: 0 }}
           >
-            <Image
+            {/* Natural image ratio: no cropping */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={media.hero}
               alt="La Lara Restaurant & Bar gallery in Yalıkavak"
-              fill
-              priority
+              className="gallery-natural-hero-image"
               fetchPriority="high"
-              sizes="100vw"
-              className="cover"
             />
 
             <div className="image-overlay" />
@@ -150,19 +165,16 @@ export default function GalleryContent({
           {media.photos.map(
             (src, index) => (
               <figure
-                className={`gallery-page-item gallery-page-item-${
-                  (index % 6) + 1
-                }`}
+                className={`gallery-page-item gallery-page-item-${(index % 6) + 1}`}
                 key={`${src}-${index}`}
+                style={{ position: "relative", height: "auto", minHeight: 0, aspectRatio: "auto" }}
               >
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={src}
-                  alt={`La Lara Restaurant & Bar Yalıkavak ${
-                    index + 1
-                  }`}
-                  fill
-                  sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 40vw"
-                  className="cover"
+                  alt={`La Lara Restaurant & Bar Yalıkavak ${index + 1}`}
+                  loading="lazy"
+                  className="gallery-natural-grid-image"
                 />
               </figure>
             )

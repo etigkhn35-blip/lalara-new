@@ -47,7 +47,7 @@ const navigation: NavItem[] = [
     icon: "≡",
   },
   {
-    label: "Gallery",
+    label: "Photography",
     href: "/admin/media",
     icon: "▧",
   },

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -12,13 +13,19 @@ export type StoryMedia = {
   lara: string;
   restaurant: string;
   people: string;
+  elephant?: string;
+  people1?: string;
+  people2?: string;
+  people3?: string;
 };
 
-type OurStoryContentProps = { initialMedia: StoryMedia };
+type OurStoryContentProps = {
+  initialMedia: StoryMedia;
+};
 
 function renderLines(value = "") {
   return value.split("\n").map((line, index, lines) => (
-    <span key={`${line}-${index}`}>
+    <span key={index}>
       {line}
       {index < lines.length - 1 && <br />}
     </span>
@@ -29,10 +36,18 @@ function splitParagraphs(value = "") {
   return value.split(/\n\s*\n/).filter(Boolean);
 }
 
+function renderParagraphs(value = "") {
+  return splitParagraphs(value).map((paragraph, index) => (
+    <p key={index}>{renderLines(paragraph)}</p>
+  ));
+}
+
 function renderPinkElephant(value = "") {
   return splitParagraphs(value).map((paragraph, index) =>
     index === 2 ? (
-      <blockquote key={index}>{renderLines(paragraph)}</blockquote>
+      <blockquote key={index}>
+        {renderLines(paragraph)}
+      </blockquote>
     ) : (
       <p key={index}>{renderLines(paragraph)}</p>
     )
@@ -41,130 +56,441 @@ function renderPinkElephant(value = "") {
 
 function renderPeople(value = "") {
   const paragraphs = splitParagraphs(value);
+
   return paragraphs.map((paragraph, index) => {
     if (index === paragraphs.length - 2) {
-      return <strong key={index}>{renderLines(paragraph)}</strong>;
+      return (
+        <strong key={index}>
+          {renderLines(paragraph)}
+        </strong>
+      );
     }
+
     if (index === paragraphs.length - 1) {
-      return <em key={index}>{renderLines(paragraph)}</em>;
+      return (
+        <em key={index}>
+          {renderLines(paragraph)}
+        </em>
+      );
     }
+
     return <p key={index}>{renderLines(paragraph)}</p>;
   });
 }
 
-export default function OurStoryContent({ initialMedia }: OurStoryContentProps) {
+export default function OurStoryContent({
+  initialMedia,
+}: OurStoryContentProps) {
   const media = initialMedia;
-  const { ready, getContent, isVisible, styleFor } = useSiteContent({
-    locale: "en",
-    originals: storyOriginals.en,
-  });
+
+  const { ready, getContent, isVisible, styleFor } =
+    useSiteContent({
+      locale: "en",
+      originals: storyOriginals.en,
+    });
 
   const hero = getContent("story-hero");
   const womanIntro = getContent("story-woman-intro");
   const laraDetail = getContent("story-lara-detail");
-  const storyQuote = getContent("story-quote");
   const storyPlace = getContent("story-place");
   const elephant = getContent("pink-elephant");
   const people = getContent("the-people-behind-our-story");
   const cta = getContent("story-cta");
 
+  const heroHeading = hero?.heading || "Our Story";
+
+  const heroBody =
+    hero?.body ||
+    "La Lara was created around a simple idea. Good food tastes better when it is shared with the people you love.";
+
+  const beginningEyebrow =
+    womanIntro?.eyebrow ||
+    "A FEW WORDS FROM THE OWNER FAMILY";
+
+  const beginningHeading =
+    womanIntro?.heading || "Where it began.";
+
+  const beginningBody =
+    womanIntro?.body ||
+    laraDetail?.body ||
+    "";
+
+  const inspirationEyebrow =
+    storyPlace?.eyebrow || "THE RESTAURANT";
+
+  const inspirationHeading =
+    storyPlace?.heading || "Our Inspiration.";
+
+  const inspirationBody = storyPlace?.body || "";
+
+  const elephantEyebrow =
+    elephant?.eyebrow || "THE PINK ELEPHANT";
+
+  const elephantHeading =
+    elephant?.heading || "Dream A Little Bigger.";
+
+  const peopleEyebrow =
+    people?.eyebrow || "A FAMILY TIES";
+
+  const peopleHeading =
+    people?.heading || "The People Behind It.";
+
+  const ctaHeading =
+    cta?.heading ||
+    "Come And Make\nYour Own Memories.";
+
+  const ctaLink =
+    cta?.buttonLink ||
+    storyOriginals.en["story-cta"]?.buttonLink ||
+    "#";
+
   return (
-    <main className="story-page">
+    <main className="story-page story-full">
       <Header locale="en" />
 
-      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
-        {media.hero && isVisible("story-hero") && (
-          <section className="story-page-hero" style={{ background: "transparent" }}>
-            <Image src={media.hero} alt="La Lara Restaurant & Bar in Yalıkavak" fill priority fetchPriority="high" sizes="100vw" className="cover" />
-            <div className="image-overlay" />
-            <div className="story-page-hero-content">
-              <p className="eyebrow light" style={styleFor("story-hero", "eyebrow")}>{hero?.eyebrow}</p>
-              <h1 style={styleFor("story-hero", "heading")}>{renderLines(hero?.heading)}</h1>
-              <p style={styleFor("story-hero", "text")}>{renderLines(hero?.body)}</p>
+      <div
+        className="story-full-main"
+        style={{
+          visibility: ready ? "visible" : "hidden",
+        }}
+        aria-busy={!ready}
+      >
+        {/* 01 - HERO */}
+
+        {isVisible("story-hero") && (
+          <section className="story-full-hero">
+            {media.hero && (
+              <Image
+                src={media.hero}
+                alt="Yalıkavak landscape"
+                fill
+                priority
+                fetchPriority="high"
+                sizes="100vw"
+                className="story-full-cover"
+              />
+            )}
+
+            <div className="story-full-hero-overlay" />
+
+            <div className="story-full-hero-content">
+              <h1 style={styleFor("story-hero", "heading")}>
+                {renderLines(heroHeading)}
+              </h1>
+
+              <p style={styleFor("story-hero", "text")}>
+                {renderLines(heroBody)}
+              </p>
             </div>
           </section>
         )}
+
+        {/* 02 - WHERE IT BEGAN */}
 
         {isVisible("story-woman-intro") && (
-          <>
-            <section className="story-page-intro">
-              <p className="eyebrow" style={styleFor("story-woman-intro", "eyebrow")}>{womanIntro?.eyebrow}</p>
-              <h2 style={styleFor("story-woman-intro", "heading")}>{renderLines(womanIntro?.heading)}</h2>
-              <p className="story-page-lead" style={styleFor("story-woman-intro", "text")}>{renderLines(womanIntro?.body)}</p>
-            </section>
+          <section className="story-full-beginning">
+            <div className="story-full-container">
+              <div className="story-full-two-column">
+                <div className="story-full-copy">
+                  <p
+                    className="story-full-eyebrow"
+                    style={styleFor(
+                      "story-woman-intro",
+                      "eyebrow"
+                    )}
+                  >
+                    {beginningEyebrow}
+                  </p>
 
-            {isVisible("story-lara-detail") && (
-              <section className="story-page-section story-page-section-lara">
-                <div className="story-page-image">
-                  {media.lara && <Image src={media.lara} alt="The story of Lara and the inspiration behind La Lara" fill sizes="(max-width:900px) 100vw,50vw" className="cover" />}
-                </div>
-                <div className="story-page-copy">
-                  <h2 style={styleFor("story-lara-detail", "heading")}>{renderLines(laraDetail?.heading)}</h2>
-                  {splitParagraphs(laraDetail?.body).map((paragraph, index) => (
-                    <p key={index} style={styleFor("story-lara-detail", "text")}>{renderLines(paragraph)}</p>
-                  ))}
-                </div>
-              </section>
-            )}
+                  <h2
+                    style={styleFor(
+                      "story-woman-intro",
+                      "heading"
+                    )}
+                  >
+                    {renderLines(beginningHeading)}
+                  </h2>
 
-            {isVisible("story-quote") && (
-              <section className="story-page-quote">
-                <p style={styleFor("story-quote", "text")}>{renderLines(storyQuote?.body)}</p>
-              </section>
-            )}
+                  <div
+                    className="story-full-body"
+                    style={styleFor(
+                      "story-woman-intro",
+                      "text"
+                    )}
+                  >
+                    {renderParagraphs(beginningBody)}
+                  </div>
+                </div>
 
-            {isVisible("story-place") && (
-              <section className="story-page-section story-page-section-reverse">
-                <div className="story-page-copy">
-                  <p className="eyebrow" style={styleFor("story-place", "eyebrow")}>{storyPlace?.eyebrow}</p>
-                  <h2 style={styleFor("story-place", "heading")}>{renderLines(storyPlace?.heading)}</h2>
-                  {splitParagraphs(storyPlace?.body).map((paragraph, index) => (
-                    <p key={index} style={styleFor("story-place", "text")}>{renderLines(paragraph)}</p>
-                  ))}
+                <div className="story-full-photo">
+                  {media.lara && (
+                    <Image
+                      src={media.lara}
+                      alt="Portrait of Lara"
+                      fill
+                      sizes="(max-width: 900px) 100vw, 45vw"
+                      className="story-full-cover"
+                    />
+                  )}
                 </div>
-                <div className="story-page-image">
-                  {media.restaurant && <Image src={media.restaurant} alt="La Lara Restaurant atmosphere in Yalıkavak" fill sizes="(max-width:900px) 100vw,50vw" className="cover" />}
-                </div>
-              </section>
-            )}
-          </>
+              </div>
+            </div>
+          </section>
         )}
+
+        {/* 03 - OUR INSPIRATION */}
+
+        {isVisible("story-place") && (
+          <section className="story-full-inspiration">
+            <div className="story-full-container">
+              <div className="story-full-two-column">
+                <div className="story-full-photo">
+                  {media.restaurant && (
+                    <Image
+                      src={media.restaurant}
+                      alt="Lara in the kitchen"
+                      fill
+                      sizes="(max-width: 900px) 100vw, 45vw"
+                      className="story-full-cover"
+                    />
+                  )}
+                </div>
+
+                <div className="story-full-copy">
+                  <p
+                    className="story-full-eyebrow"
+                    style={styleFor(
+                      "story-place",
+                      "eyebrow"
+                    )}
+                  >
+                    {inspirationEyebrow}
+                  </p>
+
+                  <h2
+                    style={styleFor(
+                      "story-place",
+                      "heading"
+                    )}
+                  >
+                    {renderLines(inspirationHeading)}
+                  </h2>
+
+                  <div
+                    className="story-full-body"
+                    style={styleFor(
+                      "story-place",
+                      "text"
+                    )}
+                  >
+                    {renderParagraphs(inspirationBody)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 04 - DREAM A LITTLE BIGGER */}
 
         {isVisible("pink-elephant") && (
-          <section className="story-page-elephant">
-            <div className="story-page-elephant-heading">
-              <p className="eyebrow" style={styleFor("pink-elephant", "eyebrow")}>{elephant?.eyebrow}</p>
-              <h2 style={styleFor("pink-elephant", "heading")}>{renderLines(elephant?.heading)}</h2>
-            </div>
-            <div className="story-page-elephant-grid">
-              <div className="story-page-elephant-mark" aria-hidden="true"><Image src="/pink-elephant.ico" alt="" width={150} height={150} /></div>
-              <div className="story-page-elephant-copy" style={styleFor("pink-elephant", "text")}>{renderPinkElephant(elephant?.body)}</div>
+          <section className="story-full-elephant">
+            <div className="story-full-container">
+              <div className="story-full-two-column">
+                <div className="story-full-copy">
+                  <p
+                    className="story-full-eyebrow"
+                    style={styleFor(
+                      "pink-elephant",
+                      "eyebrow"
+                    )}
+                  >
+                    {elephantEyebrow}
+                  </p>
+
+                  <h2
+                    style={styleFor(
+                      "pink-elephant",
+                      "heading"
+                    )}
+                  >
+                    {renderLines(elephantHeading)}
+                  </h2>
+
+                  <div
+                    className="story-full-body"
+                    style={styleFor(
+                      "pink-elephant",
+                      "text"
+                    )}
+                  >
+                    {renderPinkElephant(
+                      elephant?.body || ""
+                    )}
+                  </div>
+                </div>
+
+               <div className="story-full-elephant-visual">
+  <div className="story-full-elephant-photo">
+    <Image
+      src={media.elephant || "/images/story/pink-elephant.jpg"}
+      alt="A childhood memory behind the pink elephant story"
+      fill
+      sizes="(max-width: 900px) 100vw, 40vw"
+      className="story-full-cover"
+    />
+  </div>
+</div>
+              </div>
             </div>
           </section>
         )}
 
-        {isVisible("the-people-behind-our-story") && (
-          <section className="story-page-people">
-            <div className="story-page-people-image">
-              {media.people && <Image src={media.people} alt="Family-inspired hospitality at La Lara" fill sizes="(max-width:900px) 100vw,50vw" className="cover" />}
-              {media.people && <div className="image-overlay" />}
-            </div>
-            <div className="story-page-people-content">
-              <p className="eyebrow light" style={styleFor("the-people-behind-our-story", "eyebrow")}>{people?.eyebrow}</p>
-              <h2 style={styleFor("the-people-behind-our-story", "heading")}>{renderLines(people?.heading)}</h2>
-              <div className="story-page-people-copy" style={styleFor("the-people-behind-our-story", "text")}>{renderPeople(people?.body)}</div>
+        {/* 05 - THE PEOPLE BEHIND IT */}
+
+        {isVisible(
+          "the-people-behind-our-story"
+        ) && (
+          <section className="story-full-people">
+            <div className="story-full-container">
+              <div className="story-full-two-column">
+             
+<div className="story-full-people-images">
+  <div className="story-full-people-photo story-full-people-photo-1">
+    <Image
+      src={media.people1 || "/images/story/people-1.jpg"}
+      alt="Family memory with Lara"
+      fill
+      sizes="(max-width: 900px) 45vw, 22vw"
+      className="story-full-cover"
+    />
+  </div>
+
+  <div className="story-full-people-photo story-full-people-photo-2">
+    <Image
+      src={media.people2 || "/images/story/people-2.jpg"}
+      alt="A family photograph"
+      fill
+      sizes="(max-width: 900px) 30vw, 15vw"
+      className="story-full-cover"
+    />
+  </div>
+
+  <div className="story-full-people-photo story-full-people-photo-3">
+    <Image
+      src={media.people3 || "/images/story/people-3.jpg"}
+      alt="A treasured family memory"
+      fill
+      sizes="(max-width: 900px) 45vw, 22vw"
+      className="story-full-cover"
+    />
+  </div>
+</div>
+
+
+                <div className="story-full-copy">
+                  <p
+                    className="story-full-eyebrow"
+                    style={styleFor(
+                      "the-people-behind-our-story",
+                      "eyebrow"
+                    )}
+                  >
+                    {peopleEyebrow}
+                  </p>
+
+                  <h2
+                    style={styleFor(
+                      "the-people-behind-our-story",
+                      "heading"
+                    )}
+                  >
+                    {renderLines(peopleHeading)}
+                  </h2>
+
+                  <div
+                    className="story-full-body story-full-people-body"
+                    style={styleFor(
+                      "the-people-behind-our-story",
+                      "text"
+                    )}
+                  >
+                    {renderPeople(people?.body || "")}
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
         )}
+
+        {/* 06 - COME AND MAKE YOUR OWN MEMORIES */}
 
         {isVisible("story-cta") && (
-          <section className="story-page-cta">
-            <p className="eyebrow" style={styleFor("story-cta", "eyebrow")}>{cta?.eyebrow}</p>
-            <h2 style={styleFor("story-cta", "heading")}>{renderLines(cta?.heading)}</h2>
-            {cta?.body && <p style={styleFor("story-cta", "text")}>{renderLines(cta.body)}</p>}
-            <div className="story-page-cta-actions">
-              <Link href="/#menus" className="line-link">VIEW OUR MENUS <span>→</span></Link>
-              <a href={cta?.buttonLink || storyOriginals.en["story-cta"]?.buttonLink || "#"} target="_blank" rel="noopener noreferrer" className="outline-button story-page-dark-button" style={styleFor("story-cta", "button")}>{cta?.buttonLabel}</a>
+          <section className="story-full-cta">
+            <div className="story-full-cta-inner">
+              {cta?.eyebrow && (
+                <p
+                  className="story-full-eyebrow"
+                  style={styleFor(
+                    "story-cta",
+                    "eyebrow"
+                  )}
+                >
+                  {cta.eyebrow}
+                </p>
+              )}
+
+              <h2
+                style={styleFor(
+                  "story-cta",
+                  "heading"
+                )}
+              >
+                {renderLines(ctaHeading)}
+              </h2>
+
+              {cta?.body && (
+                <p
+                  className="story-full-cta-description"
+                  style={styleFor(
+                    "story-cta",
+                    "text"
+                  )}
+                >
+                  {renderLines(cta.body)}
+                </p>
+              )}
+
+              <div className="story-full-cta-actions">
+                <Link
+                  href="/#menus"
+                  className="story-full-text-link"
+                >
+                  VIEW OUR MENUS
+                </Link>
+
+                <a
+                  href={ctaLink}
+                  className="story-full-cta-button"
+                  style={styleFor(
+                    "story-cta",
+                    "button"
+                  )}
+                  target={
+                    ctaLink.startsWith("http")
+                      ? "_blank"
+                      : undefined
+                  }
+                  rel={
+                    ctaLink.startsWith("http")
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
+                >
+                  {cta?.buttonLabel ||
+                    "RESERVE A TABLE"}
+                </a>
+              </div>
             </div>
           </section>
         )}

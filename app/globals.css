@@ -345,133 +345,133 @@ h1,h2,h3,blockquote {
 /* =========================================================    HEADER    ========================================================= */
 
 .site-header {
-
-  position: absolute;
-
-  z-index: 100;
-
+  position: fixed;
+  z-index: 1001;
   top: 0;
-
   left: 0;
 
   display: grid;
-
   width: 100%;
+  height: 94px;
+  padding: 0 34px 0 48px;
 
-  padding: 27px 4vw;
-
-  grid-template-columns: 1fr auto 1fr;
-
+  grid-template-columns: 200px 1fr 200px;
   align-items: center;
 
+  background: #c8545d;
   color: #fff;
 
+  transition:
+    height 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
+.site-header.is-scrolled {
+  height: 76px;
+  padding: 0 34px 0 48px;
 
+  background: #c8545d;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
 
 /* LOGO */
 
 .brand {
-
-  display: inline-flex;
-
-  justify-self: start;
-
+  display: flex;
+  align-items: center;
+  width: fit-content;
 }
-
-
 
 .brand img {
-
-  width: 180px;
-
+  display: block;
+  width: 125px;
   height: auto;
-
 }
-
-
 
 /* NAVIGATION */
 
 .desktop-nav {
-
   display: flex;
-
-  gap: 30px;
-
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  white-space: nowrap;
 }
-
-
-
-.desktop-nav a, .language, .header-reserve {
-
-  font-size: 9px;
-
-  font-weight: 600;
-
-  letter-spacing: 0.14em;
-
-  text-transform: uppercase;
-
-}
-
-
 
 .desktop-nav a {
-
   position: relative;
 
+  color: #fff;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
-
-
 .desktop-nav a::after {
-
   position: absolute;
-
   right: 0;
-
   bottom: -7px;
-
   left: 0;
 
   height: 1px;
-
   background: #fff;
-
   content: "";
 
   transform: scaleX(0);
-
+  transform-origin: center;
   transition: transform 0.3s ease;
-
 }
-
-
 
 .desktop-nav a:hover::after {
-
   transform: scaleX(1);
-
 }
 
+.language,
+.header-reserve {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 132px;
+  height: 40px;
+  padding: 0;
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: transparent;
+
+  color: #fff;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.header-reserve:hover {
+  background: #fff;
+  color: #c8545d;
+}
 
 
 /* RIGHT SIDE */
 
 .header-right {
-
   display: flex;
-
-  justify-self: end;
-
   align-items: center;
-
-  gap: 23px;
-
+  justify-content: flex-end;
 }
-
 
 
 .language {
@@ -13679,4 +13679,2430 @@ h1,h2,h3,blockquote {
 .restaurant-menu-page .restaurant-menu-price,
 .restaurant-menu-page .restaurant-menu-prices span {
   font-weight: 700 !important;
+}
+/* =========================================================
+   LA LARA FINAL HEADER OVERRIDE
+   ========================================================= */
+
+@media (min-width: 901px) {
+
+  .site-header,
+  .home-page .site-header {
+    height: 94px !important;
+    padding: 0 34px 0 48px !important;
+
+    grid-template-columns: 220px 1fr 220px !important;
+  }
+
+ .site-header .brand img,
+.home-page .brand img {
+  width: 250px !important;
+  max-width: 250px !important;
+  height: auto !important;
+}
+
+  .site-header .desktop-nav,
+  .home-page .desktop-nav {
+    gap: 38px !important;
+  }
+
+  .site-header .language,
+.home-page .site-header .language {
+  display: none !important;
+}
+
+  .site-header .desktop-nav a,
+  .home-page .desktop-nav a {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  .site-header .header-reserve,
+  .home-page .header-reserve {
+    display: inline-flex !important;
+
+    width: 132px !important;
+    height: 40px !important;
+    padding: 0 !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.95) !important;
+    background: transparent !important;
+    color: #fff !important;
+
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: uppercase !important;
+  }
+
+  .site-header .header-reserve:hover,
+  .home-page .header-reserve:hover {
+    background: #fff !important;
+    color: #c8545d !important;
+  }
+}
+/* BOOK A TABLE - FINAL */
+
+@media (min-width: 901px) {
+  .site-header .contact-header-button,
+  .home-page .site-header .contact-header-button {
+    display: inline-flex !important;
+    width: 132px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 0 !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: 1px solid #fff !important;
+
+    background: transparent !important;
+    background-color: transparent !important;
+
+    color: #fff !important;
+
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.02em !important;
+
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+
+    box-shadow: none !important;
+  }
+
+  
+
+  .site-header .contact-header-button:hover,
+  .home-page .site-header .contact-header-button:hover,
+  .site-header .contact-header-button:focus,
+  .home-page .site-header .contact-header-button:focus {
+    border-color: #fff !important;
+
+    background: transparent !important;
+    background-color: transparent !important;
+
+    color: #fff !important;
+
+    box-shadow: none !important;
+  }
+}
+/* HOME HERO - HEIGHT */
+
+@media (min-width: 901px) {
+  .home-page .hero {
+    min-height: 620px !important;
+    height: 620px !important;
+  }
+}
+/* =========================================================
+   HOME - MENUS 2026
+   ========================================================= */
+
+.home-menus-section {
+  width: 100%;
+  padding: 58px 0 74px;
+  background: #f5f2ed !important;
+  color: #292a27;
+}
+
+.home-menus-inner {
+  width: min(1180px, calc(100% - 88px));
+  margin: 0 auto;
+}
+
+.home-menus-eyebrow {
+  margin: 0 0 28px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.home-menus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.home-menu-card {
+  min-width: 0;
+}
+
+.home-menu-card h2 {
+  margin: 0 0 12px;
+
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: clamp(38px, 3.2vw, 50px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+
+  color: #292a27;
+}
+
+.home-menu-link {
+  display: inline-flex;
+  width: 110px;
+  margin-bottom: 36px;
+  padding: 0 0 8px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #292a27;
+
+  color: #292a27;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.home-menu-link span {
+  margin-left: 14px;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 0.7;
+}
+
+.home-menu-image {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 1 / 1;
+
+  overflow: hidden;
+}
+
+.home-menu-image img {
+  transition: transform 0.5s ease;
+}
+
+.home-menu-card:hover .home-menu-image img {
+  transform: scale(1.025);
+}
+
+@media (max-width: 900px) {
+  .home-menus-section {
+    padding: 48px 0 60px;
+  }
+
+  .home-menus-inner {
+    width: calc(100% - 40px);
+  }
+
+  .home-menus-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .home-menu-card h2 {
+    font-size: 42px;
+  }
+
+  .home-menu-link {
+    margin-bottom: 22px;
+  }
+
+  .home-menu-image {
+    aspect-ratio: 1 / 0.82;
+  }
+}
+/* =========================================================
+   HOME - SECTION SPACING
+   ========================================================= */
+
+.home-page .home-menus-section {
+  margin-bottom: 32px !important;
+}
+
+.home-page .home-story-section {
+  margin-bottom: 32px !important;
+}
+
+.home-page .home-events-section {
+  margin-bottom: 32px !important;
+}
+
+.home-page .home-offers-section {
+  margin-bottom: 32px !important;
+}
+
+.home-page {
+  background: #f5f2ed;
+}
+/* =========================================================
+   HOME - OUR STORY 2026
+   ========================================================= */
+
+.home-page .home-story-section {
+  width: 100%;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  padding: 62px 0;
+
+  background: #dfe0d1;
+  color: #292a27;
+}
+
+.home-story-inner {
+  display: grid;
+
+  width: min(1180px, calc(100% - 88px));
+  margin: 0 auto;
+
+  grid-template-columns: 56% 1fr;
+  gap: 44px;
+  align-items: stretch;
+}
+
+/* IMAGE */
+
+.home-story-image {
+  position: relative;
+
+  width: 100%;
+  min-height: 410px;
+
+  overflow: hidden;
+}
+
+.home-story-image img {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* RIGHT SIDE */
+
+.home-story-copy {
+  display: flex;
+  flex-direction: column;
+
+  padding: 0 0 4px;
+}
+
+.home-story-eyebrow {
+  margin: 0 0 24px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.home-story-copy h2 {
+  margin: 0 0 24px;
+
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: clamp(42px, 4vw, 58px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+
+  color: #292a27;
+}
+
+.home-story-text {
+  max-width: 470px;
+  margin: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.25;
+
+  color: #353631;
+}
+
+/* READ OUR STORY */
+
+.home-story-link {
+  display: inline-flex;
+
+  width: 122px;
+  margin-top: auto;
+  padding-bottom: 8px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #292a27;
+
+  color: #292a27;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.home-story-link span {
+  margin-left: 15px;
+
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 0.7;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+  .home-page .home-story-section {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 40px 0;
+  }
+
+  .home-story-inner {
+    width: calc(100% - 40px);
+
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .home-story-image {
+    min-height: 420px;
+  }
+
+  .home-story-copy h2 {
+    font-size: 44px;
+  }
+
+  .home-story-text {
+    font-size: 14px;
+  }
+
+  .home-story-link {
+    margin-top: 42px;
+  }
+}
+/* =========================================================
+   HOME - EVENTS 2026
+   ========================================================= */
+
+.home-page .home-events-section {
+  width: 100%;
+  margin-top: 32px;
+  margin-bottom: 32px;
+  padding: 60px 0;
+
+  background: #ead0cf;
+  color: #292a27;
+}
+
+.home-events-inner {
+  display: grid;
+
+  width: min(1180px, calc(100% - 88px));
+  margin: 0 auto;
+
+  grid-template-columns: 34% 1fr;
+  gap: 48px;
+
+  align-items: stretch;
+}
+
+/* LEFT */
+
+.home-events-copy {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 435px;
+  padding: 8px 0 4px;
+}
+
+.home-events-eyebrow {
+  margin: 0 0 28px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+.home-events-copy h2 {
+  margin: 0 0 24px;
+
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: clamp(42px, 4vw, 58px);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+
+  color: #292a27;
+}
+
+.home-events-text {
+  margin: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.3;
+
+  color: #353631;
+}
+
+/* PLAN YOUR EVENT */
+
+.home-events-link {
+  display: inline-flex;
+
+  width: 132px;
+  margin-top: auto;
+  padding-bottom: 8px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #292a27;
+
+  color: #292a27;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.home-events-link span {
+  margin-left: 15px;
+
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 0.7;
+}
+
+/* RIGHT IMAGE */
+
+.home-events-image {
+  position: relative;
+
+  width: 100%;
+  min-height: 435px;
+
+  overflow: hidden;
+}
+
+.home-events-image img {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+  .home-page .home-events-section {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding: 40px 0;
+  }
+
+  .home-events-inner {
+    width: calc(100% - 40px);
+
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .home-events-copy {
+    min-height: 0;
+    padding: 0;
+  }
+
+  .home-events-copy h2 {
+    font-size: 44px;
+  }
+
+  .home-events-text {
+    font-size: 14px;
+  }
+
+  .home-events-link {
+    margin-top: 40px;
+  }
+
+  .home-events-image {
+    min-height: 360px;
+  }
+}
+/* =========================================================
+   LA LARA - HOME GALLERY SLIDER
+   ========================================================= */
+
+.home-page .home-gallery-slider {
+  width: 100%;
+  margin: 0;
+  padding: 48px 0;
+  overflow: hidden;
+  background: #f5f2ed;
+}
+
+.home-gallery-track {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 3.5fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+}
+
+.home-gallery-main {
+  position: relative;
+  width: 100%;
+  height: 510px;
+  overflow: hidden;
+}
+
+.home-gallery-side {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 410px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0.4;
+  cursor: pointer;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.home-gallery-side:hover {
+  opacity: 0.8;
+}
+
+.home-gallery-main img,
+.home-gallery-side img {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* =========================================================
+   LA LARA - RESERVATION BANNER
+   ========================================================= */
+
+.home-page .home-reservation-banner {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 490px;
+  min-height: 490px;
+  margin: 0 !important;
+  padding: 0 !important;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+  background: #bd4f59;
+}
+
+.home-reservation-photo {
+  object-fit: cover;
+  object-position: center 52%;
+}
+
+.home-reservation-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(120, 30, 42, 0.18),
+    rgba(0, 0, 0, 0.02) 65%,
+    rgba(0, 0, 0, 0.08)
+  );
+}
+
+.home-reservation-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 78px 20px 0;
+  text-align: center;
+}
+
+.home-reservation-content h2 {
+  margin: 0 0 28px;
+  color: #fff;
+  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-size: clamp(42px, 4vw, 62px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.home-reservation-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.home-reservation-buttons a {
+  display: inline-flex;
+  min-width: 110px;
+  height: 35px;
+  padding: 0 18px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.home-reservation-buttons a:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+  .home-page .home-gallery-slider {
+    padding: 28px 0;
+  }
+
+  .home-gallery-track {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 5fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .home-gallery-main {
+    height: 320px;
+  }
+
+  .home-gallery-side {
+    height: 250px;
+  }
+
+  .home-page .home-reservation-banner {
+    height: 390px;
+    min-height: 390px;
+  }
+
+  .home-reservation-content {
+    padding-top: 65px;
+  }
+
+  .home-reservation-content h2 {
+    font-size: 42px;
+  }
+
+  .home-reservation-buttons {
+    gap: 10px;
+  }
+
+  .home-reservation-buttons a {
+    min-width: 95px;
+  }
+}
+/* OUR STORY - EVENTS SPACING */
+
+.home-page .home-story-section {
+  margin-bottom: 90px !important;
+}
+
+.home-page .home-events-section {
+  margin-top: 0 !important;
+}
+/* LA LARA FOOTER 2026 — append to globals.css */
+.site-footer.lalara-footer-2026 {
+  background: #292b28 !important;
+  color: #e7e7e3 !important;
+  margin: 0 !important;
+  padding: 54px 0 0 !important;
+}
+.lalara-footer-2026 .lalara-footer-inner {
+  width: min(1460px, calc(100% - 100px));
+  margin: 0 auto;
+}
+.lalara-footer-2026 .lalara-footer-columns {
+  display: grid;
+  grid-template-columns: 1.35fr 1.12fr 0.95fr 1.4fr 0.85fr;
+  column-gap: clamp(22px, 3vw, 55px);
+  align-items: start;
+  padding-bottom: 54px;
+}
+.lalara-footer-2026 .lalara-footer-brand img {
+  display: block;
+  width: 205px;
+  max-width: 100%;
+  height: auto;
+}
+.lalara-footer-2026 .lalara-footer-columns h2 {
+  margin: 0 0 20px;
+  font: 600 12px/1.2 Arial, Helvetica, sans-serif;
+  letter-spacing: .035em;
+  color: #a9aaa5;
+  text-transform: uppercase;
+}
+.lalara-footer-2026 .lalara-footer-columns a,
+.lalara-footer-2026 .lalara-footer-columns p {
+  display: block;
+  margin: 0 0 11px;
+  font: 400 13px/1.45 Arial, Helvetica, sans-serif;
+  color: #ededeb !important;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.lalara-footer-2026 .lalara-footer-columns a:hover { text-decoration: underline; }
+.lalara-footer-2026 .lalara-footer-partners { margin-top: 38px; }
+.lalara-footer-2026 .lalara-footer-address { white-space: pre-line; }
+.lalara-footer-2026 .lalara-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 76px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  font: 500 11px/1.5 Arial, Helvetica, sans-serif;
+  letter-spacing: .06em;
+  color: #a9aaa5;
+}
+.lalara-footer-2026 .lalara-footer-policy { text-align: right; letter-spacing: 0; }
+@media (max-width: 1050px) {
+  .lalara-footer-2026 .lalara-footer-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 42px; }
+}
+@media (max-width: 650px) {
+  .site-footer.lalara-footer-2026 { padding-top: 40px !important; }
+  .lalara-footer-2026 .lalara-footer-inner { width: calc(100% - 40px); }
+  .lalara-footer-2026 .lalara-footer-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 35px 22px; padding-bottom: 38px; }
+  .lalara-footer-2026 .lalara-footer-brand { grid-column: 1 / -1; }
+  .lalara-footer-2026 .lalara-footer-brand img { width: 175px; }
+  .lalara-footer-2026 .lalara-footer-bottom { align-items: flex-start; flex-direction: column; justify-content: center; padding: 20px 0; }
+  .lalara-footer-2026 .lalara-footer-policy { text-align: left; }
+}
+
+/* ==========================================
+   LA LARA - OUR STORY FULL PAGE
+========================================== */
+
+.story-page.story-full {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #f8f7f3;
+  color: #30312d;
+}
+
+.story-full-main {
+  width: 100%;
+}
+
+.story-full-cover {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* HERO */
+
+.story-full-hero {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #83908b;
+}
+
+.story-full-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.story-full-hero-content {
+  position: relative;
+  z-index: 2;
+  width: min(800px, calc(100% - 40px));
+  text-align: center;
+  color: #fff;
+}
+
+.story-full-hero-content h1 {
+  margin: 0 0 16px;
+  font-family: "Iowan Old Style",
+    Baskerville, "Times New Roman", serif;
+  font-size: clamp(46px, 5vw, 70px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: #fff;
+}
+
+.story-full-hero-content p {
+  max-width: 690px;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #fff;
+}
+
+/* COMMON */
+
+.story-full-container {
+  width: min(1180px, calc(100% - 88px));
+  margin: 0 auto;
+}
+
+.story-full-two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 95px;
+  align-items: center;
+}
+
+.story-full-copy {
+  min-width: 0;
+}
+
+.story-full-eyebrow {
+  margin: 0 0 25px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #30312d;
+}
+
+.story-full-copy h2 {
+  margin: 0 0 25px;
+  font-family: "Iowan Old Style",
+    Baskerville, "Times New Roman", serif;
+  font-size: clamp(39px, 3.7vw, 55px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: #30312d;
+}
+
+.story-full-body {
+  max-width: 490px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: #41423e;
+}
+
+.story-full-body p {
+  margin: 0 0 17px;
+}
+
+.story-full-body p:last-child {
+  margin-bottom: 0;
+}
+
+.story-full-photo {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  overflow: hidden;
+  background: #dedbd2;
+}
+
+.story-full-photo img {
+  object-fit: cover;
+}
+
+/* WHERE IT BEGAN */
+
+.story-full-beginning {
+  padding: 85px 0 100px;
+  background: #dfe0d1;
+}
+
+/* OUR INSPIRATION */
+
+.story-full-inspiration {
+  padding: 100px 0 110px;
+  background: #f8f7f3;
+}
+
+/* DREAM A LITTLE BIGGER */
+
+.story-full-elephant {
+  padding: 90px 0 100px;
+  background: #ead0cf;
+}
+
+.story-full-elephant .story-full-two-column {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.story-full-elephant-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 410px;
+}
+
+.story-full-elephant-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-full-elephant-icon img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+}
+
+.story-full-elephant blockquote {
+  margin: 20px 0;
+  padding-left: 18px;
+  border-left: 2px solid #7e5a5a;
+  font-style: italic;
+}
+
+/* PEOPLE BEHIND IT */
+
+.story-full-people {
+  padding: 95px 0 105px;
+  background: #dfe0d1;
+}
+
+.story-full-people-images {
+  width: 100%;
+}
+
+.story-full-people-main-photo {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.story-full-people-main-photo img {
+  object-fit: cover;
+}
+
+.story-full-people-body strong {
+  display: block;
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+.story-full-people-body em {
+  display: block;
+  margin-top: 12px;
+  font-family: "Iowan Old Style",
+    Baskerville, "Times New Roman", serif;
+  font-size: 20px;
+  font-style: normal;
+}
+
+/* CTA */
+
+.story-full-cta {
+  padding: 105px 20px 110px;
+  background: #f8f7f3;
+  text-align: center;
+}
+
+.story-full-cta-inner {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.story-full-cta h2 {
+  margin: 0 auto 24px;
+  font-family: "Iowan Old Style",
+    Baskerville, "Times New Roman", serif;
+  font-size: clamp(40px, 4.2vw, 60px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: #30312d;
+}
+
+.story-full-cta-description {
+  margin: 0 auto 25px;
+  max-width: 500px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.story-full-cta-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.story-full-text-link {
+  color: #30312d;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.story-full-cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 37px;
+  padding: 10px 18px;
+  border: 1px solid #30312d;
+  color: #30312d;
+  background: transparent;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.story-full-cta-button:hover {
+  background: #30312d;
+  color: #fff;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .story-full-container {
+    width: calc(100% - 40px);
+  }
+
+  .story-full-two-column {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+  .story-full-hero {
+    height: 380px;
+  }
+
+  .story-full-beginning,
+  .story-full-inspiration,
+  .story-full-elephant,
+  .story-full-people {
+    padding: 65px 0 75px;
+  }
+
+  .story-full-elephant .story-full-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .story-full-photo,
+  .story-full-people-main-photo {
+    height: 350px;
+  }
+
+  .story-full-elephant-visual {
+    min-height: 200px;
+  }
+
+  .story-full-copy h2 {
+    font-size: 43px;
+  }
+
+  .story-full-cta {
+    padding: 75px 20px 85px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+  .story-full-hero {
+    height: 330px;
+  }
+
+  .story-full-hero-content h1 {
+    font-size: 42px;
+  }
+
+  .story-full-hero-content p {
+    font-size: 12px;
+  }
+
+  .story-full-container {
+    width: calc(100% - 36px);
+  }
+
+  .story-full-copy h2 {
+    font-size: 37px;
+  }
+
+  .story-full-eyebrow {
+    font-size: 9px;
+    margin-bottom: 20px;
+  }
+
+  .story-full-body {
+    font-size: 13px;
+  }
+
+  .story-full-photo,
+  .story-full-people-main-photo {
+    height: 290px;
+  }
+
+  .story-full-beginning,
+  .story-full-inspiration,
+  .story-full-elephant,
+  .story-full-people {
+    padding: 52px 0 62px;
+  }
+
+  .story-full-cta h2 {
+    font-size: 39px;
+  }
+
+  .story-full-cta-actions {
+    gap: 18px;
+  }
+}
+
+/* ======================================
+   PINK ELEPHANT - PHOTO
+====================================== */
+
+.story-full-elephant-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.story-full-elephant-photo {
+  position: relative;
+  width: min(100%, 390px);
+  aspect-ratio: 0.86;
+  overflow: hidden;
+  background: #d8bcb9;
+}
+
+.story-full-elephant-photo img {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ======================================
+   THE PEOPLE BEHIND IT - 3 PHOTO COLLAGE
+====================================== */
+
+.story-full-people-images {
+  display: grid;
+  grid-template-columns: 1fr 0.62fr 0.55fr;
+  grid-template-rows: 112px 112px 112px;
+  gap: 15px;
+  width: 100%;
+  align-items: stretch;
+}
+
+.story-full-people-photo {
+  position: relative;
+  overflow: hidden;
+  background: #c7c9b9;
+}
+
+.story-full-people-photo img {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Left vertical photo */
+
+.story-full-people-photo-1 {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  align-self: end;
+  height: 225px;
+}
+
+/* Top center vertical photo */
+
+.story-full-people-photo-2 {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  height: 205px;
+}
+
+/* Bottom horizontal photo */
+
+.story-full-people-photo-3 {
+  grid-column: 2 / 4;
+  grid-row: 3;
+  height: 112px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .story-full-elephant-photo {
+    width: min(100%, 390px);
+  }
+
+  .story-full-people-images {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .story-full-people-images {
+    grid-template-rows: 80px 80px 80px;
+    gap: 10px;
+  }
+
+  .story-full-people-photo-1 {
+    height: 160px;
+  }
+
+  .story-full-people-photo-2 {
+    height: 150px;
+  }
+
+  .story-full-people-photo-3 {
+    height: 80px;
+  }
+}
+
+
+/* =====================================================
+   LA LARA - EVENTS & CELEBRATIONS REDESIGN
+===================================================== */
+
+.lalara-events-redesign {
+  width: 100%;
+  margin: 0;
+  background: #f8f7f3;
+  color: #30312d;
+}
+
+.lalara-events-content {
+  width: 100%;
+}
+
+.lalara-events-redesign .lalara-event-image {
+  object-fit: cover;
+  object-position: center;
+}
+
+.lalara-events-redesign .lalara-event-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #d9d7ce;
+  color: #77776e;
+  font: 600 11px Arial, sans-serif;
+  letter-spacing: 0.14em;
+}
+
+/* HERO */
+
+.lalara-events-hero {
+  position: relative;
+  height: clamp(370px, 36vw, 560px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #a7b4b8;
+}
+
+.lalara-events-hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.lalara-events-hero-text {
+  position: relative;
+  z-index: 2;
+  width: min(900px, calc(100% - 40px));
+  text-align: center;
+  color: #fff;
+}
+
+.lalara-events-hero-text h1 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-family: "Iowan Old Style", Baskerville,
+    "Times New Roman", serif;
+  font-size: clamp(45px, 5vw, 76px);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.lalara-events-hero-text p {
+  margin: 0;
+  color: #fff;
+  font: 400 16px/1.5 Arial, Helvetica, sans-serif;
+}
+
+.lalara-events-spacer {
+  height: clamp(55px, 7vw, 100px);
+  background: #f8f7f3;
+}
+
+/* SHARED EVENT SECTIONS */
+
+.lalara-event-section {
+  display: grid;
+  grid-template-columns: 38% 62%;
+  min-height: 540px;
+  width: 100%;
+}
+
+.lalara-event-sage {
+  background: #dfe0d1;
+}
+
+.lalara-event-pink {
+  background: #ead0cf;
+}
+
+.lalara-event-cream {
+  background: #f8f7f3;
+}
+
+.lalara-event-image-left {
+  grid-template-columns: 38% 62%;
+}
+
+.lalara-event-image-left .lalara-event-image-frame {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.lalara-event-image-left .lalara-event-copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.lalara-event-copy {
+  display: flex;
+  min-width: 0;
+  align-items: stretch;
+  padding: clamp(40px, 5vw, 85px)
+    clamp(28px, 5.5vw, 90px);
+}
+
+.lalara-event-copy-inner {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 430px;
+  align-items: flex-start;
+}
+
+.lalara-event-eyebrow {
+  margin: 0 0 23px;
+  font: 700 10px/1.4 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.09em;
+  color: #30312d;
+}
+
+.lalara-event-copy h2 {
+  margin: 0 0 26px;
+  max-width: 410px;
+  color: #30312d;
+  font-family: "Iowan Old Style", Baskerville,
+    "Times New Roman", serif;
+  font-size: clamp(38px, 4vw, 61px);
+  font-weight: 400;
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+}
+
+.lalara-event-description {
+  max-width: 390px;
+  color: #41423e;
+  font: 400 14px/1.5 Arial, Helvetica, sans-serif;
+}
+
+.lalara-event-description p {
+  margin: 0 0 18px;
+}
+
+.lalara-event-description p:last-child {
+  margin-bottom: 0;
+}
+
+.lalara-event-enquiry {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 40px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #30312d;
+  color: #30312d;
+  text-decoration: none;
+  font: 700 10px/1.2 Arial, Helvetica, sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.lalara-event-enquiry span {
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.lalara-event-enquiry:hover {
+  opacity: 0.65;
+}
+
+.lalara-event-image-frame {
+  position: relative;
+  min-height: 540px;
+  overflow: hidden;
+  background: #d5d3cb;
+}
+
+/* WEDDINGS - TEXT LEFT, PHOTO RIGHT */
+
+#weddings.lalara-event-section {
+  grid-template-columns: 38% 62%;
+}
+
+/* CELEBRATIONS - PHOTO LEFT, TEXT RIGHT */
+
+#celebrations.lalara-event-section {
+  grid-template-columns: 38% 62%;
+}
+
+/* CORPORATE - TEXT LEFT, PHOTO RIGHT */
+
+#corporate-events.lalara-event-section {
+  grid-template-columns: 53% 47%;
+}
+
+#corporate-events .lalara-event-copy {
+  padding-left: clamp(35px, 6vw, 100px);
+}
+
+/* LOUNGE - PHOTO LEFT, TEXT RIGHT */
+
+#private-lounge.lalara-event-section {
+  grid-template-columns: 50% 50%;
+}
+
+#private-lounge .lalara-event-copy {
+  padding-left: clamp(35px, 5vw, 90px);
+}
+
+/* FINAL BOOKING SECTION */
+
+.lalara-events-booking {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 245px;
+  padding: 48px 20px;
+  background: #c95160;
+  text-align: center;
+  color: #fff;
+}
+
+.lalara-events-booking h2 {
+  margin: 0 0 14px;
+  color: #fff;
+  font-family: "Iowan Old Style", Baskerville,
+    "Times New Roman", serif;
+  font-size: clamp(37px, 3.8vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.lalara-events-booking p {
+  margin: 0 0 25px;
+  color: #fff;
+  font: 400 13px/1.45 Arial, Helvetica, sans-serif;
+}
+
+.lalara-events-email-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 115px;
+  min-height: 35px;
+  padding: 9px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  color: #fff;
+  text-decoration: none;
+  font: 500 10px Arial, Helvetica, sans-serif;
+  transition: background 0.2s, color 0.2s;
+}
+
+.lalara-events-email-button:hover {
+  background: #fff;
+  color: #c95160;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .lalara-event-section,
+  #weddings.lalara-event-section,
+  #celebrations.lalara-event-section,
+  #corporate-events.lalara-event-section,
+  #private-lounge.lalara-event-section {
+    grid-template-columns: 45% 55%;
+    min-height: 450px;
+  }
+
+  .lalara-event-copy {
+    padding: 40px 28px;
+  }
+
+  .lalara-event-copy h2 {
+    font-size: clamp(34px, 4vw, 45px);
+  }
+
+  .lalara-event-description {
+    font-size: 13px;
+  }
+
+  .lalara-event-image-frame {
+    min-height: 450px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+  .lalara-events-hero {
+    height: 340px;
+  }
+
+  .lalara-events-hero-text h1 {
+    font-size: 43px;
+  }
+
+  .lalara-events-hero-text p {
+    font-size: 13px;
+  }
+
+  .lalara-events-spacer {
+    height: 42px;
+  }
+
+  .lalara-event-section,
+  #weddings.lalara-event-section,
+  #celebrations.lalara-event-section,
+  #corporate-events.lalara-event-section,
+  #private-lounge.lalara-event-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .lalara-event-copy {
+    order: 1;
+    padding: 45px 25px 50px;
+  }
+
+  .lalara-event-image-frame {
+    order: 2;
+    width: 100%;
+    min-height: 0;
+    height: 340px;
+  }
+
+  .lalara-event-image-left .lalara-event-image-frame {
+    order: 1;
+  }
+
+  .lalara-event-image-left .lalara-event-copy {
+    order: 2;
+  }
+
+  .lalara-event-copy h2 {
+    font-size: 43px;
+  }
+
+  .lalara-event-enquiry {
+    margin-top: 25px;
+    padding-top: 0;
+  }
+
+  .lalara-events-booking {
+    min-height: 230px;
+    padding: 50px 22px;
+  }
+
+  .lalara-events-booking h2 {
+    font-size: 40px;
+  }
+
+  .lalara-events-booking p {
+    font-size: 12px;
+  }
+
+  .lalara-events-desktop-break {
+    display: none;
+  }
+}
+
+/* =========================================
+   EVENTS - SECTION SPACING
+========================================= */
+
+.lalara-events-redesign {
+  background: #f8f7f3;
+}
+
+/* Etkinlik bölümlerinin arasına boşluk */
+.lalara-events-redesign .lalara-event-section
++ .lalara-event-section {
+  margin-top: 80px;
+}
+
+/* Son etkinlik bölümü ile rezervasyon alanı */
+.lalara-events-redesign .lalara-event-section
++ .lalara-events-booking {
+  margin-top: 80px;
+}
+
+/* Mobil */
+@media (max-width: 650px) {
+  .lalara-events-redesign .lalara-event-section
+  + .lalara-event-section {
+    margin-top: 45px;
+  }
+
+  .lalara-events-redesign .lalara-event-section
+  + .lalara-events-booking {
+    margin-top: 45px;
+  }
+}
+
+
+/* ==========================================
+   EVENTS - FULL WIDTH SECTION FIX
+========================================== */
+
+/* Bölümler ekranın tamamını kaplasın */
+.lalara-events-redesign .lalara-event-section {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Görsel ve metin alanları bitişik */
+.lalara-events-redesign .lalara-event-copy {
+  margin: 0;
+  border: 0;
+}
+
+/* Görsel çerçevesi tam alanı doldursun */
+.lalara-events-redesign .lalara-event-image-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 540px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Fotoğraf çerçeveyi boşluksuz doldursun */
+.lalara-events-redesign
+.lalara-event-image-frame .lalara-event-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* Weddings referansındaki oran */
+.lalara-events-redesign #weddings {
+  grid-template-columns: 38% 62%;
+}
+
+/* Bölümler arasında kırık beyaz boşluk */
+.lalara-events-redesign
+.lalara-event-section + .lalara-event-section {
+  margin-top: 80px;
+}
+
+/* Lounge ve Book Your Venue bitişik */
+.lalara-events-redesign
+.lalara-event-section + .lalara-events-booking {
+  margin-top: 0 !important;
+}
+
+/* Mobil */
+@media (max-width: 650px) {
+  .lalara-events-redesign .lalara-event-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lalara-events-redesign .lalara-event-image-frame {
+    width: 100%;
+    height: 340px;
+    min-height: 340px;
+  }
+
+  .lalara-events-redesign
+  .lalara-event-section + .lalara-event-section {
+    margin-top: 45px;
+  }
+}
+
+/* ==========================================
+   LA LARA - GLOBAL IMAGE DISPLAY
+========================================== */
+
+/* İçerik fotoğrafları: kırpılmadan göster */
+
+.story-full-people-photo img,
+.story-full-elephant-photo img,
+.lalara-event-image-frame img,
+.menu-card img,
+.gallery-item img,
+.offer-image img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+/* Events görsellerinin çerçeveleri */
+.lalara-events-redesign .lalara-event-image-frame {
+  background: #f8f7f3;
+}
+
+/* Hero ve tam ekran arka plan görselleri */
+.story-full-hero img,
+.lalara-events-hero img,
+.home-hero img,
+.hero img,
+.reservation-banner img {
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+/* ==============================================
+   LA LARA - OFFERS REFERENCE DESIGN
+============================================== */
+
+.lalara-offers-page {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #f8f7f3;
+  color: #30312d;
+}
+
+/* HERO */
+
+.lalara-offers-hero {
+  position: relative;
+  width: 100%;
+  height: clamp(380px, 35vw, 560px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: #a5b6bb;
+}
+
+.lalara-offers-hero-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #a5b6bb;
+  color: #617178;
+  font: 600 11px Arial, sans-serif;
+  letter-spacing: 0.12em;
+}
+
+.lalara-offers-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.lalara-offers-hero-content {
+  position: relative;
+  z-index: 2;
+  width: calc(100% - 40px);
+  text-align: center;
+  color: #fff;
+}
+
+.lalara-offers-hero-content h1 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-family:
+    "Iowan Old Style",
+    Baskerville,
+    "Times New Roman",
+    serif;
+  font-size: clamp(46px, 4.5vw, 68px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.lalara-offers-hero-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* SECTIONS */
+
+.lalara-offers-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 75px;
+  padding-top: 75px;
+  background: #f8f7f3;
+}
+
+.lalara-offer-section {
+  display: grid;
+  grid-template-columns: 41% 59%;
+  width: 100%;
+  min-height: 0;
+  height: clamp(600px, 49vw, 740px);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.lalara-offer-pink {
+  background: #ead0cf;
+}
+
+.lalara-offer-sage {
+  background: #dfe0d1;
+}
+
+.lalara-offer-cream {
+  background: #f8f7f3;
+}
+
+/* Alternating image placement */
+
+.lalara-offer-image-left .lalara-offer-image-frame {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.lalara-offer-image-left .lalara-offer-copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* TEXT */
+
+.lalara-offer-copy {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  padding: clamp(55px, 6vw, 95px)
+    clamp(42px, 5vw, 95px);
+}
+
+.lalara-offer-copy-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 510px;
+  min-height: 0;
+}
+
+.lalara-offer-eyebrow {
+  margin: 0 0 30px;
+  color: #30312d;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.lalara-offer-copy h2 {
+  margin: 0 0 35px;
+  color: #30312d;
+  font-family:
+    "Iowan Old Style",
+    Baskerville,
+    "Times New Roman",
+    serif;
+  font-size: clamp(44px, 4.1vw, 66px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.045em;
+}
+
+.lalara-offer-description {
+  width: 100%;
+  max-width: 480px;
+  color: #41423e;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(15px, 1.05vw, 18px);
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: -0.01em;
+}
+
+.lalara-offer-description p {
+  margin: 0 0 24px;
+}
+
+.lalara-offer-description p:last-child {
+  margin-bottom: 0;
+}
+
+.lalara-offer-schedule {
+  margin-top: auto;
+  padding-top: 36px;
+  color: #41423e;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* IMAGES */
+
+.lalara-offer-image-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #d8d6cf;
+}
+
+.lalara-offer-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.lalara-offer-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d8d6cf;
+  color: #77776e;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+/* Birthday: narrower text area */
+
+#birthday.lalara-offer-section {
+  grid-template-columns: 41% 59%;
+}
+
+#birthday .lalara-offer-copy-inner {
+  max-width: 430px;
+}
+
+/* Lunch: image left, sage copy right */
+
+#lunch.lalara-offer-section {
+  grid-template-columns: 41% 59%;
+}
+
+/* Vino: wider text area */
+
+#vino.lalara-offer-section {
+  grid-template-columns: 58% 42%;
+}
+
+#vino .lalara-offer-copy-inner {
+  max-width: 620px;
+}
+
+/* Happy Hour: image left, pink copy right */
+
+#happy-hour.lalara-offer-section {
+  grid-template-columns: 39% 61%;
+}
+
+/* Footer directly after last offer */
+
+.lalara-offers-sections {
+  padding-bottom: 0;
+}
+
+/* TABLET */
+
+@media (max-width: 900px) {
+  .lalara-offer-section {
+    height: 560px;
+  }
+
+  .lalara-offer-copy {
+    padding: 45px 35px;
+  }
+
+  .lalara-offer-copy h2 {
+    font-size: clamp(37px, 4.5vw, 49px);
+  }
+
+  .lalara-offer-description {
+    font-size: 14px;
+  }
+
+  .lalara-offer-schedule {
+    font-size: 14px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+  .lalara-offers-hero {
+    height: 340px;
+  }
+
+  .lalara-offers-hero-content h1 {
+    font-size: 43px;
+  }
+
+  .lalara-offers-sections {
+    gap: 45px;
+    padding-top: 45px;
+  }
+
+  .lalara-offer-section,
+  #birthday.lalara-offer-section,
+  #lunch.lalara-offer-section,
+  #vino.lalara-offer-section,
+  #happy-hour.lalara-offer-section {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+  }
+
+  .lalara-offer-copy {
+    order: 1;
+    width: 100%;
+    height: auto;
+    min-height: 370px;
+    padding: 45px 26px;
+  }
+
+  .lalara-offer-image-frame {
+    order: 2;
+    width: 100%;
+    height: 360px;
+    min-height: 360px;
+  }
+
+  .lalara-offer-image-left .lalara-offer-image-frame {
+    order: 1;
+  }
+
+  .lalara-offer-image-left .lalara-offer-copy {
+    order: 2;
+  }
+
+  .lalara-offer-eyebrow {
+    font-size: 10px;
+    margin-bottom: 23px;
+  }
+
+  .lalara-offer-copy h2 {
+    font-size: 43px;
+    margin-bottom: 25px;
+  }
+
+  .lalara-offer-description {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .lalara-offer-description p {
+    margin-bottom: 18px;
+  }
+
+  .lalara-offer-schedule {
+    margin-top: 30px;
+    padding-top: 0;
+    font-size: 13px;
+  }
+}
+
+/* OUR STORY - OUR INSPIRATION FOTOĞRAF DÜZELTMESİ */
+
+.story-page-section-reverse .story-page-image {
+  position: relative !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  line-height: 0 !important;
+  aspect-ratio: 1.52 / 1;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.story-page-section-reverse .story-page-image img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+}
+
+/* OUR STORY - OUR INSPIRATION PHOTO */
+
+.story-full-inspiration .story-full-photo {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.story-full-inspiration .story-full-photo img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+@media (max-width: 900px) {
+  .story-full-inspiration .story-full-photo {
+    height: 340px;
+  }
+}
+/* =========================================================
+   LA LARA — TEK HERO YUKSEKLIK STANDARDI
+   Header 94px; hero alanlari 720px (desktop)
+   ========================================================= */
+:root { --lalara-hero-height: 720px; }
+
+.home-page .hero,
+.home-hero,
+.story-page-hero,
+.story-full-hero,
+.events-page-hero,
+.lalara-events-hero,
+.lalara-offers-hero,
+.gallery-page-hero,
+.gallery-hero,
+.contact-hero,
+.lalara-contact-hero,
+.menu-hero,
+.lalara-menu-hero {
+  position: relative;
+  box-sizing: border-box;
+  height: var(--lalara-hero-height) !important;
+  min-height: var(--lalara-hero-height) !important;
+  max-height: var(--lalara-hero-height) !important;
+  overflow: hidden;
+}
+
+.home-page .hero > img,
+.home-hero > img,
+.story-page-hero > img,
+.story-full-hero > img,
+.events-page-hero > img,
+.lalara-events-hero > img,
+.lalara-offers-hero > img,
+.gallery-page-hero > img,
+.gallery-hero > img,
+.contact-hero > img,
+.lalara-contact-hero > img,
+.menu-hero > img,
+.lalara-menu-hero > img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+@media (max-width: 900px) {
+  :root { --lalara-hero-height: 540px; }
+}
+@media (max-width: 650px) {
+  :root { --lalara-hero-height: 440px; }
+}
+/* LA LARA — MENU HERO HEIGHT */
+
+@media (min-width: 901px) {
+  .breakfast-page-hero,
+  .food-menu-page-hero,
+  .drinks-page-hero,
+  .breakfast-hero,
+  .food-menu-hero,
+  .drinks-hero {
+    height: 780px !important;
+    min-height: 780px !important;
+    max-height: 780px !important;
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 900px) {
+  .breakfast-page-hero,
+  .food-menu-page-hero,
+  .drinks-page-hero,
+  .breakfast-hero,
+  .food-menu-hero,
+  .drinks-hero {
+    height: 560px !important;
+    min-height: 560px !important;
+    max-height: 560px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .breakfast-page-hero,
+  .food-menu-page-hero,
+  .drinks-page-hero,
+  .breakfast-hero,
+  .food-menu-hero,
+  .drinks-hero {
+    height: 440px !important;
+    min-height: 440px !important;
+    max-height: 440px !important;
+  }
+}
+
+/* ==========================================
+   LA LARA - ALL MENU HERO HEIGHT FIX
+   Breakfast / Food / Drinks
+========================================== */
+
+.restaurant-menu-page .restaurant-menu-header-bg {
+  height:580px !important;
+  min-height: 580px !important;
+  max-height: 580px !important;
+
+  position: relative;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  overflow: hidden;
+}
+
+/* TABLET */
+@media (max-width: 900px) {
+  .restaurant-menu-page .restaurant-menu-header-bg {
+    height: 560px !important;
+    min-height: 560px !important;
+    max-height: 560px !important;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .restaurant-menu-page .restaurant-menu-header-bg {
+    height: 440px !important;
+    min-height: 440px !important;
+    max-height: 440px !important;
+  }
+}
+
+/* OUR STORY — 3 FOTOĞRAF DÜZELTMESİ */
+
+.story-full-people-photo {
+  position: relative;
+  overflow: hidden;
+}
+
+.story-full-people-photo img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+}
+
+/* LA LARA — TÜM SAYFALARDA FOTOĞRAF ORANLARINI KORU */
+
+img:not(.leaflet-marker-icon):not(.leaflet-marker-shadow) {
+  object-fit: contain;
+  object-position: center;
 }

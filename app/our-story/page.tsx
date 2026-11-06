@@ -11,6 +11,10 @@ type StoryMedia = {
   lara: string;
   restaurant: string;
   people: string;
+  elephant: string;
+  people1: string;
+  people2: string;
+  people3: string;
 };
 
 async function getStoryMedia(): Promise<StoryMedia> {
@@ -19,6 +23,10 @@ async function getStoryMedia(): Promise<StoryMedia> {
     lara: "",
     restaurant: "",
     people: "",
+    elephant: "",
+    people1: "",
+    people2: "",
+    people3: "",
   };
 
   try {
@@ -52,6 +60,10 @@ async function getStoryMedia(): Promise<StoryMedia> {
       lara: getString("lara"),
       restaurant: getString("restaurant"),
       people: getString("people"),
+      elephant: getString("elephant"),
+      people1: getString("people1"),
+      people2: getString("people2"),
+      people3: getString("people3"),
     };
   } catch (error) {
     console.error(

@@ -1,782 +1,298 @@
+
 "use client";
 
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import EventSlider from "@/components/EventSlider";
 import { useSiteContent } from "@/lib/cms/useSiteContent";
 import { privateEventsOriginals } from "@/lib/cms/privateEvents";
-
-type SliderImage = {
-  src: string;
-  alt: string;
-};
+export const dynamic = "force-dynamic";
 
 export type PrivateEventsMedia = {
   hero: string;
   gatherings: string[];
   celebrations: string[];
   weddings: string[];
+  corporate: string[];
 };
 
-type PrivateEventsContentProps = {
+type Props = {
   initialMedia: PrivateEventsMedia;
 };
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+type EventSectionProps = {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  paragraphs: string[];
+  images: string[];
+  imageAlt: string;
+  tone: "sage" | "pink" | "cream";
+  imageSide: "left" | "right";
+  href: string;
+  buttonLabel?: string;
+  eyebrowStyle?: React.CSSProperties;
+  headingStyle?: React.CSSProperties;
+  textStyle?: React.CSSProperties;
+  buttonStyle?: React.CSSProperties;
+};
 
-function renderLines(value = "") {
-  const lines = value.split("\n");
+function EventSection({
+  id,
+  eyebrow,
+  heading,
+  paragraphs,
+  images,
+  imageAlt,
+  tone,
+  imageSide,
+  href,
+  buttonLabel = "SEND ENQUIRY",
+  eyebrowStyle,
+  headingStyle,
+  textStyle,
+  buttonStyle,
+}: EventSectionProps) {
+  const image = images.find(Boolean);
 
-  return lines.map((line, index) => (
-    <span key={`${line}-${index}`}>
-      {line}
-      {index < lines.length - 1 && <br />}
-    </span>
-  ));
+  return (
+    <section
+      id={id}
+      className={`lalara-event-section lalara-event-${tone} ${
+        imageSide === "left" ? "lalara-event-image-left" : ""
+      }`}
+    >
+      <div className="lalara-event-copy">
+        <div className="lalara-event-copy-inner">
+          <p className="lalara-event-eyebrow" style={eyebrowStyle}>
+            {eyebrow}
+          </p>
+
+          <h2 style={headingStyle}>{heading}</h2>
+
+          <div className="lalara-event-description" style={textStyle}>
+            {paragraphs.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+          </div>
+
+          <a
+            href={href}
+            className="lalara-event-enquiry"
+            style={buttonStyle}
+          >
+            {buttonLabel} <span aria-hidden="true">›</span>
+          </a>
+        </div>
+      </div>
+
+      <div className="lalara-event-image-frame">
+        {image ? (
+          <Image
+            src={image}
+            alt={imageAlt}
+            fill
+            sizes="(max-width: 800px) 100vw, 60vw"
+            className="lalara-event-image"
+          />
+        ) : (
+          <div className="lalara-event-image-placeholder">
+            <span>EVENT IMAGE</span>
+          </div>
+        )}
+      </div>
+    </section>
+  );
 }
-
-function renderParagraphs(value = "") {
-  return value
-    .split(/\n\s*\n/)
-    .filter((paragraph) => paragraph.trim())
-    .map((paragraph, index) => (
-      <p key={`${paragraph}-${index}`}>
-        {renderLines(paragraph)}
-      </p>
-    ));
-}
-
-function createSliderImages(
-  urls: string[],
-  alt: string
-): SliderImage[] {
-  return urls.map((src, index) => ({
-    src,
-    alt: `${alt} ${index + 1}`,
-  }));
-}
-
-/* =========================================================
-   PAGE
-   ========================================================= */
 
 export default function PrivateEventsContent({
   initialMedia,
-}: PrivateEventsContentProps) {
+}: Props) {
   const media = initialMedia;
-
-  const whatsappHref =
-    "https://wa.me/905458941838?text=" +
-    encodeURIComponent(
-      "Hello La Lara, I would like to enquire about hosting a private event.\n\nEvent type:\nPreferred date:\nNumber of guests:"
-    );
 
   const { ready, getContent, isVisible, styleFor } = useSiteContent({
     locale: "en",
     originals: privateEventsOriginals.en,
   });
 
-  const hero = getContent("private-events-hero");
-  const intro = getContent("private-events-intro");
-  const lounge = getContent("private-events-lounge");
-  const privateEvents = getContent("private-events-restaurant");
-  const weddings = getContent("private-events-weddings");
-  const finalCta = getContent("private-events-cta");
+  const cms = (key: string) => getContent(key);
+  const eventText = (key: string, field: "eyebrow" | "heading" | "body" | "buttonLabel", fallback: string) =>
+    (cms(key)?.[field] as string | undefined) || fallback;
+  const eventParagraphs = (key: string, fallback: string[]) =>
+    ((cms(key)?.body ?? "").trim() ? (cms(key)?.body ?? "").split(/\n\s*\n/).filter(Boolean) : fallback);
 
-  /* =======================================================
-     SLIDER IMAGES
-     ======================================================= */
+  const email = "reservation.bodrum@lalara.com.tr";
 
-  const loungeImages =
-    createSliderImages(
-      media.gatherings,
-      "La Lara Lounge event"
-    );
-
-  const privateEventImages =
-    createSliderImages(
-      media.celebrations,
-      "Private occasion at La Lara"
-    );
-
-  const weddingImages =
-    createSliderImages(
-      media.weddings,
-      "Boutique wedding at La Lara"
-    );
-
-  /* =======================================================
-     RENDER
-     ======================================================= */
+  const enquiryHref = (eventType: string) =>
+    `mailto:${email}?subject=${encodeURIComponent(
+      `La Lara - ${eventType} Enquiry`
+    )}&body=${encodeURIComponent(
+      `Hello La Lara,\n\nI would like to enquire about ${eventType.toLowerCase()}.\n\nPreferred date:\nNumber of guests:\nAdditional details:\n\nThank you.`
+    )}`;
 
   return (
-    <main className="events-page">
-
-      {/* ===================================================
-          HEADER
-          =================================================== */}
-
+    <main className="events-page lalara-events-redesign">
       <Header locale="en" />
 
-      <div style={{ visibility: ready ? "visible" : "hidden" }} aria-busy={!ready}>
-
-      {/* ===================================================
-          HERO
-          =================================================== */}
-
-      {isVisible(
-        "private-events-hero"
-      ) && (
-        <section
-          className="events-page-hero"
-          style={{
-            background: "transparent",
-          }}
-        >
-          {media.hero && (
-            <Image
-              src={media.hero}
-              alt="Private events at La Lara Yalıkavak"
-              fill
-              priority
-              fetchPriority="high"
-              sizes="100vw"
-              className="cover"
-            />
-          )}
-
-          {media.hero && (
-            <div className="image-overlay" />
-          )}
-
-          <div className="events-page-hero-content">
-
-            <p
-              className="eyebrow light"
-              style={styleFor(
-                "private-events-hero",
-                "eyebrow"
-              )}
-            >
-              {hero?.eyebrow ||
-                "LA LARA · YALIKAVAK"}
-            </p>
-
-            <h1
-              style={styleFor(
-                "private-events-hero",
-                "heading"
-              )}
-            >
-              {hero?.heading
-                ? renderLines(
-                    hero.heading
-                  )
-                : (
-                  <>
-                    Special Moments,
-                    <br />
-                    at La Lara.
-                  </>
-                )}
-            </h1>
-
-            <p
-              style={styleFor(
-                "private-events-hero",
-                "text"
-              )}
-            >
-              {hero?.body
-                ? renderLines(
-                    hero.body
-                  )
-                : (
-                  <>
-                    From intimate gatherings
-                    to private celebrations,
-                    a beautiful setting in
-                    Yalıkavak for the moments
-                    worth remembering.
-                  </>
-                )}
-            </p>
-
-            <a
-              href={
-                hero?.buttonLink ||
-                "#events"
-              }
-              className="outline-button"
-            >
-              {hero?.buttonLabel ||
-                "DISCOVER EVENTS"}
-            </a>
-
-          </div>
-        </section>
-      )}
-
-      {/* ===================================================
-          INTRO
-          =================================================== */}
-
-      {isVisible(
-        "private-events-intro"
-      ) && (
-        <section
-          className="events-editorial-intro"
-          style={{
-            marginBottom:
-              "clamp(50px, 6vw, 90px)",
-          }}
-        >
-
-          <p
-            className="eyebrow"
-            style={styleFor(
-              "private-events-intro",
-              "eyebrow"
-            )}
-          >
-            {intro?.eyebrow ||
-              "PRIVATE EVENTS"}
-          </p>
-
-          <h2
-            style={styleFor(
-              "private-events-intro",
-              "heading"
-            )}
-          >
-            {intro?.heading
-              ? renderLines(
-                  intro.heading
-                )
-              : (
-                <>
-                  Every celebration
-                  <br />
-                  has its own story.
-                </>
-              )}
-          </h2>
-
-          <p
-            style={styleFor(
-              "private-events-intro",
-              "text"
-            )}
-          >
-            {intro?.body
-              ? renderLines(
-                  intro.body
-                )
-              : (
-                <>
-                  Whether it is an intimate
-                  evening, a special
-                  celebration or one of
-                  life&apos;s most important
-                  occasions, we approach every
-                  event at La Lara with its
-                  own character.
-                </>
-              )}
-          </p>
-
-        </section>
-      )}
-
-      {/* ===================================================
-          EVENTS
-          =================================================== */}
-
       <div
-        id="events"
-        className="events-editorial-list"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "clamp(60px, 7vw, 110px)",
-        }}
+        className="lalara-events-content"
+        style={{ visibility: ready ? "visible" : "hidden" }}
+        aria-busy={!ready}
       >
+        {/* 01 - HERO */}
 
-        {/* =================================================
-            01 — LOUNGE
-            ================================================= */}
-
-        {isVisible(
-          "private-events-lounge"
-        ) && (
-          <section className="event-editorial-row">
-
-            <div className="event-editorial-copy">
-
-              <div className="event-editorial-number">
-                01
-              </div>
-
-              <p
-                className="eyebrow"
-                style={styleFor(
-                  "private-events-lounge",
-                  "eyebrow"
-                )}
-              >
-                {lounge?.eyebrow ||
-                  "LA LARA LOUNGE"}
-              </p>
-
-              <h2
-                style={styleFor(
-                  "private-events-lounge",
-                  "heading"
-                )}
-              >
-                {lounge?.heading
-                  ? renderLines(
-                      lounge.heading
-                    )
-                  : (
-                    <>
-                      Intimate
-                      <br />
-                      Events
-                    </>
-                  )}
-              </h2>
-
-              <div
-                className="event-editorial-text"
-                style={styleFor(
-                  "private-events-lounge",
-                  "text"
-                )}
-              >
-                {lounge?.body
-                  ? renderParagraphs(
-                      lounge.body
-                    )
-                  : (
-                    <>
-                      <p>
-                        With its warm and
-                        welcoming atmosphere,
-                        La Lara Lounge offers a
-                        versatile setting for
-                        social gatherings and
-                        private celebrations.
-                      </p>
-
-                      <p>
-                        From relaxed evenings
-                        with friends to private
-                        parties, the space can
-                        be adapted to suit the
-                        character of your
-                        occasion.
-                      </p>
-
-                      <p>
-                        Its comfortable and
-                        informal atmosphere
-                        works beautifully for
-                        everything from
-                        afternoon gatherings to
-                        long evenings together.
-                      </p>
-                    </>
-                  )}
-              </div>
-
-              <a
-                href={
-                  lounge?.buttonLink ||
-                  whatsappHref
-                }
-                target={
-                  (
-                    lounge?.buttonLink ||
-                    whatsappHref
-                  ).startsWith("http")
-                    ? "_blank"
-                    : undefined
-                }
-                rel="noopener noreferrer"
-                className="line-link"
-              >
-                {lounge?.buttonLabel ||
-                  "ENQUIRE ABOUT THIS EVENT"}{" "}
-                <span>→</span>
-              </a>
-
-            </div>
-
-            {loungeImages.length > 0 && (
-              <div className="event-editorial-media">
-                <EventSlider
-                  images={loungeImages}
-                />
+        {isVisible("private-events-hero") && (
+          <section className="lalara-events-hero">
+            {media.hero ? (
+              <Image
+                src={media.hero}
+                alt="Events and celebrations at La Lara"
+                fill
+                priority
+                fetchPriority="high"
+                sizes="100vw"
+                className="lalara-event-image"
+              />
+            ) : (
+              <div className="lalara-event-image-placeholder">
+                <span>EVENTS HERO IMAGE</span>
               </div>
             )}
 
+            <div className="lalara-events-hero-shade" />
+
+            <div className="lalara-events-hero-text">
+              <h1 style={styleFor("private-events-hero", "heading")}>
+                {eventText("private-events-hero", "heading", "Events & Celebrations")}
+              </h1>
+
+              <p style={styleFor("private-events-hero", "text")}>
+                {eventText("private-events-hero", "body", "Every celebration has its own story.")}
+              </p>
+            </div>
           </section>
         )}
 
-        {/* =================================================
-            02 — PRIVATE EVENTS
-            ================================================= */}
+        {/* SPACE BETWEEN HERO AND WEDDINGS */}
 
-        {isVisible(
-          "private-events-restaurant"
-        ) && (
-          <section className="event-editorial-row is-reversed">
+        <div className="lalara-events-spacer" aria-hidden="true" />
 
-            <div className="event-editorial-copy">
+        {/* 02 - WEDDINGS */}
 
-              <div className="event-editorial-number">
-                02
-              </div>
-
-              <p
-                className="eyebrow"
-                style={styleFor(
-                  "private-events-restaurant",
-                  "eyebrow"
-                )}
-              >
-                {privateEvents?.eyebrow ||
-                  "LA LARA RESTAURANT & BAR"}
-              </p>
-
-              <h2
-                style={styleFor(
-                  "private-events-restaurant",
-                  "heading"
-                )}
-              >
-                {privateEvents?.heading
-                  ? renderLines(
-                      privateEvents.heading
-                    )
-                  : (
-                    <>
-                      Private
-                      <br />
-                      Occasions
-                    </>
-                  )}
-              </h2>
-
-              <div
-                className="event-editorial-text"
-                style={styleFor(
-                  "private-events-restaurant",
-                  "text"
-                )}
-              >
-                {privateEvents?.body
-                  ? renderParagraphs(
-                      privateEvents.body
-                    )
-                  : (
-                    <>
-                      <p>
-                        Selected areas of La
-                        Lara can be arranged
-                        for private occasions,
-                        creating a more
-                        personal setting for
-                        you and your guests.
-                      </p>
-
-                      <p>
-                        Romantic dinners,
-                        anniversaries,
-                        proposals, birthdays
-                        and gatherings with
-                        family, friends or
-                        colleagues can all be
-                        celebrated in a warm
-                        and elegant atmosphere.
-                      </p>
-
-                      <p>
-                        Our team will work with
-                        you to understand the
-                        occasion and help shape
-                        an experience around
-                        your plans.
-                      </p>
-                    </>
-                  )}
-              </div>
-
-              <a
-                href={
-                  privateEvents?.buttonLink ||
-                  whatsappHref
-                }
-                target={
-                  (
-                    privateEvents?.buttonLink ||
-                    whatsappHref
-                  ).startsWith("http")
-                    ? "_blank"
-                    : undefined
-                }
-                rel="noopener noreferrer"
-                className="line-link"
-              >
-                {privateEvents?.buttonLabel ||
-                  "PLAN YOUR OCCASION"}{" "}
-                <span>→</span>
-              </a>
-
-            </div>
-
-            {privateEventImages.length > 0 && (
-              <div className="event-editorial-media">
-                <EventSlider
-                  images={privateEventImages}
-                />
-              </div>
-            )}
-
-          </section>
+        {isVisible("private-events-weddings") && (
+          <EventSection
+            id="weddings"
+            eyebrow={eventText("private-events-weddings", "eyebrow", "WEDDINGS")}
+            heading={eventText("private-events-weddings", "heading", "Bespoke Weddings")}
+            paragraphs={eventParagraphs("private-events-weddings", [
+              "Set above Yalıkavak Bay, La Lara offers a distinctive setting for intimate weddings, with panoramic sea views and outdoor terraces across different levels.",
+              "Every celebration is personal. From bespoke menus and sharing plates to curated drinks, signature cocktails and tailored dining arrangements, we work with you to shape an experience that reflects your preferences and style.",
+            ])}
+            images={media.weddings}
+            imageAlt="Wedding floral arrangements at La Lara"
+            tone="sage"
+            imageSide="right"
+            buttonLabel={eventText("private-events-weddings", "buttonLabel", "SEND ENQUIRY")}
+            href={enquiryHref("Bespoke Weddings")}
+            eyebrowStyle={styleFor("private-events-weddings", "eyebrow")}
+            headingStyle={styleFor("private-events-weddings", "heading")}
+            textStyle={styleFor("private-events-weddings", "text")}
+            buttonStyle={styleFor("private-events-weddings", "button")}
+          />
         )}
 
-        {/* =================================================
-            03 — WEDDINGS
-            ================================================= */}
+        {/* 03 - INTIMATE CELEBRATIONS */}
 
-        {isVisible(
-          "private-events-weddings"
-        ) && (
-          <section className="event-editorial-row">
-
-            <div className="event-editorial-copy">
-
-              <div className="event-editorial-number">
-                03
-              </div>
-
-              <p
-                className="eyebrow"
-                style={styleFor(
-                  "private-events-weddings",
-                  "eyebrow"
-                )}
-              >
-                {weddings?.eyebrow ||
-                  "YALIKAVAK · BODRUM"}
-              </p>
-
-              <h2
-                style={styleFor(
-                  "private-events-weddings",
-                  "heading"
-                )}
-              >
-                {weddings?.heading
-                  ? renderLines(
-                      weddings.heading
-                    )
-                  : (
-                    <>
-                      Boutique
-                      <br />
-                      Weddings
-                    </>
-                  )}
-              </h2>
-
-              <div
-                className="event-editorial-text"
-                style={styleFor(
-                  "private-events-weddings",
-                  "text"
-                )}
-              >
-                {weddings?.body
-                  ? renderParagraphs(
-                      weddings.body
-                    )
-                  : (
-                    <>
-                      <p>
-                        Celebrate one of
-                        life&apos;s most
-                        special moments in the
-                        atmosphere of
-                        Yalıkavak, surrounded
-                        by the people who
-                        matter most.
-                      </p>
-
-                      <p>
-                        La Lara brings together
-                        warm hospitality,
-                        thoughtful food and its
-                        distinctive setting
-                        for boutique weddings
-                        and personal
-                        celebrations.
-                      </p>
-
-                      <p>
-                        Tell us about the day
-                        you imagine and
-                        we&apos;ll explore the
-                        event details, dining
-                        options and flow of the
-                        celebration with you.
-                      </p>
-                    </>
-                  )}
-              </div>
-
-              <a
-                href={
-                  weddings?.buttonLink ||
-                  whatsappHref
-                }
-                target={
-                  (
-                    weddings?.buttonLink ||
-                    whatsappHref
-                  ).startsWith("http")
-                    ? "_blank"
-                    : undefined
-                }
-                rel="noopener noreferrer"
-                className="line-link"
-              >
-                {weddings?.buttonLabel ||
-                  "WEDDING ENQUIRIES"}{" "}
-                <span>→</span>
-              </a>
-
-            </div>
-
-            {weddingImages.length > 0 && (
-              <div className="event-editorial-media">
-                <EventSlider
-                  images={weddingImages}
-                />
-              </div>
-            )}
-
-          </section>
+        {isVisible("private-events-restaurant") && (
+          <EventSection
+            id="celebrations"
+            eyebrow={eventText("private-events-restaurant", "eyebrow", "PRIVATE EVENTS")}
+            heading={eventText("private-events-restaurant", "heading", "Intimate Celebrations")}
+            paragraphs={eventParagraphs("private-events-restaurant", [
+              "From birthdays and engagements to anniversaries and special get-togethers, La Lara offers the option to book the venue just for your occasion.",
+            ])}
+            images={media.celebrations}
+            imageAlt="Private dinner celebration at La Lara"
+            tone="pink"
+            imageSide="left"
+            buttonLabel={eventText("private-events-restaurant", "buttonLabel", "SEND ENQUIRY")}
+            href={enquiryHref("Intimate Celebrations")}
+            eyebrowStyle={styleFor("private-events-restaurant", "eyebrow")}
+            headingStyle={styleFor("private-events-restaurant", "heading")}
+            textStyle={styleFor("private-events-restaurant", "text")}
+            buttonStyle={styleFor("private-events-restaurant", "button")}
+          />
         )}
 
-      </div>
+        {/* 04 - CORPORATE EVENTS */}
 
-      {/* ===================================================
-          FINAL CTA
-          =================================================== */}
+        {isVisible("corporate-events") && <EventSection
+          id="corporate-events"
+          eyebrow={eventText("corporate-events", "eyebrow", "BUSINESS")}
+          heading={eventText("corporate-events", "heading", "Corporate Events")}
+          paragraphs={eventParagraphs("corporate-events", [
+            "Make business meetings a little more enjoyable at La Lara.",
+            "Join us for business lunches and coffee breaks in a stylish, relaxed setting, or reserve La Lara exclusively for your next corporate event.",
+          ])}
+          images={media.corporate}
+          imageAlt="Corporate gathering at La Lara"
+          tone="cream"
+          imageSide="right"
+          buttonLabel={eventText("corporate-events", "buttonLabel", "SEND ENQUIRY")}
+          eyebrowStyle={styleFor("corporate-events", "eyebrow")}
+          headingStyle={styleFor("corporate-events", "heading")}
+          textStyle={styleFor("corporate-events", "text")}
+          buttonStyle={styleFor("corporate-events", "button")}
+          href={enquiryHref("Corporate Events")}
+        />}
 
-      {isVisible(
-        "private-events-cta"
-      ) && (
-        <section
-          className="events-page-enquiry"
-          style={{
-            marginTop:
-              "clamp(70px, 8vw, 120px)",
-          }}
-        >
+        {/* 05 - PRIVATE LOUNGE */}
 
-          <p
-            className="eyebrow"
-            style={styleFor(
-              "private-events-cta",
-              "eyebrow"
-            )}
-          >
-            {finalCta?.eyebrow ||
-              "PRIVATE EVENTS · YALIKAVAK"}
-          </p>
+        {isVisible("private-events-lounge") && (
+          <EventSection
+            id="private-lounge"
+            eyebrow={eventText("private-events-lounge", "eyebrow", "LEISURE")}
+            heading={eventText("private-events-lounge", "heading", "Private Lounge Experiences")}
+            paragraphs={eventParagraphs("private-events-lounge", [
+              "Make it a night of your own. La Lara's lounge is available for private karaoke nights and billiards sessions, offering a relaxed, intimate setting for friends, family or colleagues to get together.",
+            ])}
+            images={media.gatherings}
+            imageAlt="Private lounge experiences at La Lara"
+            tone="sage"
+            imageSide="left"
+            buttonLabel={eventText("private-events-lounge", "buttonLabel", "SEND ENQUIRY")}
+            href={enquiryHref("Private Lounge Experiences")}
+            eyebrowStyle={styleFor("private-events-lounge", "eyebrow")}
+            headingStyle={styleFor("private-events-lounge", "heading")}
+            textStyle={styleFor("private-events-lounge", "text")}
+            buttonStyle={styleFor("private-events-lounge", "button")}
+          />
+        )}
 
-          <h2
-            style={styleFor(
-              "private-events-cta",
-              "heading"
-            )}
-          >
-            {finalCta?.heading
-              ? renderLines(
-                  finalCta.heading
-                )
-              : (
-                <>
-                  Let&apos;s plan
-                  <br />
-                  it together.
-                </>
-              )}
-          </h2>
+        {/* 06 - BOOK YOUR VENUE */}
 
-          <p
-            style={styleFor(
-              "private-events-cta",
-              "text"
-            )}
-          >
-            {finalCta?.body
-              ? renderLines(
-                  finalCta.body
-                )
-              : (
-                <>
-                  Tell us the type of event,
-                  preferred date and
-                  approximate number of guests
-                  and our team will help with
-                  the next steps.
-                </>
-              )}
-          </p>
+        {isVisible("private-events-cta") && (
+          <section className="lalara-events-booking">
+            <h2 style={styleFor("private-events-cta", "heading")}>
+              {eventText("private-events-cta", "heading", "Book Your Venue.")}
+            </h2>
 
-          <div className="events-page-enquiry-actions">
+            <p style={styleFor("private-events-cta", "text")}>
+              {eventText("private-events-cta", "body", "Tell us the type of event, preferred date and approximate number of guests and our team will help with the next steps.")}
+            </p>
 
             <a
-              href={
-                finalCta?.buttonLink ||
-                whatsappHref
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="events-page-primary-button"
+              href={enquiryHref("Private Venue Booking")}
+              className="lalara-events-email-button"
+              style={styleFor("private-events-cta", "button")}
             >
-              {finalCta?.buttonLabel ||
-                "MESSAGE ON WHATSAPP"}
+              {eventText("private-events-cta", "buttonLabel", "EMAIL US")}
             </a>
-
-            <a
-              href="mailto:reservation.bodrum@lalara.com.tr"
-              className="line-link"
-            >
-              EMAIL US <span>→</span>
-            </a>
-
-          </div>
-
-        </section>
-      )}
-
-      {/* ===================================================
-          FOOTER
-          =================================================== */}
-
+          </section>
+        )}
       </div>
 
       <Footer locale="en" />
-
     </main>
   );
 }

@@ -151,33 +151,32 @@ const LANGUAGE_STORAGE_KEY = "lalara-locale";
      ROUTES
      ========================================================= */
 
-  const homeHref = isTR
-    ? "/tr"
-    : "/";
+const homeHref = isTR ? "/tr" : "/";
 
-  const menuHref = isTR
-    ? "/tr#menus"
-    : "/#menus";
+const logoHref = isTR
+  ? "/tr?intro=1"
+  : "/?intro=1";
 
-  const storyHref = isTR
-    ? "/tr/hikayemiz"
-    : "/our-story";
+const menuHref = "/food-menu";
 
-  const galleryHref = isTR
-    ? "/tr/galeri"
-    : "/gallery";
+const storyHref = isTR
+  ? "/tr/hikayemiz"
+  : "/our-story";
 
-  const eventsHref = isTR
-    ? "/tr/ozel-etkinlikler"
-    : "/private-events";
+const eventsHref = isTR
+  ? "/tr/ozel-etkinlikler"
+  : "/private-events";
 
-  const contactHref = isTR
-    ? "/tr/iletisim"
-    : "/contact";
+const offersHref = isTR
+  ? "/tr/teklifler"
+  : "/offers";
 
-  const reserveHref = isTR
-    ? "/tr#reserve"
-    : "/#reserve";
+const contactHref = isTR
+  ? "/tr/iletisim"
+  : "/contact";
+
+const reserveHref =
+  "https://wa.me/905458941838";
 
   /* =========================================================
      LANGUAGE ROUTES
@@ -282,47 +281,38 @@ const LANGUAGE_STORAGE_KEY = "lalara-locale";
      NAVIGATION ITEMS
      ========================================================= */
 
-  const navigation: NavigationItem[] = [
-    {
-      key: "nav-menu",
-      fallback: isTR
-        ? "MENÜ"
-        : "MENU",
-      href: menuHref,
-    },
-
-    {
-      key: "nav-our-story",
-      fallback: isTR
-        ? "HİKÂYEMİZ"
-        : "OUR STORY",
-      href: storyHref,
-    },
-
-    {
-      key: "nav-gallery",
-      fallback: isTR
-        ? "GALERİ"
-        : "GALLERY",
-      href: galleryHref,
-    },
-
-    {
-      key: "nav-private-events",
-      fallback: isTR
-        ? "ÖZEL DAVETLER"
-        : "PRIVATE EVENTS",
-      href: eventsHref,
-    },
-
-    {
-      key: "nav-contact",
-      fallback: isTR
-        ? "İLETİŞİM"
-        : "CONTACT",
-      href: contactHref,
-    },
-  ];
+const navigation: NavigationItem[] = [
+  {
+    key: "nav-home",
+    fallback: isTR ? "ANA SAYFA" : "HOME",
+    href: homeHref,
+  },
+  {
+    key: "nav-menu",
+    fallback: isTR ? "MENÜ" : "MENU",
+    href: menuHref,
+  },
+  {
+    key: "nav-our-story",
+    fallback: isTR ? "HİKÂYEMİZ" : "OUR STORY",
+    href: storyHref,
+  },
+  {
+    key: "nav-private-events",
+    fallback: isTR ? "ETKİNLİKLER" : "EVENTS",
+    href: eventsHref,
+  },
+  {
+    key: "nav-offers",
+    fallback: isTR ? "TEKLİFLER" : "OFFERS",
+    href: offersHref,
+  },
+  {
+    key: "nav-contact",
+    fallback: isTR ? "İLETİŞİM" : "CONTACT",
+    href: contactHref,
+  },
+];
 
   const reservationKey =
     "nav-book-a-table";
@@ -387,8 +377,8 @@ const LANGUAGE_STORAGE_KEY = "lalara-locale";
         {/* LOGO */}
 
         <a
-          href={homeHref}
-          className="brand"
+  href={logoHref}
+  className="brand"
           aria-label={
             isTR
               ? "La Lara ana sayfa"
@@ -426,10 +416,11 @@ const LANGUAGE_STORAGE_KEY = "lalara-locale";
             return (
               <a
                 key={item.key}
-                href={cmsHref(
-                  item.key,
-                  item.href
-                )}
+                href={item.key === "nav-home"
+                  ? homeHref
+                  : item.key === "nav-menu"
+                    ? menuHref
+                    : cmsHref(item.key, item.href)}
               >
                 {cmsLabel(
                   item.key,
@@ -587,10 +578,11 @@ const LANGUAGE_STORAGE_KEY = "lalara-locale";
             return (
               <a
                 key={item.key}
-                href={cmsHref(
-                  item.key,
-                  item.href
-                )}
+                href={item.key === "nav-home"
+                  ? homeHref
+                  : item.key === "nav-menu"
+                    ? menuHref
+                    : cmsHref(item.key, item.href)}
                 onClick={closeMenu}
               >
                 {cmsLabel(

@@ -3,16 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-} from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 type Locale = "en" | "tr";
-
 type SiteSettings = {
   phone: string;
   email: string;
@@ -21,24 +15,20 @@ type SiteSettings = {
   facebook: string;
   tripadvisor: string;
 };
-
 type CmsRecord = {
   eyebrow?: string;
   heading?: string;
   body?: string;
   buttonLabel?: string;
   buttonLink?: string;
-
   eyebrowSize?: number;
   headingSize?: number;
   textSize?: number;
   buttonSize?: number;
-
   fontFamily?: "display" | "sans";
   fontWeight?: number;
   lineHeight?: number;
   letterSpacing?: number;
-
   visible?: boolean;
   status?: string;
 };
@@ -46,726 +36,162 @@ type CmsRecord = {
 const defaultSettings: SiteSettings = {
   phone: "+90 545 894 18 38",
   email: "reservation.bodrum@lalara.com.tr",
-  address:
-    "Geriş Mah., 2026. Sokak No:5\nYalıkavak, 48990 Bodrum\nMuğla · Türkiye",
-  instagram:
-    "https://www.instagram.com/lalara.bodrum/",
-  facebook:
-    "https://www.facebook.com/lalararestaurant",
-  tripadvisor:
-    "https://www.tripadvisor.com/Restaurant_Review-g312738-d24780161-Reviews-La_Lara_Restaurant_Bar-Yalikavak_Bodrum_District_Mugla_Province_Turkish_Aegean_C.html",
+  address: "Geriş Mah., 2026. Sokak No:5\nYalıkavak, 48990 Bodrum\nMuğla · Türkiye",
+  instagram: "https://www.instagram.com/lalara.bodrum/",
+  facebook: "https://www.facebook.com/lalararestaurant",
+  tripadvisor: "https://www.tripadvisor.com/Restaurant_Review-g312738-d24780161-Reviews-La_Lara_Restaurant_Bar-Yalikavak_Bodrum_District_Mugla_Province_Turkish_Aegean_C.html",
 };
 
-function renderLines(value: string) {
-  return value.split("\n").map((line, index, lines) => (
-    <span key={`${line}-${index}`}>
-      {line}
-      {index < lines.length - 1 && <br />}
-    </span>
-  ));
-}
-
-export default function Footer({
-  locale = "en",
-}: {
-  locale?: Locale;
-}) {
-  const [settings, setSettings] =
-    useState<SiteSettings>(defaultSettings);
-
-  const [cms, setCms] =
-    useState<Record<string, CmsRecord>>({});
-
-  const [showBackToTop, setShowBackToTop] =
-    useState(false);
-    const [backToTopDark, setBackToTopDark] =
-  useState(false);
-
+export default function Footer({ locale = "en" }: { locale?: Locale }) {
   const isTR = locale === "tr";
-
-  /* =========================================================
-     FIREBASE
-     ========================================================= */
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [cms, setCms] = useState<Record<string, CmsRecord>>({});
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [backToTopDark, setBackToTopDark] = useState(false);
 
   useEffect(() => {
     let active = true;
-
     async function loadSettings() {
       try {
-        const [contactSnapshot, socialSnapshot] =
-          await Promise.all([
-            getDoc(doc(db, "siteSettings", "contact")),
-            getDoc(doc(db, "siteSettings", "social")),
-          ]);
-
+        const [contact, social] = await Promise.all([
+          getDoc(doc(db, "siteSettings", "contact")),
+          getDoc(doc(db, "siteSettings", "social")),
+        ]);
         if (!active) return;
-
         setSettings({
-          phone:
-            contactSnapshot.data()?.phone ??
-            defaultSettings.phone,
-          email:
-            contactSnapshot.data()?.email ??
-            defaultSettings.email,
-          address:
-            contactSnapshot.data()?.address ??
-            defaultSettings.address,
-          instagram:
-            socialSnapshot.data()?.instagram ??
-            defaultSettings.instagram,
-          facebook:
-            socialSnapshot.data()?.facebook ??
-            defaultSettings.facebook,
-          tripadvisor:
-            socialSnapshot.data()?.tripadvisor ??
-            defaultSettings.tripadvisor,
+          phone: contact.data()?.phone ?? defaultSettings.phone,
+          email: contact.data()?.email ?? defaultSettings.email,
+          address: contact.data()?.address ?? defaultSettings.address,
+          instagram: social.data()?.instagram ?? defaultSettings.instagram,
+          facebook: social.data()?.facebook ?? defaultSettings.facebook,
+          tripadvisor: social.data()?.tripadvisor ?? defaultSettings.tripadvisor,
         });
       } catch (error) {
-        console.error(
-          "Footer settings load error:",
-          error
-        );
+        console.error("Footer settings load error:", error);
       }
     }
-
     void loadSettings();
-
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, []);
 
   useEffect(() => {
     const prefix = isTR ? "tr-" : "en-";
-
-    return onSnapshot(
-      collection(db, "siteContent"),
-      (snapshot) => {
-        const next: Record<string, CmsRecord> = {};
-
-        snapshot.forEach((item) => {
-          const data = item.data() as CmsRecord;
-
-          if (
-            item.id.startsWith(prefix) &&
-            (!data.status || data.status === "published")
-          ) {
-            next[item.id.replace(prefix, "")] = data;
-          }
-        });
-
-        setCms(next);
-      },
-      (error) => {
-        console.error(
-          "Footer CMS live load error:",
-          error
-        );
-        setCms({});
-      }
-    );
+    return onSnapshot(collection(db, "siteContent"), (snapshot) => {
+      const next: Record<string, CmsRecord> = {};
+      snapshot.forEach((item) => {
+        const data = item.data() as CmsRecord;
+        if (item.id.startsWith(prefix) && (!data.status || data.status === "published")) {
+          next[item.id.slice(prefix.length)] = data;
+        }
+      });
+      setCms(next);
+    }, (error) => {
+      console.error("Footer CMS live load error:", error);
+    });
   }, [isTR]);
 
-  /* =========================================================
-     BACK TO TOP
-     ========================================================= */
-useEffect(() => {
-  const handleScroll = () => {
-    setShowBackToTop(window.scrollY > 500);
-
-    const x = window.innerWidth - 50;
-    const y = window.innerHeight - 50;
-
-    const button = document.querySelector(
-      ".back-to-top"
-    ) as HTMLElement | null;
-
-    if (!button) return;
-
-    const previousPointerEvents =
-      button.style.pointerEvents;
-
-    button.style.pointerEvents = "none";
-
-    const elementBehind =
-      document.elementFromPoint(x, y);
-
-    button.style.pointerEvents =
-      previousPointerEvents;
-
-    if (!elementBehind) return;
-
-    const darkSection =
-      elementBehind.closest(
-        ".site-footer, .opaque-section, .dark-section"
-      );
-
-    setBackToTopDark(!darkSection);
-  };
-
-  handleScroll();
-
-  window.addEventListener(
-    "scroll",
-    handleScroll,
-    { passive: true }
-  );
-
-  window.addEventListener(
-    "resize",
-    handleScroll
-  );
-
-  return () => {
-    window.removeEventListener(
-      "scroll",
-      handleScroll
-    );
-
-    window.removeEventListener(
-      "resize",
-      handleScroll
-    );
-  };
-}, []);
-
-  /* =========================================================
-     CMS HELPERS
-     ========================================================= */
-
-  function content(key: string) {
-    return cms[key];
-  }
-
-  function isVisible(key: string) {
-    return cms[key]?.visible !== false;
-  }
-
-  function styleFor(
-    key: string,
-    kind:
-      | "eyebrow"
-      | "heading"
-      | "text"
-      | "button"
-  ) {
-    const item = cms[key];
-
-    if (!item) return undefined;
-
-    const size =
-      kind === "eyebrow"
-        ? item.eyebrowSize
-        : kind === "heading"
-          ? item.headingSize
-          : kind === "button"
-            ? item.buttonSize
-            : item.textSize;
-
-    return {
-      ...(size !== undefined
-        ? {
-            fontSize: `${size}px`,
-          }
-        : {}),
-
-      ...(item.fontFamily
-        ? {
-            fontFamily:
-              item.fontFamily === "sans"
-                ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
-                : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
-          }
-        : {}),
-
-      ...(item.fontWeight !== undefined
-        ? {
-            fontWeight:
-              item.fontWeight,
-          }
-        : {}),
-
-      ...(item.lineHeight !== undefined
-        ? {
-            lineHeight:
-              item.lineHeight,
-          }
-        : {}),
-
-      ...(item.letterSpacing !==
-      undefined
-        ? {
-            letterSpacing: `${item.letterSpacing}px`,
-          }
-        : {}),
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 500);
+      const button = document.querySelector(".back-to-top") as HTMLElement | null;
+      if (!button) return;
+      const previous = button.style.pointerEvents;
+      button.style.pointerEvents = "none";
+      const behind = document.elementFromPoint(window.innerWidth - 50, window.innerHeight - 50);
+      button.style.pointerEvents = previous;
+      setBackToTopDark(!behind?.closest(".site-footer, .opaque-section, .dark-section"));
     };
-  }
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
 
-  /* =========================================================
-     ADMIN FOOTER KEYS
+  const visible = (key: string) => cms[key]?.visible !== false;
+  const telHref = `tel:${settings.phone.replace(/[^+\d]/g, "")}`;
+  const emailHref = `mailto:${settings.email}`;
+  const mapsHref = "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent(settings.address.replace(/\n/g, ", "));
 
-     Footer Brand
-     → footer-brand
-
-     Footer Address
-     → footer-address
-
-     Footer Navigation
-     → footer-navigation
-
-     Footer Social
-     → footer-social
-
-     Footer Bottom
-     → footer-bottom
-     ========================================================= */
-
-  const brand = content(
-    "footer-brand"
-  );
-
-  const address = content(
-    "footer-address"
-  );
-
-  const navigation = content(
-    "footer-navigation"
-  );
-
-  const social = content(
-    "footer-social"
-  );
-
-  const bottom = content(
-    "footer-bottom"
-  );
-
-  /* =========================================================
-     LINKS
-     ========================================================= */
-
-  const telHref = `tel:${settings.phone.replace(
-    /[^+\d]/g,
-    ""
-  )}`;
-
-  const emailHref =
-    `mailto:${settings.email}`;
-
-  const mapsHref =
-    "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent(
-      settings.address.replace(
-        /\n/g,
-        ", "
-      )
-    );
-
-  const homeHref = isTR
-    ? "/tr"
-    : "/";
-
-  const menuHref = isTR
-    ? "/tr#menus"
-    : "/#menus";
-
-  const storyHref = isTR
-    ? "/tr/hikayemiz"
-    : "/our-story";
-
-  const galleryHref = isTR
-    ? "/tr/galeri"
-    : "/gallery";
-
-  const eventsHref = isTR
-    ? "/tr/ozel-etkinlikler"
-    : "/private-events";
-
-  const reservationHref = isTR
-    ? "/tr#reserve"
-    : "/#reserve";
-
-  const contactHref = isTR
-    ? "/tr/iletisim"
-    : "/contact";
-
-  function scrollToTop() {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }
+  const links = {
+    menu: isTR ? "/tr/menu" : "/menu",
+    story: isTR ? "/tr/hikayemiz" : "/our-story",
+    events: isTR ? "/tr/ozel-etkinlikler" : "/private-events",
+    offers: isTR ? "/tr/offers" : "/offers",
+    contact: isTR ? "/tr/iletisim" : "/contact",
+  };
 
   return (
-    <footer
-      id="contact"
-      className="site-footer opaque-section"
-    >
-      <div className="footer-grid">
+    <footer id="contact" className="site-footer opaque-section lalara-footer-2026">
+      <div className="lalara-footer-inner">
+        <div className="lalara-footer-columns">
+          {visible("footer-brand") && (
+            <div className="lalara-footer-brand">
+              <Link href={isTR ? "/tr" : "/"} aria-label="La Lara home">
+                <Image src="/lalara-logo.png" alt="La Lara Restaurant & Bar" width={320} height={118} />
+              </Link>
+            </div>
+          )}
 
-        {/* ===================================================
-            BRAND
-            =================================================== */}
-
-        {isVisible("footer-brand") && (
-          <div className="footer-brand">
-            <Link href={homeHref}>
-              <Image
-                src="/lalara-logo.png"
-                alt="La Lara Restaurant & Bar"
-                width={320}
-                height={118}
-              />
-            </Link>
-
-            <p
-              style={styleFor(
-                "footer-brand",
-                "text"
-              )}
-            >
-              {brand?.body ||
-                (isTR
-                  ? "Restaurant & Bar · Yalıkavak"
-                  : "Restaurant & Bar · Yalıkavak")}
-            </p>
+          <div className="lalara-footer-info">
+            <div>
+              <h2>{isTR ? "AÇILIŞ SAATLERİ" : "OPENING TIMES"}</h2>
+              <p>{isTR ? "Pzt–Paz" : "Mon–Sun"}<br />8:00 – 22:00</p>
+            </div>
+            <div className="lalara-footer-partners">
+              <h2>{isTR ? "İŞ ORTAKLARIMIZ" : "PARTNERS"}</h2>
+              <a href="https://spektr-hotel.com/" target="_blank" rel="noopener noreferrer">Spektr Boutique Hotel</a>
+            </div>
           </div>
-        )}
 
-        {/* ===================================================
-            ADDRESS
-            =================================================== */}
+          {visible("footer-navigation") && (
+            <nav className="lalara-footer-nav" aria-label={isTR ? "Alt menü" : "Footer navigation"}>
+              <h2>{cms["footer-navigation"]?.eyebrow || (isTR ? "KEŞFET" : "EXPLORE")}</h2>
+              <Link href={links.menu}>{isTR ? "Menü" : "Menu"}</Link>
+              <Link href={links.story}>{isTR ? "Hikâyemiz" : "Our Story"}</Link>
+              <Link href={links.events}>{isTR ? "Etkinlikler" : "Events"}</Link>
+              <Link href={links.offers}>{isTR ? "Teklifler" : "Offers"}</Link>
+              <Link href={links.contact}>{isTR ? "İletişim" : "Contact"}</Link>
+            </nav>
+          )}
 
-        {isVisible(
-          "footer-address"
-        ) && (
-          <div>
-            <span
-              style={styleFor(
-                "footer-address",
-                "eyebrow"
-              )}
-            >
-              {address?.eyebrow ||
-                (isTR
-                  ? "Adres"
-                  : "Visit")}
-            </span>
-
-            <p
-              style={styleFor(
-                "footer-address",
-                "text"
-              )}
-            >
-              {address?.body
-                ? renderLines(
-                    address.body
-                  )
-                : renderLines(
-                    settings.address
-                  )}
-            </p>
-
-           <a
-  href={address?.buttonLink || mapsHref}
-  target="_blank"
-  rel="noopener noreferrer"
-  style={styleFor(
-    "footer-address",
-    "button"
-  )}
->
-  {address?.buttonLabel
-    ? address.buttonLabel.replace(/[↗️]+/g, "").trim()
-    : isTR
-      ? "YOL TARİFİ AL"
-      : "GET DIRECTIONS"}{" "}
-  <span
-    aria-hidden="true"
-    style={{
-      display: "inline-block",
-      marginLeft: "2px",
-      fontFamily: "Arial, Helvetica, sans-serif",
-      fontSize: "0.78em",
-      fontWeight: 400,
-      lineHeight: 1,
-      verticalAlign: "0.08em",
-    }}
-  >
-    {"↗\uFE0E"}
-  </span>
-</a>
-
-            <a href={telHref}>
-              {settings.phone}
-            </a>
-
-            <a href={emailHref}>
-              {settings.email}
-            </a>
-          </div>
-        )}
-
-        {/* ===================================================
-            NAVIGATION
-            =================================================== */}
-
-        {isVisible(
-          "footer-navigation"
-        ) && (
-          <div>
-            <span
-              style={styleFor(
-                "footer-navigation",
-                "eyebrow"
-              )}
-            >
-              {navigation?.eyebrow ||
-                (isTR
-                  ? "Keşfet"
-                  : "Explore")}
-            </span>
-
-            <Link href={menuHref}>
-              {isTR
-                ? "Menüler"
-                : "Menus"}
-            </Link>
-
-            <Link href={storyHref}>
-              {isTR
-                ? "Hikâyemiz"
-                : "Our Story"}
-            </Link>
-
-            <Link href={galleryHref}>
-              {isTR
-                ? "Galeri"
-                : "Gallery"}
-            </Link>
-
-            <Link href={eventsHref}>
-              {isTR
-                ? "Özel Davetler"
-                : "Private Events"}
-            </Link>
-
-            <Link
-              href={reservationHref}
-            >
-              {isTR
-                ? "Rezervasyon"
-                : "Reservations"}
-            </Link>
-
-            <Link href={contactHref}>
-              {isTR
-                ? "İletişim"
-                : "Contact"}
-            </Link>
-          </div>
-        )}
-
-        {/* ===================================================
-            SOCIAL
-            =================================================== */}
-
-        {isVisible(
-          "footer-social"
-        ) && (
-          <div className="footer-social">
-            <span
-              style={styleFor(
-                "footer-social",
-                "eyebrow"
-              )}
-            >
-              {social?.eyebrow ||
-                (isTR
-                  ? "Takip Et"
-                  : "Follow")}
-            </span>
-
-            {/* INSTAGRAM */}
-
-            {settings.instagram && (
-              <a
-                href={
-                  settings.instagram
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="La Lara Instagram"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <rect
-                    x="3"
-                    y="3"
-                    width="18"
-                    height="18"
-                    rx="5"
-                  />
-
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="4"
-                  />
-
-                  <circle
-                    className="social-fill"
-                    cx="17.5"
-                    cy="6.5"
-                    r="1"
-                  />
-                </svg>
-
-                <span className="social-name">
-                  Instagram
-                </span>
+          {visible("footer-address") && (
+            <div className="lalara-footer-contact">
+              <h2>{isTR ? "İLETİŞİM" : "CONTACT"}</h2>
+              <a href={telHref}>{settings.phone}</a>
+              <a href={emailHref}>{settings.email}</a>
+              <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="lalara-footer-address">
+                {settings.address}
               </a>
-            )}
+            </div>
+          )}
 
-            {/* FACEBOOK */}
+          {visible("footer-social") && (
+            <div className="lalara-footer-follow">
+              <h2>{cms["footer-social"]?.eyebrow || (isTR ? "TAKİP ET" : "FOLLOW")}</h2>
+              {settings.instagram && <a href={settings.instagram} target="_blank" rel="noopener noreferrer">∞ Instagram</a>}
+              {settings.facebook && <a href={settings.facebook} target="_blank" rel="noopener noreferrer">∞ Facebook</a>}
+              {settings.tripadvisor && <a href={settings.tripadvisor} target="_blank" rel="noopener noreferrer">∞ Tripadvisor</a>}
+            </div>
+          )}
+        </div>
 
-            {settings.facebook && (
-              <a
-                href={
-                  settings.facebook
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="La Lara Facebook"
-              >
-                <svg
-                  className="facebook-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M14 8h3V4.5c-.6-.1-1.8-.2-3.2-.2-3.1 0-5.2 1.9-5.2 5.4V12H5v4h3.6v8H13v-8h3.5l.6-4H13V10c0-1.2.3-2 1-2Z" />
-                </svg>
-
-                <span className="social-name">
-                  Facebook
-                </span>
-              </a>
-            )}
-
-            {/* TRIPADVISOR */}
-
-            {settings.tripadvisor && (
-              <a
-                href={
-                  settings.tripadvisor
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="La Lara Tripadvisor"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <circle
-                    cx="7"
-                    cy="13"
-                    r="4"
-                  />
-
-                  <circle
-                    cx="17"
-                    cy="13"
-                    r="4"
-                  />
-
-                  <circle
-                    className="social-fill"
-                    cx="7"
-                    cy="13"
-                    r="1.3"
-                  />
-
-                  <circle
-                    className="social-fill"
-                    cx="17"
-                    cy="13"
-                    r="1.3"
-                  />
-
-                  <path d="M10.5 13 12 15l1.5-2" />
-
-                  <path d="M3.5 8.5C6 7 8.8 6.5 12 6.5s6 .5 8.5 2" />
-                </svg>
-
-                <span className="social-name">
-                  Tripadvisor
-                </span>
-              </a>
-            )}
+        {visible("footer-bottom") && (
+          <div className="lalara-footer-bottom">
+            <span>{cms["footer-bottom"]?.body || "© 2026 LA LARA RESTAURANT & BAR"}</span>
+            <span className="lalara-footer-policy">{isTR ? "Politikalar, Şartlar, Veri, Çerezler" : "Policy, Terms, Data, Cookies"}</span>
           </div>
         )}
       </div>
 
-      {/* =====================================================
-          FOOTER BOTTOM
-          ===================================================== */}
-
-      {isVisible(
-        "footer-bottom"
-      ) && (
-        <div className="footer-bottom">
-          <span
-            style={styleFor(
-              "footer-bottom",
-              "text"
-            )}
-          >
-            {bottom?.body ||
-              "© 2026 La Lara Restaurant & Bar"}
-          </span>
-
-          <span>
-            {bottom?.heading ||
-              "Yalıkavak · Bodrum"}
-          </span>
-
-          <div>
-            <Link href="/">
-              EN
-            </Link>
-
-            <span> / </span>
-
-            <Link href="/tr">
-              TR
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {/* =====================================================
-          BACK TO TOP
-          ===================================================== */}
-
       <button
         type="button"
-      className={`back-to-top ${
-  showBackToTop ? "is-visible" : ""
-} ${
-  backToTopDark
-    ? "back-to-top-dark"
-    : "back-to-top-light"
-}`}
-        onClick={scrollToTop}
-        aria-label={
-          isTR
-            ? "Yukarı dön"
-            : "Back to top"
-        }
+        className={`back-to-top ${showBackToTop ? "is-visible" : ""} ${backToTopDark ? "back-to-top-dark" : "back-to-top-light"}`}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        aria-label={isTR ? "Yukarı dön" : "Back to top"}
       >
         ↑
       </button>

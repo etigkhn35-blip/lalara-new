@@ -1,88 +1,68 @@
+
 import ContactContent from "@/components/ContactContent";
 
-export const metadata = {
-  title: "Contact | La Lara Restaurant & Bar Yalıkavak",
-  description:
-    "Contact La Lara Restaurant & Bar in Yalıkavak, Bodrum for reservations, directions and enquiries.",
-};
+export const dynamic = "force-dynamic";
 
 export type ContactMedia = {
   hero: string;
   reservation: string;
+  event: string;
+  social: string;
 };
 
-function getStringValue(field: any): string {
-  return typeof field?.stringValue === "string"
-    ? field.stringValue
-    : "";
+type FirestoreField = {
+  stringValue?: string;
+  mapValue?: {
+    fields?: Record<string, FirestoreField>;
+  };
+};
+
+function imageUrl(
+  images: Record<string, FirestoreField>,
+  key: string
+): string {
+  return (
+    images[key]?.mapValue?.fields?.url?.stringValue || ""
+  );
 }
 
 async function getContactMedia(): Promise<ContactMedia> {
   const fallback: ContactMedia = {
     hero: "/images/home/6.jpg",
     reservation: "/images/home/1.jpg",
+    event: "",
+    social: "",
   };
 
   try {
     const response = await fetch(
       "https://firestore.googleapis.com/v1/projects/lalara-restaurant/databases/(default)/documents/siteSettings/media",
-      {
-        cache: "no-store",
-      }
+      { cache: "no-store" }
     );
 
-    if (!response.ok) {
-      return fallback;
-    }
+    if (!response.ok) return fallback;
 
     const data = await response.json();
 
-    /*
-      Firestore structure:
-
-      siteSettings/media
-        images
-          contactHero
-            url
-          contactReservation
-            url
-    */
-
-    const images =
+    const images: Record<string, FirestoreField> =
       data?.fields?.images?.mapValue?.fields ?? {};
 
-    const contactHero =
-      images?.contactHero?.mapValue?.fields ?? {};
-
-    const contactReservation =
-      images?.contactReservation?.mapValue?.fields ?? {};
-
     return {
-      hero:
-        getStringValue(contactHero.url) ||
-        fallback.hero,
-
+      hero: imageUrl(images, "contactHero") || fallback.hero,
       reservation:
-        getStringValue(contactReservation.url) ||
+        imageUrl(images, "contactReservation") ||
         fallback.reservation,
+      event: imageUrl(images, "contactEvent"),
+      social: imageUrl(images, "contactSocial"),
     };
   } catch (error) {
-    console.error(
-      "Contact media server load error:",
-      error
-    );
-
+    console.error("Contact media load error:", error);
     return fallback;
   }
 }
 
 export default async function ContactPage() {
-  const initialMedia =
-    await getContactMedia();
+  const initialMedia = await getContactMedia();
 
-  return (
-    <ContactContent
-      initialMedia={initialMedia}
-    />
-  );
+  return <ContactContent initialMedia={initialMedia} />;
 }

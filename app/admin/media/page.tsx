@@ -113,229 +113,103 @@ async function uploadToCloudinary(file: File) {
    ========================================================= */
 
 const PAGE_DEFINITIONS: PageDefinition[] = [
-  /* =========================================================
-     HOMEPAGE
-     ========================================================= */
   {
-    key: "homepage",
-    label: "Homepage",
-    eyebrow: "Homepage photography",
-    description:
-      "Manage homepage photography in the same order it appears on the website.",
+    key: "homepage", label: "Homepage", eyebrow: "Homepage photography",
+    description: "Homepage images in website order. The six-photo homepage slider uses Gallery → Gallery Photos; the reservation banner reuses the Hero image.",
     fields: [
-      {
-        type: "single",
-        key: "hero",
-        label: "01 · Hero",
-        description: "Main homepage hero image.",
-      },
-      {
-        type: "single",
-        key: "food",
-        label: "02 · Menu — Food",
-        description: "Food card photography used on the homepage.",
-      },
-      {
-        type: "single",
-        key: "drinks",
-        label: "03 · Menu — Drinks",
-        description: "Drinks card photography used on the homepage.",
-      },
-      {
-        type: "single",
-        key: "breakfast",
-        label: "04 · Menu — Breakfast",
-        description: "Breakfast card photography used on the homepage.",
-      },
-      {
-        type: "single",
-        key: "atmosphere",
-        label: "05 · Our Story",
-        description:
-          "Photography used beside the Our Story section on the homepage.",
-      },
-      {
-        type: "single",
-        key: "moments",
-        label: "06 · Atmosphere / Gallery",
-        description:
-          "Photography used in the homepage atmosphere and gallery section.",
-      },
-      {
-        type: "single",
-        key: "sunset",
-        label: "07 · Private Events",
-        description:
-          "Photography used in the homepage Private Events section.",
-      },
+      { type: "single", key: "hero", label: "01 · Homepage Hero / Reservation Banner", description: "Used in the opening Hero and again behind Reserve Your Table." },
+      { type: "single", key: "breakfast", label: "02 · Menus — Breakfast", description: "First card in the three-column menu section." },
+      { type: "single", key: "food", label: "03 · Menus — Lunch & Dinner", description: "Second card in the menu section." },
+      { type: "single", key: "drinks", label: "04 · Menus — Drinks", description: "Third card in the menu section." },
+      { type: "single", key: "atmosphere", label: "05 · Our Story", description: "Photo beside The Woman Behind the Name." },
+      { type: "single", key: "sunset", label: "06 · Private Events", description: "Photo beside Your Exclusive Venue Experience." },
+      { type: "single", key: "moments", label: "07 · Gallery Slider Fallback", description: "Only used as a fallback if Gallery → Gallery Photos is empty; the homepage slider primarily uses up to six images from the Gallery section." },
     ],
   },
-  /* =========================================================
-     OUR STORY
-     ========================================================= */
   {
-    key: "story",
-    label: "Our Story",
-    eyebrow: "Our Story photography",
-    description:
-      "Manage the photography used on the Our Story page in the same order it appears on the website.",
+    key: "story", label: "Our Story", eyebrow: "Our Story photography",
+    description: "Manage all seven photographs in their actual website order.",
     fields: [
-      {
-        type: "single",
-        key: "hero",
-        label: "01 · Our Story Hero",
-        description:
-          "Main photography used at the top of the Our Story page.",
-      },
-      {
-        type: "single",
-        key: "lara",
-        label: "02 · The Woman Behind the Name",
-        description:
-          "Photography used beside Lara's story.",
-      },
-      {
-        type: "single",
-        key: "restaurant",
-        label: "03 · A Place of Our Own",
-        description:
-          "Restaurant atmosphere photography used in the story.",
-      },
-      {
-        type: "single",
-        key: "people",
-        label: "04 · The People Behind Our Story",
-        description:
-          "Photography used in The People Behind Our Story section.",
-      },
+      { type: "single", key: "hero", label: "01 · Our Story Hero", description: "Main hero image." },
+      { type: "single", key: "lara", label: "02 · Where It Began", description: "Portrait beside the opening story." },
+      { type: "single", key: "restaurant", label: "03 · Our Inspiration", description: "Restaurant inspiration photograph." },
+      { type: "single", key: "elephant", label: "04 · Pink Elephant", description: "Dream A Little Bigger photograph." },
+      { type: "single", key: "people1", label: "05 · The People — Photo 1", description: "First family photograph." },
+      { type: "single", key: "people2", label: "06 · The People — Photo 2", description: "Second family photograph." },
+      { type: "single", key: "people3", label: "07 · The People — Photo 3", description: "Third family photograph." },
     ],
   },
-  /* =========================================================
-     MENU PAGES
-     ========================================================= */
   {
-    key: "menus",
-    label: "Menu Pages",
-    eyebrow: "Menu page photography",
-    description:
-      "Manage the main photography used on the Food, Drinks and Breakfast menu pages.",
+    key: "menus", label: "Menu Pages", eyebrow: "Menu page photography",
+    description: "Manage hero photographs for Food, Drinks and Breakfast pages.",
     fields: [
-      {
-        type: "single",
-        key: "food",
-        label: "01 · Food Menu",
-        description:
-          "Main photography used on the Food Menu page.",
-      },
-      {
-        type: "single",
-        key: "drinks",
-        label: "02 · Drinks Menu",
-        description:
-          "Main photography used on the Drinks Menu page.",
-      },
-      {
-        type: "single",
-        key: "breakfast",
-        label: "03 · Breakfast Menu",
-        description:
-          "Main photography used on the Breakfast Menu page.",
-      },
+      { type: "single", key: "food", label: "01 · Food Menu", description: "Food menu page photograph." },
+      { type: "single", key: "drinks", label: "02 · Drinks Menu", description: "Drinks menu page photograph." },
+      { type: "single", key: "breakfast", label: "03 · Breakfast Menu", description: "Breakfast menu page photograph." },
     ],
   },
+  
+{
+  key: "gallery",
+  label: "Gallery",
+  eyebrow: "Gallery Photography",
+  description:
+    "Manage all Gallery page photographs. " +
+    "The first six gallery photos are also used in the " +
+    "Homepage gallery slider.",
 
-  /* =========================================================
-     GALLERY
-     ========================================================= */
+  fields: [
+    {
+      type: "single",
+      key: "hero",
+      label: "01 · Gallery Hero",
+      description:
+        "Main photograph at the top of the Gallery page. " +
+        "Displayed behind the Gallery heading.",
+    },
+    {
+      type: "slider",
+      key: "photos",
+      label: "02 · Gallery Photos — Unlimited",
+      description:
+        "Add, remove and reorder gallery photographs. " +
+        "All selected photos appear in the Gallery grid. " +
+        "The first six photos are also used in the " +
+        "Homepage gallery slider.",
+    },
+  ],
+},
+
   {
-    key: "gallery",
-    label: "Gallery",
-    eyebrow: "Gallery photography",
-    description:
-      "Manage the Gallery hero and all Gallery photographs.",
+    key: "private-events", label: "Private Events", eyebrow: "Private Events photography",
+    description: "Manage the five image areas in the same order as the live Private Events page.",
     fields: [
-      {
-        type: "single",
-        key: "hero",
-        label: "01 · Gallery Hero",
-        description:
-          "Main image at the top of the Gallery page.",
-      },
-      {
-        type: "slider",
-        key: "photos",
-        label: "02 · Gallery Photos",
-        description:
-          "Add, remove and reorder photographs shown in the Gallery.",
-      },
+      { type: "single", key: "hero", label: "01 · Private Events Hero", description: "Private Events hero photograph." },
+      { type: "slider", key: "weddings", label: "02 · Bespoke Weddings", description: "Bespoke Weddings photos. The website currently displays the first available image." },
+      { type: "slider", key: "celebrations", label: "03 · Intimate Celebrations", description: "Intimate Celebrations photos. The website currently displays the first available image." },
+      { type: "slider", key: "corporate", label: "04 · Corporate Events", description: "Corporate Events photos. The website currently displays the first available image." },
+      { type: "slider", key: "gatherings", label: "05 · Private Lounge Experiences", description: "Private Lounge Experiences photos. The website currently displays the first available image." },
     ],
   },
-
-  /* =========================================================
-     PRIVATE EVENTS
-     ========================================================= */
   {
-    key: "private-events",
-    label: "Private Events",
-    eyebrow: "Private Events photography",
-    description:
-      "Manage the hero, weddings, celebrations and gathering photography separately.",
+    key: "offers", label: "Offers", eyebrow: "Offers photography",
+    description: "Manage the five real image positions on the Offers page. Use OffersContent_Media_Connected.tsx to display saved photos on the website.",
     fields: [
-      {
-        type: "single",
-        key: "hero",
-        label: "01 · Private Events Hero",
-        description:
-          "Main image at the top of the Private Events page.",
-      },
-      {
-        type: "slider",
-        key: "weddings",
-        label: "02 · Weddings",
-        description:
-          "Photography used in the Weddings section.",
-      },
-      {
-        type: "slider",
-        key: "celebrations",
-        label: "03 · Private Celebrations",
-        description:
-          "Photography used in the Private Celebrations section.",
-      },
-      {
-        type: "slider",
-        key: "gatherings",
-        label: "04 · Intimate Gatherings",
-        description:
-          "Photography used in the Intimate Gatherings section.",
-      },
+      { type: "single", key: "hero", label: "01 · Offers Hero", description: "Offers hero photograph." },
+      { type: "single", key: "birthday", label: "02 · Birthday Special", description: "Birthday Special photograph." },
+      { type: "single", key: "lunch", label: "03 · Lunch With A View", description: "Lunch offer photograph." },
+      { type: "single", key: "vino", label: "04 · Vino Wednesday", description: "Vino Wednesday photograph." },
+      { type: "single", key: "happy-hour", label: "05 · Happy Hour", description: "Happy Hour photograph." },
     ],
   },
-
-  /* =========================================================
-     CONTACT
-     ========================================================= */
   {
-    key: "contact",
-    label: "Contact",
-    eyebrow: "Contact photography",
-    description:
-      "Manage Contact and reservation photography.",
+    key: "contact", label: "Contact", eyebrow: "Contact photography",
+    description: "Manage the four photographs used on the live Contact page. The Find Us section uses a map, not a photograph.",
     fields: [
-      {
-        type: "single",
-        key: "hero",
-        label: "01 · Contact Hero",
-        description:
-          "Main photography used on the Contact page.",
-      },
-      {
-        type: "single",
-        key: "reservation",
-        label: "02 · Reservation Background",
-        description:
-          "Background photography used in the reservation area.",
-      },
+      { type: "single", key: "hero", label: "01 · Get In Touch — Hero", description: "Hero photograph behind Get In Touch." },
+      { type: "single", key: "reservation", label: "02 · Reservations — Book a Table", description: "Photograph beside the Book a Table section." },
+      { type: "single", key: "event", label: "03 · Private Bookings — Book Your Next Event", description: "Photograph beside the private bookings section." },
+      { type: "single", key: "social", label: "04 · Social — Stay Connected", description: "Photograph beside the Stay Connected section." },
     ],
   },
 ];

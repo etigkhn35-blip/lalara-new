@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import "./restaurant-menu-reference.css";
 import {
   collection,
   getDocs,
@@ -1349,6 +1350,48 @@ export default function DrinksMenuContent({
         ]
       : menu[locale];
 
+  // Referans tasarımdaki ana başlıklar ve üç sütunlu kategori sırası.
+  // Ürünler, fiyatlar ve açıklamalar mevcut CMS/fallback verisinden gelir.
+  const groupDefinitions: { title: string; categoryIndexes: number[] }[] = [
+    { title: "WINE", categoryIndexes: [0, 1, 2, 3, 4, 5] },
+    { title: "COCKTAILS", categoryIndexes: [6, 7, 8] },
+    { title: "BEER", categoryIndexes: [9, 10, 11] },
+    { title: "SPIRITS", categoryIndexes: [12, 13, 14, 15, 16, 17, 18, 19, 20] },
+    { title: "TEA & COFFEE", categoryIndexes: [21, 22, 23] },
+    { title: "NON-ALCOHOLIC BEVERAGES", categoryIndexes: [24, 25, 26] },
+  ];
+
+  // İsimler TR/EN arasında değişse de fallback'teki indeksleri koruyoruz.
+  // CMS kategorileri sıralama değiştirebildiğinden isimleri fallback ile eşleştiriyoruz.
+  const normalizeTitle = (value: string) =>
+    value.toLocaleLowerCase("tr-TR").normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+
+  const used = new Set<number>();
+  const groupedSections = groupDefinitions.map((group) => {
+    const matched = group.categoryIndexes.flatMap((categoryIndex) => {
+      const aliases = [menu.en[categoryIndex]?.title, menu.tr[categoryIndex]?.title]
+        .filter((value): value is string => Boolean(value))
+        .map(normalizeTitle);
+      const matchIndex = sections.findIndex((section, index) =>
+        !used.has(index) && aliases.includes(normalizeTitle(section.title))
+      );
+      if (matchIndex === -1) return [];
+      used.add(matchIndex);
+      return [sections[matchIndex]];
+    });
+    return { title: group.title, sections: matched };
+  }).filter((group) => group.sections.length > 0);
+
+  const ungrouped = sections.filter((_, index) => !used.has(index));
+  if (ungrouped.length > 0) {
+    groupedSections.push({
+      title: isTR ? "DİĞER İÇECEKLER" : "OTHER DRINKS",
+      sections: ungrouped,
+    });
+  }
+
   return (
    <main
   className="restaurant-menu-page"
@@ -1373,34 +1416,10 @@ export default function DrinksMenuContent({
 
       {/* FOOD / DRINKS / BREAKFAST */}
 
-      <nav
-        className="restaurant-menu-tabs"
-        aria-label="Menu navigation"
-      >
-        <Link
-          href={`/food-menu?lang=${locale}`}
-        >
-          {isTR
-            ? "YEMEK"
-            : "FOOD"}
-        </Link>
-
-        <Link
-          href={`/drinks-menu?lang=${locale}`}
-          className="active"
-        >
-          {isTR
-            ? "İÇECEK"
-            : "DRINKS"}
-        </Link>
-
-        <Link
-          href={`/breakfast-menu?lang=${locale}`}
-        >
-          {isTR
-            ? "KAHVALTI"
-            : "BREAKFAST"}
-        </Link>
+      <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
+        <Link href={`/breakfast-menu?lang=${locale}`} className="">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
+        <Link href={`/food-menu?lang=${locale}`} className="">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
+        <Link href={`/drinks-menu?lang=${locale}`} className="active">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -1420,23 +1439,18 @@ export default function DrinksMenuContent({
       {/* TITLE */}
 
       <section className="restaurant-menu-heading">
-        <h1>
-          {menuTitle[
-            locale
-          ]}
-        </h1>
-
-        <span>
-          {menuSubtitle[
-            locale
-          ]}
-        </span>
+        <h1>{isTR ? "İçecek Menüsü" : "Drinks Menu"}</h1>
+        <span>{isTR ? "GÜZEL ANLARA." : "HERE’S TO GOOD TIMES."}</span>
       </section>
 
       {/* MENU */}
 
+      <div className="drinks-menu-groups">
+        {groupedSections.map((group) => (
+          <section className="drinks-menu-group" key={group.title}>
+            <h2 className="drinks-menu-group-title">{group.title}</h2>
       <section className="restaurant-menu-grid">
-        {sections.map(
+        {group.sections.map(
           (
             section,
             sectionIndex
@@ -1491,7 +1505,7 @@ export default function DrinksMenuContent({
                         <div
                           className="restaurant-menu-multi-price"
                           style={{
-                            gridTemplateColumns: `minmax(0, 1fr) repeat(${item.prices.length}, 55px)`,
+                            gridTemplateColumns: `minmax(0, 1fr) repeat(${section.columns?.length || item.prices.length}, 55px)`,
                           }}
                         >
                           <h3>
@@ -1557,6 +1571,10 @@ export default function DrinksMenuContent({
           )
         )}
       </section>
+
+          </section>
+        ))}
+      </div>
 
       {/* BOTTOM */}
 

@@ -173,9 +173,9 @@ export default function AdminDashboardPage() {
                 <h3>Website</h3>
 
                 <p>
-                  Navigation, homepage, story,
-                  contact and footer content.
-                </p>
+  Manage homepage, navigation, Our Story,
+  Offers, Private Events, Contact and Footer content.
+</p>
               </div>
 
               <strong>→</strong>
@@ -209,9 +209,9 @@ export default function AdminDashboardPage() {
                 <h3>Gallery</h3>
 
                 <p>
-                  Add, remove, reorder and manage
-                  photography.
-                </p>
+  Manage photography across Homepage, Our Story,
+  Menus, Gallery, Offers, Private Events and Contact.
+</p>
               </div>
 
               <strong>→</strong>
@@ -245,9 +245,9 @@ export default function AdminDashboardPage() {
                 <h3>SEO</h3>
 
                 <p>
-                  Titles, descriptions and
-                  search visibility settings.
-                </p>
+  Manage page-specific SEO titles, descriptions,
+  canonical URLs and social sharing images.
+</p>
               </div>
 
               <strong>→</strong>

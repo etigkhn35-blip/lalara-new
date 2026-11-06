@@ -20,6 +20,7 @@ type PageType =
   | "Our Story"
   | "Gallery"
   | "Private Events"
+  | "Offers"
   | "Contact"
   | "Footer"
   | "Unmapped";
@@ -30,6 +31,7 @@ type FormData = {
   body: string;
   buttonLabel: string;
   buttonLink: string;
+  schedule: string;
 
   eyebrowSize: number;
   headingSize: number;
@@ -101,7 +103,7 @@ const pageSections: Record<PageType, string[]> = {
   Navigation: [
     "Nav Menu",
     "Nav Our Story",
-    "Nav Gallery",
+    "Nav Offers",
     "Nav Private Events",
     "Nav Contact",
     "Nav Book a Table",
@@ -110,21 +112,18 @@ const pageSections: Record<PageType, string[]> = {
   Homepage: [
     "Hero",
     "Menus",
+    "Homepage Breakfast Card",
     "Homepage Food Card",
     "Homepage Drinks Card",
-    "Homepage Breakfast Card",
     "Homepage Our Story",
-    "Homepage Story Detail",
-    "Experience Gallery",
     "Homepage Private Events",
+    "Experience Gallery",
     "Reservation Contact",
   ],
 
   "Our Story": [
     "Story Hero",
     "Story Woman Intro",
-    "Story Lara Detail",
-    "Story Quote",
     "Story Place",
     "Pink Elephant",
     "The People Behind Our Story",
@@ -138,24 +137,33 @@ const pageSections: Record<PageType, string[]> = {
 
    "Private Events": [
     "Private Events Hero",
-    "Private Events Intro",
-    "Private Events Lounge",
-    "Private Events Restaurant",
     "Private Events Weddings",
+    "Private Events Restaurant",
+    "Corporate Events",
+    "Private Events Lounge",
     "Private Events CTA",
+  ],
+
+  Offers: [
+    "Offers Hero",
+    "Birthday Special",
+    "Lunch With A View",
+    "Vino Wednesday",
+    "Happy Hour",
   ],
 
   Contact: [
     "Contact Hero",
-    "Contact Information",
     "Reservations",
+    "Contact Information",
     "Social",
     "Contact Map",
-    "Reservation CTA",
   ],
 
   Footer: [
     "Footer Brand",
+    "Footer Opening Times",
+    "Footer Partners",
     "Footer Address",
     "Footer Navigation",
     "Footer Social",
@@ -171,6 +179,7 @@ const blank: FormData = {
   body: "",
   buttonLabel: "",
   buttonLink: "",
+  schedule: "",
 
   eyebrowSize: 13,
   headingSize: 48,
@@ -227,9 +236,9 @@ const defaults: Record<
       headingSize: 15,
     },
 
-    "Nav Gallery": {
-      heading: "GALLERY",
-      buttonLink: "/gallery",
+    "Nav Offers": {
+      heading: "OFFERS",
+      buttonLink: "/offers",
       fontFamily: "sans",
       headingSize: 15,
     },
@@ -260,9 +269,9 @@ const defaults: Record<
     "Hero": {
       eyebrow: "Yalıkavak · Bodrum",
       heading:
-        "Good food tastes better\nwhen it is shared.",
+        "Feel-good classics\nwith a view.",
       body:
-        "Mediterranean flavours, long conversations\nand evenings made to remember.",
+        "Mediterranean food,\nbeautiful views and warm\nhospitality in Yalıkavak.",
       buttonLabel: "RESERVE A TABLE",
       buttonLink: "/#reserve",
       eyebrowSize: 13,
@@ -272,10 +281,10 @@ const defaults: Record<
     },
 
     "Menus": {
-      eyebrow: "The Menus",
+      eyebrow: "THE MENUS",
       heading: "Mediterranean\nFood & Drinks",
       body:
-        "Food · Drinks · Breakfast",
+        "Breakfast · Lunch & Dinner · Drinks",
       buttonLabel: "VIEW MENU",
       buttonLink: "/food-menu?lang=en",
       eyebrowSize: 13,
@@ -286,9 +295,9 @@ const defaults: Record<
 
   "Homepage Our Story": {
       eyebrow: "Our Story",
-      heading: "A Family Story,\nA Shared Table.",
+      heading: "The woman\nbehind the name.",
       body:
-        "Long before La Lara became a restaurant, there was a table where everyone felt at home.\n\nIt belonged to our grandmother, Lara — a career woman with a big personality, a love of bringing people together and, admittedly, a little bit of diva spirit.\n\nHer kitchen was a place for long conversations, laughter, stories and food meant to be shared. That feeling became the inspiration behind La Lara.",
+        "Every family has someone who brings everyone together.\nIn ours, that person was Lara.",
       buttonLabel: "READ OUR STORY",
       buttonLink: "/our-story",
       eyebrowSize: 13,
@@ -298,7 +307,7 @@ const defaults: Record<
     },
 
     "Homepage Food Card": {
-      heading: "Food",
+      heading: "Lunch & Dinner",
       buttonLabel: "VIEW MENU",
       buttonLink: "/food-menu?lang=en",
       headingSize: 28,
@@ -329,9 +338,9 @@ const defaults: Record<
     },
 
     "Homepage Private Events": {
-      eyebrow: "Private Events",
-      heading: "Private Dining\n& Events",
-      body: "Weddings, celebrations, private dinners and gatherings overlooking Yalıkavak Bay.\n\nTell us what you are planning and our team will help shape the occasion around your guests.",
+      eyebrow: "EVENTS",
+      heading: "Your exclusive\nvenue experience",
+      body: "Weddings, celebrations and private dinners\noverlooking Yalıkavak Bay.",
       buttonLabel: "PLAN YOUR EVENT",
       buttonLink: "/private-events",
       eyebrowSize: 13,
@@ -356,7 +365,7 @@ const defaults: Record<
 
     "Reservation Contact": {
       eyebrow: "Yalıkavak · Bodrum",
-      heading: "Your table\nawaits.",
+      heading: "Reserve your table.",
       body:
         "Come for the view. Stay for the food,\nthe people and the night.",
       buttonLabel: "RESERVE A TABLE",
@@ -375,15 +384,15 @@ const defaults: Record<
       eyebrow: "La Lara · Yalıkavak",
       heading: "Our Story",
       body:
-        "The people, the memories and the little things that made La Lara.",
+        "La Lara was created around a simple idea. Good food tastes better when it is shared with the people you love.",
       eyebrowSize: 16,
       headingSize: 58,
       textSize: 18,
     },
 
     "Story Woman Intro": {
-      eyebrow: "Where It Began",
-      heading: "The Woman\nBehind the Name",
+      eyebrow: "A FEW WORDS FROM THE OWNER FAMILY",
+      heading: "Where it began.",
       body:
         "Every family has someone who brings everyone together. In ours, that person was Lara.",
       eyebrowSize: 16,
@@ -407,8 +416,8 @@ const defaults: Record<
     },
 
     "Story Place": {
-      eyebrow: "A Place of Our Own",
-      heading: "That feeling,\ncarried forward.",
+      eyebrow: "THE RESTAURANT",
+      heading: "Our Inspiration.",
       body:
         "Our aim was never to recreate her home. We wanted to carry the feeling of that table into a new place.\n\nA place where good food brings people together. Where conversations are never rushed. Where the atmosphere feels elegant without ever feeling formal.\n\nWarm, spirited and full of character.\n\nJust like Lara.",
       eyebrowSize: 16,
@@ -417,8 +426,8 @@ const defaults: Record<
     },
 
     "Pink Elephant": {
-      eyebrow: "A Little Piece of Childhood",
-      heading: "May You Dream\nof Pink Elephants",
+      eyebrow: "THE PINK ELEPHANT",
+      heading: "Dream A Little Bigger.",
       body:
         "There is one little phrase from our childhood that has stayed with us all these years.\n\nEvery night, before we went to sleep, our grandmother would say:\n\n“May you dream of pink elephants.”\n\nWe never questioned it much back then. It was simply something Lara said — a little unusual, a little mysterious and completely her own.\n\nAs children, we loved it without needing to understand it.\n\nToday, those words have taken on a new meaning for us.\n\nTo dream of pink elephants is to keep a little wonder in your life. To stay curious. To see possibilities where others might not. To never become too grown-up to dream of something extraordinary.\n\nAnd so, the pink elephant found its way into La Lara.\n\nTo someone discovering it for the first time, it may seem like a playful, unexpected symbol.\n\nTo us, it is something much more personal.\n\nA memory of our grandmother. A little piece of childhood. And a reminder that the things we love most do not always need an explanation.",
       eyebrowSize: 16,
@@ -427,8 +436,8 @@ const defaults: Record<
     },
 
     "The People Behind Our Story": {
-      eyebrow: "The People Behind Our Story",
-      heading: "With love,\nfrom our family to yours.",
+      eyebrow: "A FAMILY TIES",
+      heading: "The People Behind It.",
       body:
         "Although La Lara carries our grandmother's name, its story reaches beyond one person.\n\nIt belongs to the family tables we grew up around, the kitchens that welcomed us, the conversations we still remember and the grandparents who shaped the way we see the world.\n\nEach of them left us something that no recipe could ever capture: the understanding that sharing a meal is about so much more than food.\n\nLa Lara is our way of carrying those memories forward, while creating new ones with the people who join us.\n\nAnd, in its own small way, it is a thank you.\n\nTo Lara, Vova, Vitali & Raya.",
       eyebrowSize: 16,
@@ -439,9 +448,9 @@ const defaults: Record<
     "Story CTA": {
       eyebrow: "La Lara · Yalıkavak",
       heading:
-        "Come and make\nyour own memories.",
-      buttonLabel: "VIEW OUR MENUS",
-      buttonLink: "/#menus",
+        "Come And Make\nYour Own Memories.",
+      buttonLabel: "RESERVE A TABLE",
+      buttonLink: "/#reserve",
       eyebrowSize: 13,
       headingSize: 40,
       buttonSize: 14,
@@ -478,89 +487,70 @@ const defaults: Record<
        ===================================================== */
 
     "Private Events Hero": {
-      eyebrow: "LA LARA · YALIKAVAK",
-      heading:
-        "Special Moments,\nat La Lara.",
-      body:
-        "From intimate gatherings to private celebrations, a beautiful setting in Yalıkavak for the moments worth remembering.",
-      buttonLabel: "DISCOVER EVENTS",
-      buttonLink: "#events",
-      eyebrowSize: 13,
+      heading: "Events & Celebrations",
+      body: "Every celebration has its own story.",
       headingSize: 58,
       textSize: 18,
     },
-
-    "Private Events Intro": {
-      eyebrow: "PRIVATE EVENTS",
-      heading:
-        "Every celebration\nhas its own story.",
-      body:
-        "Whether it is an intimate evening, a special celebration or one of life's most important occasions, we approach every event at La Lara with its own character.",
-      eyebrowSize: 13,
-      headingSize: 40,
-      textSize: 17,
-    },
-
-    "Private Events Lounge": {
-      eyebrow: "LA LARA LOUNGE",
-      heading:
-        "Intimate\nEvents",
-      body:
-        "With its warm and welcoming atmosphere, La Lara Lounge offers a versatile setting for social gatherings and private celebrations.\n\nFrom relaxed evenings with friends to private parties, the space can be adapted to suit the character of your occasion.\n\nIts comfortable and informal atmosphere works beautifully for everything from afternoon gatherings to long evenings together.",
-      buttonLabel:
-        "ENQUIRE ABOUT THIS EVENT",
-      buttonLink:
-        "https://wa.me/905458941838?text=Hello%20La%20Lara%2C%20I%20would%20like%20to%20enquire%20about%20hosting%20a%20private%20event.",
-      eyebrowSize: 13,
-      headingSize: 40,
-      textSize: 17,
-    },
-
-    "Private Events Restaurant": {
-      eyebrow:
-        "LA LARA RESTAURANT & BAR",
-      heading:
-        "Private\nOccasions",
-      body:
-        "Selected areas of La Lara can be arranged for private occasions, creating a more personal setting for you and your guests.\n\nRomantic dinners, anniversaries, proposals, birthdays and gatherings with family, friends or colleagues can all be celebrated in a warm and elegant atmosphere.\n\nOur team will work with you to understand the occasion and help shape an experience around your plans.",
-      buttonLabel:
-        "PLAN YOUR OCCASION",
-      buttonLink:
-        "https://wa.me/905458941838?text=Hello%20La%20Lara%2C%20I%20would%20like%20to%20enquire%20about%20hosting%20a%20private%20event.",
-      eyebrowSize: 13,
-      headingSize: 40,
-      textSize: 17,
-    },
-
     "Private Events Weddings": {
-      eyebrow: "YALIKAVAK · BODRUM",
-      heading:
-        "Boutique\nWeddings",
-      body:
-        "Celebrate one of life's most special moments in the atmosphere of Yalıkavak, surrounded by the people who matter most.\n\nLa Lara brings together warm hospitality, thoughtful food and its distinctive setting for boutique weddings and personal celebrations.\n\nTell us about the day you imagine and we'll explore the event details, dining options and flow of the celebration with you.",
-      buttonLabel:
-        "WEDDING ENQUIRIES",
-      buttonLink:
-        "https://wa.me/905458941838?text=Hello%20La%20Lara%2C%20I%20would%20like%20to%20enquire%20about%20hosting%20a%20private%20event.",
-      eyebrowSize: 13,
-      headingSize: 40,
-      textSize: 17,
+      eyebrow: "WEDDINGS",
+      heading: "Bespoke Weddings",
+      body: "Set above Yalıkavak Bay, La Lara offers a distinctive setting for intimate weddings, with panoramic sea views and outdoor terraces across different levels.\n\nEvery celebration is personal. From bespoke menus and sharing plates to curated drinks, signature cocktails and tailored dining arrangements, we work with you to shape an experience that reflects your preferences and style.",
+      buttonLabel: "SEND ENQUIRY",
+    },
+    "Private Events Restaurant": {
+      eyebrow: "PRIVATE EVENTS",
+      heading: "Intimate Celebrations",
+      body: "From birthdays and engagements to anniversaries and special get-togethers, La Lara offers the option to book the venue just for your occasion.",
+      buttonLabel: "SEND ENQUIRY",
+    },
+    "Corporate Events": {
+      eyebrow: "BUSINESS",
+      heading: "Corporate Events",
+      body: "Make business meetings a little more enjoyable at La Lara.\n\nJoin us for business lunches and coffee breaks in a stylish, relaxed setting, or reserve La Lara exclusively for your next corporate event.",
+      buttonLabel: "SEND ENQUIRY",
+    },
+    "Private Events Lounge": {
+      eyebrow: "LEISURE",
+      heading: "Private Lounge Experiences",
+      body: "Make it a night of your own. La Lara's lounge is available for private karaoke nights and billiards sessions, offering a relaxed, intimate setting for friends, family or colleagues to get together.",
+      buttonLabel: "SEND ENQUIRY",
+    },
+    "Private Events CTA": {
+      heading: "Book Your Venue.",
+      body: "Tell us the type of event, preferred date and approximate number of guests and our team will help with the next steps.",
+      buttonLabel: "EMAIL US",
     },
 
-    "Private Events CTA": {
-      eyebrow:
-        "PRIVATE EVENTS · YALIKAVAK",
-      heading:
-        "Let's plan\nit together.",
-      body:
-        "Tell us the type of event, preferred date and approximate number of guests and our team will help with the next steps.",
-      buttonLabel:
-        "MESSAGE ON WHATSAPP",
-      buttonLink:
-        "https://wa.me/905458941838?text=Hello%20La%20Lara%2C%20I%20would%20like%20to%20enquire%20about%20hosting%20a%20private%20event.",
-      eyebrowSize: 13,
-      headingSize: 40,
-      textSize: 17,
+    /* OFFERS — actual content on /offers */
+    "Offers Hero": {
+      heading: "Special Offers",
+      body: "A little something extra.",
+      headingSize: 58,
+      textSize: 18,
+    },
+    "Birthday Special": {
+      eyebrow: "BIRTHDAYS AT LA LARA",
+      heading: "Birthday Special",
+      body: "Make your birthday a little more special with 25% off your bill at La Lara.\n\nAvailable from one day before your birthday and valid for eight days.\n\nPlenty of time to celebrate with the people you love.",
+    },
+    "Lunch With A View": {
+      schedule: "Daily · 12:00–15:00",
+      eyebrow: "SET MENU",
+      heading: "Lunch With A View",
+      body: "A relaxed midday escape overlooking Yalıkavak Bay. Our two-course lunch features a selection of favourite dishes, served with a view.",
+    },
+    "Vino Wednesday": {
+      schedule: "Every Wednesday · 17:00–21:00",
+      eyebrow: "WINE O’CLOCK",
+      heading: "Vino Wednesday",
+      body: "Wednesdays are made for good wine and something to share. Take 25% off selected wines and pair your favourites with a few bites from our menu.",
+    },
+    "Happy Hour": {
+      schedule: "Daily · 15:00–18:00",
+      eyebrow: "COCKTAIL TIME",
+      heading: "Happy Hour",
+      body: "Your afternoon deserves a little extra. Enjoy 20% off cocktails and spritzes during Happy Hour.",
     },
 
     /* =====================================================
@@ -568,52 +558,45 @@ const defaults: Record<
        ===================================================== */
 
     "Contact Hero": {
-      eyebrow: "La Lara · Yalıkavak",
-      heading: "Come find\nyour table.",
-      body:
-        "Good food, long conversations\nand Yalıkavak evenings.",
+      eyebrow: "",
+      heading: "Get In Touch.",
+      body: "We'd love to see you.",
       eyebrowSize: 13,
       headingSize: 58,
       textSize: 18,
     },
 
-    "Contact Information": {
-      eyebrow: "Contact",
-      heading: "We'd love\nto see you.",
+    "Reservations": {
+      eyebrow: "RESERVATIONS",
+      heading: "Book a table.",
+      body: "Visit us for breakfast, lunch, dinner, cocktails or just a glass of wine.",
       eyebrowSize: 13,
-      headingSize: 78,
-      headingFontFamily: "display",
-      headingFontWeight: 400,
-      headingLineHeight: 0.92,
-      headingLetterSpacing: -3.9,
+      headingSize: 40,
+      textSize: 17,
     },
 
-    "Reservations": {
-      eyebrow: "Reservations",
-      heading: "Book a table",
-      body:
-        "For reservations and enquiries,\ncall or email our team.",
-      buttonLabel: "RESERVE A TABLE",
-      buttonLink: "/#reserve",
+    "Contact Information": {
+      eyebrow: "PRIVATE BOOKINGS",
+      heading: "Book your next event.",
+      body: "For celebrations bringing people together and all other special moments, our team can help you plan the occasion.",
       eyebrowSize: 13,
       headingSize: 40,
       textSize: 17,
     },
 
     "Social": {
-      eyebrow: "Follow",
-      heading: "Stay connected",
-      body:
-        "Follow La Lara for food,\nsunsets and moments from Yalıkavak.",
+      eyebrow: "FOLLOW US",
+      heading: "Stay connected.",
+      body: "Visit our social media channels for seasonal specials, news from La Lara and beautiful views.",
       eyebrowSize: 13,
       headingSize: 40,
       textSize: 17,
     },
 
     "Contact Map": {
-      eyebrow: "Find Us",
-      heading: "In the heart of\nYalıkavak.",
-      buttonLabel: "OPEN IN GOOGLE MAPS ↗",
+      eyebrow: "FIND US",
+      heading: "In the hills\nof Yalıkavak.",
+      body: "",
       eyebrowSize: 16,
       headingSize: 40,
       buttonSize: 14,
@@ -639,6 +622,21 @@ const defaults: Record<
       heading: "La Lara Restaurant & Bar",
       body: "Restaurant & Bar · Yalıkavak",
       headingSize: 18,
+      textSize: 13,
+    },
+
+    "Footer Opening Times": {
+      eyebrow: "OPENING TIMES",
+      body: "Mon–Sun\n8:00 – 22:00",
+      eyebrowSize: 12,
+      textSize: 13,
+    },
+
+    "Footer Partners": {
+      eyebrow: "PARTNERS",
+      body: "Spektr Boutique Hotel",
+      buttonLink: "https://spektr-hotel.com/",
+      eyebrowSize: 12,
       textSize: 13,
     },
 
@@ -693,9 +691,9 @@ const defaults: Record<
       headingSize: 15,
     },
 
-   "Nav Gallery": {
-      heading: "GALERİ",
-      buttonLink: "/tr/galeri",
+   "Nav Offers": {
+      heading: "OFFERS",
+      buttonLink: "/offers",
       fontFamily: "sans",
       headingSize: 15,
     },
@@ -1116,6 +1114,21 @@ const defaults: Record<
       textSize: 13,
     },
 
+    "Footer Opening Times": {
+      eyebrow: "OPENING TIMES",
+      body: "Mon–Sun\n8:00 – 22:00",
+      eyebrowSize: 12,
+      textSize: 13,
+    },
+
+    "Footer Partners": {
+      eyebrow: "PARTNERS",
+      body: "Spektr Boutique Hotel",
+      buttonLink: "https://spektr-hotel.com/",
+      eyebrowSize: 12,
+      textSize: 13,
+    },
+
     "Footer Address": {
       eyebrow: "Adres",
       body:
@@ -1150,12 +1163,27 @@ const defaults: Record<
 };
 
 function sectionKey(section: string) {
+  if (section === "Offers Hero") return "offers-hero";
   return section
     .toLowerCase()
     .replace(/&/g, "and")
     .replace(/[^\w\s-]/g, "")
     .replace(/\s+/g, "-");
 }
+
+// The Homepage editor follows the sections and text roles actually rendered
+// by app/page.tsx. All other pages retain their existing full editor.
+const HOMEPAGE_FIELDS: Record<string, readonly (keyof FormData)[]> = {
+  Hero: ["eyebrow", "heading", "body"],
+  Menus: ["eyebrow"],
+  "Homepage Breakfast Card": ["heading", "buttonLabel", "buttonLink"],
+  "Homepage Food Card": ["heading", "buttonLabel", "buttonLink"],
+  "Homepage Drinks Card": ["heading", "buttonLabel", "buttonLink"],
+  "Homepage Our Story": ["eyebrow", "heading", "body", "buttonLabel", "buttonLink"],
+  "Homepage Private Events": ["eyebrow", "heading", "body", "buttonLabel", "buttonLink"],
+  "Experience Gallery": [], // Gallery slider contains images, not text.
+  "Reservation Contact": ["heading"], // WHATSAPP and CALL are separate fixed actions.
+};
 
 function defaultFor(
   language: Language,
@@ -1168,8 +1196,7 @@ function defaultFor(
 }
 
 export default function ContentPage() {
-  const [language, setLanguage] =
-    useState<Language>("EN");
+  const language: Language = "EN";
 
   const [page, setPage] =
     useState<PageType>("Homepage");
@@ -1203,6 +1230,7 @@ export default function ContentPage() {
       "Private Events": [],
       Contact: [],
       Footer: [],
+      Offers: [],
       Unmapped: [],
     }));
 
@@ -1255,6 +1283,8 @@ export default function ContentPage() {
       return "Private Events";
     }
 
+    if (compact === "offers" || compact === "offer") return "Offers";
+
     if (compact === "contact") {
       return "Contact";
     }
@@ -1298,6 +1328,7 @@ export default function ContentPage() {
           "Private Events": [],
           Contact: [],
           Footer: [],
+          Offers: [],
           Unmapped: [],
         };
 
@@ -1394,12 +1425,47 @@ export default function ContentPage() {
     };
   }, []);
 
+  const privateEventLabels: Record<string, string> = {
+    "Private Events Hero": "01 · Events & Celebrations — Hero",
+    "Private Events Weddings": "02 · Bespoke Weddings",
+    "Private Events Restaurant": "03 · Intimate Celebrations",
+    "Corporate Events": "04 · Corporate Events",
+    "Private Events Lounge": "05 · Private Lounge Experiences",
+    "Private Events CTA": "06 · Book Your Venue",
+  };
+
+  const storyLabels: Record<string, string> = {
+    "Story Hero": "01 · Hero",
+    "Story Woman Intro": "02 · Where It Began",
+    "Story Place": "03 · Our Inspiration",
+    "Pink Elephant": "04 · Dream A Little Bigger",
+    "The People Behind Our Story": "05 · The People Behind It",
+    "Story CTA": "06 · Come And Make Your Own Memories",
+  };
+
+  const contactLabels: Record<string, string> = {
+    "Contact Hero": "01 · Get In Touch — Hero",
+    "Reservations": "02 · Reservations",
+    "Contact Information": "03 · Private Bookings",
+    "Social": "04 · Stay Connected",
+    "Contact Map": "05 · Find Us",
+  };
+
+  const sectionLabel = (name: string) =>
+    page === "Our Story" ? (storyLabels[name] ?? name) : page === "Private Events" ? (privateEventLabels[name] ?? name) : page === "Contact" ? (contactLabels[name] ?? name) : name;
+
+  const privateEventsHero = page === "Private Events" && section === "Private Events Hero";
+  const privateEventsCta = page === "Private Events" && section === "Private Events CTA";
+  const showEyebrow = !((page === "Our Story" && section === "Story Hero") || privateEventsHero || privateEventsCta);
+  const showButton = (page !== "Private Events" || !privateEventsHero) && page !== "Contact";
+  const showBody = !(page === "Contact" && section === "Contact Map");
+
   const sections = useMemo(() => {
     const known =
       pageSections[page] ?? [];
 
     const discovered =
-      discoveredSections[page] ?? [];
+      (page === "Homepage" || page === "Our Story" || page === "Navigation" || page === "Private Events" || page === "Contact") ? [] : (discoveredSections[page] ?? []);
 
     // Old design stays the same, but Firestore records are merged in.
     return Array.from(
@@ -1421,7 +1487,7 @@ export default function ContentPage() {
       Array.from(
         new Set([
           ...(pageSections[page] ?? []),
-          ...(discoveredSections[page] ?? []),
+          ...((page === "Homepage" || page === "Our Story" || page === "Navigation" || page === "Private Events" || page === "Contact") ? [] : (discoveredSections[page] ?? [])),
         ])
       );
 
@@ -1454,27 +1520,34 @@ export default function ContentPage() {
 
         if (snapshot.exists()) {
           const data = snapshot.data();
+          // On Homepage, the current frontend's actual copy is the baseline.
+          // Existing legacy CMS records are retained, but not used as the
+          // initial display for previously hardcoded copy. Typography remains
+          // sourced from the saved record.
+          const liveBaseline = page === "Homepage" ? fallback : data;
 
           setForm({
             eyebrow:
-              data.eyebrow ??
+              liveBaseline.eyebrow ??
               fallback.eyebrow,
 
             heading:
-              data.heading ??
+              liveBaseline.heading ??
               fallback.heading,
 
             body:
-              data.body ??
+              liveBaseline.body ??
               fallback.body,
 
             buttonLabel:
-              data.buttonLabel ??
+              liveBaseline.buttonLabel ??
               fallback.buttonLabel,
 
             buttonLink:
-              data.buttonLink ??
+              liveBaseline.buttonLink ??
               fallback.buttonLink,
+
+            schedule: data.schedule ?? fallback.schedule,
 
             eyebrowSize:
               data.eyebrowSize ??
@@ -1625,6 +1698,7 @@ export default function ContentPage() {
         body: form.body,
         buttonLabel: form.buttonLabel,
         buttonLink: form.buttonLink,
+        ...(page === "Offers" ? { schedule: form.schedule } : {}),
         visible: form.visible,
 
         language:
@@ -1732,36 +1806,8 @@ export default function ContentPage() {
             Edit the website.
           </h1>
           <p className="admin-save-message">
-            Firestore siteContent records are discovered automatically. Text changes preserve the website's original CSS typography. Font, size, weight, line height and letter spacing are only published when you explicitly change those controls.
+            Manage your website content, sections and typography in one place.
           </p>
-        </div>
-
-        <div className="admin-segmented">
-          <button
-            className={
-              language === "EN"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              setLanguage("EN")
-            }
-          >
-            EN
-          </button>
-
-          <button
-            className={
-              language === "TR"
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              setLanguage("TR")
-            }
-          >
-            TR
-          </button>
         </div>
       </div>
 
@@ -1772,7 +1818,7 @@ export default function ContentPage() {
           Object.keys(
             pageSections
           ) as PageType[]
-        ).map((item) => (
+        ).filter((item) => item !== "Unmapped" && item !== "Gallery").map((item) => (
           <button
             key={item}
             type="button"
@@ -1813,7 +1859,7 @@ export default function ContentPage() {
                 setSection(item)
               }
             >
-              {item}
+              {sectionLabel(item)}
             </button>
           ))}
         </aside>
@@ -1830,7 +1876,7 @@ export default function ContentPage() {
               </p>
 
               <h2>
-                {section}
+                {sectionLabel(section)}
               </h2>
             </div>
 
@@ -1862,6 +1908,7 @@ export default function ContentPage() {
             </p>
           ) : (
             <>
+              {(page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("eyebrow")) && showEyebrow && (
               <label className="admin-field">
                 <span>
                   Eyebrow / small label
@@ -1877,7 +1924,9 @@ export default function ContentPage() {
                   }
                 />
               </label>
+              )}
 
+              {(page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("heading")) && (
               <label className="admin-field">
                 <span>Heading</span>
 
@@ -1892,7 +1941,9 @@ export default function ContentPage() {
                   }
                 />
               </label>
+              )}
 
+              {(page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("body")) && showBody && (
               <label className="admin-field">
                 <span>Body copy</span>
 
@@ -1907,7 +1958,20 @@ export default function ContentPage() {
                   }
                 />
               </label>
+              )}
 
+              {page === "Offers" && section !== "Offers Hero" && (
+                <label className="admin-field">
+                  <span>Schedule / offer hours</span>
+                  <input
+                    value={form.schedule}
+                    onChange={(event) => updateField("schedule", event.target.value)}
+                    placeholder="Daily · 12:00–15:00"
+                  />
+                </label>
+              )}
+
+              {(page !== "Offers" && (page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("buttonLabel") || HOMEPAGE_FIELDS[section]?.includes("buttonLink")) && (page !== "Our Story" || section === "Story CTA") && showButton) && (
               <div className="admin-field-grid">
                 <label className="admin-field">
                   <span>
@@ -1927,7 +1991,7 @@ export default function ContentPage() {
                   />
                 </label>
 
-                <label className="admin-field">
+                {page !== "Private Events" && <label className="admin-field">
                   <span>
                     Button link
                   </span>
@@ -1944,10 +2008,13 @@ export default function ContentPage() {
                     }
                     placeholder="/gallery"
                   />
-                </label>
+                </label>}
               </div>
+              )}
 
               {/* TYPOGRAPHY — every visible text role is independent */}
+              {(page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("eyebrow")) && showEyebrow && (
+                <>
               <div className="editor-subheading"><span>Eyebrow typography</span></div>
               <div className="admin-field-grid">
                 <label className="admin-field">
@@ -1976,6 +2043,10 @@ export default function ContentPage() {
                   <input type="number" min="-5" max="20" step="0.1" value={form.eyebrowLetterSpacing} onChange={(e) => updateField("eyebrowLetterSpacing", Number(e.target.value))} />
                 </label>
               </div>
+                </>
+              )}
+              {(page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("heading")) && (
+                <>
               <div className="editor-subheading"><span>Heading typography</span></div>
               <div className="admin-field-grid">
                 <label className="admin-field">
@@ -2004,6 +2075,10 @@ export default function ContentPage() {
                   <input type="number" min="-5" max="20" step="0.1" value={form.headingLetterSpacing} onChange={(e) => updateField("headingLetterSpacing", Number(e.target.value))} />
                 </label>
               </div>
+                </>
+              )}
+              {(page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("body")) && showBody && (
+                <>
               <div className="editor-subheading"><span>Body typography</span></div>
               <div className="admin-field-grid">
                 <label className="admin-field">
@@ -2032,6 +2107,10 @@ export default function ContentPage() {
                   <input type="number" min="-5" max="20" step="0.1" value={form.textLetterSpacing} onChange={(e) => updateField("textLetterSpacing", Number(e.target.value))} />
                 </label>
               </div>
+                </>
+              )}
+              {(page !== "Offers" && (page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("buttonLabel"))) && (
+                <>
               <div className="editor-subheading"><span>Button typography</span></div>
               <div className="admin-field-grid">
                 <label className="admin-field">
@@ -2060,6 +2139,8 @@ export default function ContentPage() {
                   <input type="number" min="-5" max="20" step="0.1" value={form.buttonLetterSpacing} onChange={(e) => updateField("buttonLetterSpacing", Number(e.target.value))} />
                 </label>
               </div>
+                </>
+              )}
               {saveState && (
                 <p className="admin-save-message">
                   {saveState}
@@ -2117,7 +2198,7 @@ export default function ContentPage() {
                 : ""
             }`}
           >
-            {form.eyebrow && (
+            {form.eyebrow && (page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("eyebrow")) && showEyebrow && (
               <span
                 style={previewStyle("eyebrow")}
               >
@@ -2125,7 +2206,7 @@ export default function ContentPage() {
               </span>
             )}
 
-            {form.heading && (
+            {form.heading && (page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("heading")) && (
               <h3
                 style={previewStyle("heading")}
               >
@@ -2133,7 +2214,7 @@ export default function ContentPage() {
               </h3>
             )}
 
-            {form.body && (
+            {form.body && (page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("body")) && showBody && (
               <p
                 style={previewStyle("text")}
               >
@@ -2141,7 +2222,9 @@ export default function ContentPage() {
               </p>
             )}
 
-            {(form.buttonLabel ||
+            {page === "Offers" && form.schedule && <p>{form.schedule}</p>}
+
+            {(page !== "Offers" && (page !== "Homepage" || HOMEPAGE_FIELDS[section]?.includes("buttonLabel")) && showButton) && (form.buttonLabel ||
               form.buttonLink) && (
               <div className="preview-button-wrap">
                 <button
@@ -2153,7 +2236,7 @@ export default function ContentPage() {
                     "Button"}
                 </button>
 
-                {form.buttonLink && (
+                {page !== "Private Events" && form.buttonLink && (
                   <small>
                     {form.buttonLink}
                   </small>
@@ -2161,6 +2244,9 @@ export default function ContentPage() {
               </div>
             )}
 
+            {page === "Homepage" && section === "Experience Gallery" && (
+              <p>Photo-only gallery slider. Images are managed in Media / Gallery.</p>
+            )}
             {!form.visible && (
               <div className="preview-hidden-message">
                 This section is hidden
