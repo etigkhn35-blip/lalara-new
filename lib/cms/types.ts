@@ -50,8 +50,8 @@ export type CmsRecord = {
 
 export type CmsMap = Record<string, CmsRecord>;
 
-const DISPLAY_STACK = '"Iowan Old Style", Baskerville, "Times New Roman", serif';
-const SANS_STACK = '"Helvetica Neue", Helvetica, Arial, sans-serif';
+const DISPLAY_STACK = 'var(--font-cormorant), Georgia, serif';
+const SANS_STACK = 'var(--font-avenir), Arial, sans-serif';
 
 export function cmsRecordStyle(item: CmsRecord | undefined, role: CmsTextRole): CSSProperties | undefined {
   if (!item) return undefined;

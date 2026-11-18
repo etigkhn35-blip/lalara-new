@@ -42,17 +42,7 @@ function renderParagraphs(value = "") {
   ));
 }
 
-function renderPinkElephant(value = "") {
-  return splitParagraphs(value).map((paragraph, index) =>
-    index === 2 ? (
-      <blockquote key={index}>
-        {renderLines(paragraph)}
-      </blockquote>
-    ) : (
-      <p key={index}>{renderLines(paragraph)}</p>
-    )
-  );
-}
+
 
 function renderPeople(value = "") {
   const paragraphs = splitParagraphs(value);
@@ -318,16 +308,14 @@ export default function OurStoryContent({
                   </h2>
 
                   <div
-                    className="story-full-body"
-                    style={styleFor(
-                      "pink-elephant",
-                      "text"
-                    )}
-                  >
-                    {renderPinkElephant(
-                      elephant?.body || ""
-                    )}
-                  </div>
+  className="story-full-body story-full-elephant-body"
+  style={{
+    ...styleFor("pink-elephant", "text"),
+    fontFamily: "var(--font-avenir), Arial, sans-serif",
+  }}
+>
+  {renderParagraphs(elephant?.body || "")}
+</div>
                 </div>
 
                <div className="story-full-elephant-visual">

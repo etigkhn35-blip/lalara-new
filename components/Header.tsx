@@ -503,7 +503,7 @@ const navigation: NavigationItem[] = [
             reservationKey
           ) && (
             <a
-              className="contact-header-button"
+              className="header-reserve"
               href={
                 reservationLink
               }

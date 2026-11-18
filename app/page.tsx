@@ -348,24 +348,29 @@ const [galleryIndex, setGalleryIndex] = useState(0);
   )}
 </h1>
 
-            <p
-              style={cmsStyle(
-                "hero",
-                "text"
-              )}
-            >
-              {hero?.body
-                ? renderLines(
-                    hero.body
-                  )
-                : (
-                  <>
-                    Mediterranean food,
-                    beautiful views and warm
-                    hospitality in Yalıkavak.
-                  </>
-                )}
-            </p>
+            
+<p
+  className="home-hero-description"
+  style={{
+    ...cmsStyle("hero", "text"),
+    fontFamily: "var(--sans)",
+    fontSize: "17px",
+    fontWeight: 400,
+    lineHeight: 1.5,
+    letterSpacing: "0",
+  }}
+>
+  {hero?.body
+    ? renderLines(hero.body)
+    : (
+      <>
+        Mediterranean food,
+        beautiful views and warm
+        hospitality in Yalıkavak.
+      </>
+    )}
+</p>
+
           </div>
 
          
@@ -405,17 +410,21 @@ const [galleryIndex, setGalleryIndex] = useState(0);
                   <span>›</span>
                 </a>
 
-                <div className="home-menu-image">
-                  {photos?.breakfast && (
-                    <Image
-                      src={photos.breakfast}
-                      alt="Breakfast at La Lara Restaurant in Yalıkavak"
-                      fill
-                      sizes="(max-width: 900px) 100vw, 33vw"
-                      className="cover"
-                    />
-                  )}
-                </div>
+               <a
+  href={breakfastCard?.buttonLink || "/breakfast-menu?lang=en"}
+  className="home-menu-image"
+  aria-label="View Breakfast menu"
+>
+  {photos?.breakfast && (
+    <Image
+      src={photos.breakfast}
+      alt="Breakfast at La Lara Restaurant in Yalıkavak"
+      fill
+      sizes="(max-width: 900px) 100vw, 33vw"
+      className="cover"
+    />
+  )}
+</a>
               </article>
 
               {/* LUNCH & DINNER */}
@@ -435,7 +444,11 @@ const [galleryIndex, setGalleryIndex] = useState(0);
                   <span>›</span>
                 </a>
 
-                <div className="home-menu-image">
+                <a
+                  className="home-menu-image"
+                  href={foodCard?.buttonLink || "/food-menu?lang=en"}
+                  aria-label="View Lunch and Dinner menu"
+                >
                   {photos?.food && (
                     <Image
                       src={photos.food}
@@ -445,7 +458,7 @@ const [galleryIndex, setGalleryIndex] = useState(0);
                       className="cover"
                     />
                   )}
-                </div>
+                </a>
               </article>
 
               {/* DRINKS */}
@@ -465,7 +478,11 @@ const [galleryIndex, setGalleryIndex] = useState(0);
                   <span>›</span>
                 </a>
 
-                <div className="home-menu-image">
+                <a
+                  className="home-menu-image"
+                  href={drinksCard?.buttonLink || "/drinks-menu?lang=en"}
+                  aria-label="View Drinks menu"
+                >
                   {photos?.drinks && (
                     <Image
                       src={photos.drinks}
@@ -475,7 +492,7 @@ const [galleryIndex, setGalleryIndex] = useState(0);
                       className="cover"
                     />
                   )}
-                </div>
+                </a>
               </article>
 
             </div>

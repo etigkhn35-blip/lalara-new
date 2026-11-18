@@ -73,6 +73,7 @@ type PickerState = {
    CLOUDINARY
    ========================================================= */
 
+
 const CLOUD_NAME =
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dtmvfneo";
 
@@ -84,22 +85,36 @@ async function uploadToCloudinary(file: File) {
 
   formData.append("file", file);
   formData.append("upload_preset", UPLOAD_PRESET);
-  formData.append("folder", "lalara/library");
 
-  const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-    {
-      method: "POST",
-      body: formData,
-    }
-  );
+  let response: Response;
 
-  const data = await response.json();
+  try {
+    response = await fetch(
+      `https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUD_NAME)}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+  } catch (error) {
+    console.error("Cloudinary network error:", error);
+
+    throw new Error(
+      "Cannot connect to Cloudinary. Check the browser Network tab, internet connection and request blocking."
+    );
+  }
+
+  const data = await response.json().catch(() => null);
 
   if (!response.ok) {
     throw new Error(
-      data?.error?.message || "Cloudinary upload failed"
+      data?.error?.message ||
+        `Cloudinary HTTP error: ${response.status}`
     );
+  }
+
+  if (!data?.secure_url || !data?.public_id) {
+    throw new Error("Cloudinary returned an invalid upload response.");
   }
 
   return {
@@ -107,6 +122,7 @@ async function uploadToCloudinary(file: File) {
     publicId: data.public_id as string,
   };
 }
+
 
 /* =========================================================
    PAGE DEFINITIONS

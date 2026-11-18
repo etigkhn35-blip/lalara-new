@@ -1,15 +1,21 @@
+
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Cormorant_Garamond,
+  Nunito_Sans,
+} from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cormorant",
+  display: "swap",
 });
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const avenirFallback = Nunito_Sans({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-avenir",
+  display: "swap",
 });
 
 const siteUrl = "https://lalara.com.tr";
@@ -110,23 +116,31 @@ const websiteSchema = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${avenirFallback.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(restaurantSchema).replace(/</g, "\\u003c"),
+            __html: JSON.stringify(restaurantSchema).replace(
+              /</g,
+              "\\u003c"
+            ),
           }}
         />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema).replace(/</g, "\\u003c"),
+            __html: JSON.stringify(websiteSchema).replace(
+              /</g,
+              "\\u003c"
+            ),
           }}
         />
         {children}

@@ -1417,9 +1417,9 @@ export default function DrinksMenuContent({
       {/* FOOD / DRINKS / BREAKFAST */}
 
       <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
-        <Link href={`/breakfast-menu?lang=${locale}`} className="">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
-        <Link href={`/food-menu?lang=${locale}`} className="">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
-        <Link href={`/drinks-menu?lang=${locale}`} className="active">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
+        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
+        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
+        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="active">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -1598,6 +1598,13 @@ export default function DrinksMenuContent({
           →
         </Link>
       </section>
+
+      {/* BOTTOM MENU NAVIGATION */}
+<nav className="restaurant-menu-tabs" aria-label="More menus">
+        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
+        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
+        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="active">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
+      </nav>
 
       <Footer
         locale={locale}

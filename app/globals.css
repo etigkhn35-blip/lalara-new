@@ -18,9 +18,8 @@
 
   --charcoal:#2b2d2a;
 
-  --display:"Iowan Old Style",Baskerville,"Times New Roman",serif;
-
-  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif
+--display: var(--font-cormorant), Georgia, serif;
+--sans: var(--font-avenir), Arial, sans-serif;
 
 }
 
@@ -3158,29 +3157,20 @@ h1,h2,h3,blockquote {
 
 
 
+
 .mobile-menu-nav a {
-
   position: relative;
-
-
-
   display: inline-block;
-
   padding: 8px 0;
 
-
-
-  font-family: var(--display);
-
-  font-size: clamp(42px, 12vw, 64px);
-
-  font-weight: 400;
-
-  line-height: 1.02;
-
-  letter-spacing: -0.04em;
-
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
+
 
 
 
@@ -3250,24 +3240,9 @@ h1,h2,h3,blockquote {
 
 
 
+
 .mobile-menu-language {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-
-
-  font-size: 9px;
-
-  font-weight: 600;
-
-  letter-spacing: 0.14em;
-
-  text-transform: uppercase;
-
+  display: none;
 }
 
 
@@ -3363,16 +3338,6 @@ h1,h2,h3,blockquote {
       max(30px, env(safe-area-inset-bottom));
 
   }
-
-
-
-  .mobile-menu-nav a {
-
-    font-size: clamp(39px, 12vw, 52px);
-
-  }
-
-
 
   .mobile-menu-bottom {
 
@@ -7370,7 +7335,7 @@ h1,h2,h3,blockquote {
 /* Private events — single strong split section */
 .home-page #events.split-section {
   min-height: 640px;
-  grid-template-columns: 58% 42%;
+  grid-template-columns: 50% 50%;
 }
 
 .home-page #events .split-copy {
@@ -7563,7 +7528,7 @@ h1,h2,h3,blockquote {
   .home-page .mobile-menu-nav a {
     min-height: 52px;
     padding: 7px 0;
-    font-size: clamp(32px, 9vw, 44px);
+    font-size: 20px;
     line-height: 1.05;
   }
 
@@ -8679,7 +8644,7 @@ h1,h2,h3,blockquote {
     min-height: 52px;
     padding: 7px 0;
 
-    font-size: clamp(32px, 9vw, 44px);
+    font-size: 20px;
     line-height: 1.05;
   }
 
@@ -9606,7 +9571,7 @@ h1,h2,h3,blockquote {
   min-height: 100vh;
   background: #faf8f4;
   color: #30312f;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--sans);
 }
 
 /* TOP BAR */
@@ -9648,7 +9613,7 @@ h1,h2,h3,blockquote {
   border: 0;
   background: transparent;
   color: #30312f;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 12px;
   font-weight: 500;
   line-height: 1;
@@ -9703,7 +9668,7 @@ h1,h2,h3,blockquote {
 .restaurant-menu-heading h1 {
   margin: 0;
   color: #30312f;
-  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-family: var(--display);
   font-size: clamp(58px, 7vw, 100px);
   font-weight: 400;
   line-height: 0.9;
@@ -9743,7 +9708,7 @@ h1,h2,h3,blockquote {
   padding-bottom: 14px;
   border-bottom: 1px solid rgba(48, 49, 47, 0.2);
   color: #b88f89;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.15em;
@@ -9772,7 +9737,7 @@ h1,h2,h3,blockquote {
 .restaurant-menu-item h3 {
   margin: 0;
   color: #30312f;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--sans);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
@@ -10460,11 +10425,7 @@ h1,h2,h3,blockquote {
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
   opacity: 0.92;
 }
-/* Homepage hero description */
-.hero-content > p {
-  font-size: 20px !important;
-  line-height: 1.5 !important;
-}
+
 /* Menu cards — View Menu hover */
 .menus .line-link {
   display: inline-block;
@@ -10974,7 +10935,7 @@ h1,h2,h3,blockquote {
    ========================================================= */
 
 .event-editorial-row.is-reversed {
-  grid-template-columns: 58% 42%;
+  grid-template-columns: 50% 50%;
 }
 
 .event-editorial-row.is-reversed
@@ -13343,11 +13304,7 @@ h1,h2,h3,blockquote {
 
   padding: 0 !important;
 
-  font-family:
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    sans-serif !important;
+ font-family: var(--font-avenir), Arial, sans-serif !important;
 
   font-size: 14px !important;
   font-weight: 500 !important;
@@ -13406,11 +13363,7 @@ h1,h2,h3,blockquote {
   margin: 32px auto 0 !important;
   padding: 0 !important;
 
-  font-family:
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    sans-serif !important;
+ font-family: var(--font-avenir), Arial, sans-serif !important;
 
   font-size: 18px !important;
   font-weight: 400 !important;
@@ -13442,11 +13395,8 @@ h1,h2,h3,blockquote {
   align-items: center !important;
   justify-content: center !important;
 
-  font-family:
-    "Helvetica Neue",
-    Helvetica,
-    Arial,
-    sans-serif !important;
+  font-family: var(--font-avenir), Arial, sans-serif !important;
+
 
   font-size: 14px !important;
   font-weight: 500 !important;
@@ -13824,7 +13774,7 @@ h1,h2,h3,blockquote {
 .home-menus-eyebrow {
   margin: 0 0 28px;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
@@ -13846,7 +13796,7 @@ h1,h2,h3,blockquote {
 .home-menu-card h2 {
   margin: 0 0 12px;
 
-  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+font-family: var(--display);
   font-size: clamp(38px, 3.2vw, 50px);
   font-weight: 400;
   line-height: 1.05;
@@ -13868,7 +13818,7 @@ h1,h2,h3,blockquote {
 
   color: #292a27;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -14004,7 +13954,7 @@ h1,h2,h3,blockquote {
 .home-story-eyebrow {
   margin: 0 0 24px;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -14016,7 +13966,7 @@ h1,h2,h3,blockquote {
 .home-story-copy h2 {
   margin: 0 0 24px;
 
-  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-family: var(--display);
   font-size: clamp(42px, 4vw, 58px);
   font-weight: 400;
   line-height: 0.98;
@@ -14029,7 +13979,7 @@ h1,h2,h3,blockquote {
   max-width: 470px;
   margin: 0;
 
-  font-family: Arial, Helvetica, sans-serif;
+font-family: var(--sans);
   font-size: 15px;
   font-weight: 400;
   line-height: 1.25;
@@ -14053,7 +14003,7 @@ h1,h2,h3,blockquote {
 
   color: #292a27;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -14143,7 +14093,7 @@ h1,h2,h3,blockquote {
 .home-events-eyebrow {
   margin: 0 0 28px;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -14155,7 +14105,7 @@ h1,h2,h3,blockquote {
 .home-events-copy h2 {
   margin: 0 0 24px;
 
-  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-family: var(--display);
   font-size: clamp(42px, 4vw, 58px);
   font-weight: 400;
   line-height: 0.98;
@@ -14167,7 +14117,7 @@ h1,h2,h3,blockquote {
 .home-events-text {
   margin: 0;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 15px;
   font-weight: 400;
   line-height: 1.3;
@@ -14191,7 +14141,7 @@ h1,h2,h3,blockquote {
 
   color: #292a27;
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
@@ -14362,7 +14312,7 @@ h1,h2,h3,blockquote {
 .home-reservation-content h2 {
   margin: 0 0 28px;
   color: #fff;
-  font-family: "Iowan Old Style", Baskerville, "Times New Roman", serif;
+  font-family: var(--display);
   font-size: clamp(42px, 4vw, 62px);
   font-weight: 400;
   line-height: 1.1;
@@ -14386,7 +14336,7 @@ h1,h2,h3,blockquote {
   border: 1px solid rgba(255, 255, 255, 0.85);
   background: transparent;
   color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -14474,7 +14424,7 @@ h1,h2,h3,blockquote {
 }
 .lalara-footer-2026 .lalara-footer-columns h2 {
   margin: 0 0 20px;
-  font: 600 12px/1.2 Arial, Helvetica, sans-serif;
+  font: 600 12px/1.2 var(--sans);
   letter-spacing: .035em;
   color: #a9aaa5;
   text-transform: uppercase;
@@ -14483,7 +14433,7 @@ h1,h2,h3,blockquote {
 .lalara-footer-2026 .lalara-footer-columns p {
   display: block;
   margin: 0 0 11px;
-  font: 400 13px/1.45 Arial, Helvetica, sans-serif;
+  font: 400 13px/1.45 var(--sans);
   color: #ededeb !important;
   text-decoration: none;
   overflow-wrap: anywhere;
@@ -14498,7 +14448,7 @@ h1,h2,h3,blockquote {
   gap: 20px;
   min-height: 76px;
   border-top: 1px solid rgba(255,255,255,.12);
-  font: 500 11px/1.5 Arial, Helvetica, sans-serif;
+  font: 500 11px/1.5 var(--sans);
   letter-spacing: .06em;
   color: #a9aaa5;
 }
@@ -14579,7 +14529,7 @@ h1,h2,h3,blockquote {
 .story-full-hero-content p {
   max-width: 690px;
   margin: 0 auto;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 15px;
   line-height: 1.5;
   color: #fff;
@@ -14605,7 +14555,7 @@ h1,h2,h3,blockquote {
 
 .story-full-eyebrow {
   margin: 0 0 25px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 700;
   line-height: 1.4;
@@ -14627,7 +14577,7 @@ h1,h2,h3,blockquote {
 
 .story-full-body {
   max-width: 490px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 14px;
   font-weight: 400;
   line-height: 1.55;
@@ -14737,8 +14687,7 @@ h1,h2,h3,blockquote {
 .story-full-people-body em {
   display: block;
   margin-top: 12px;
-  font-family: "Iowan Old Style",
-    Baskerville, "Times New Roman", serif;
+  font-family: var(--display);
   font-size: 20px;
   font-style: normal;
 }
@@ -14758,8 +14707,7 @@ h1,h2,h3,blockquote {
 
 .story-full-cta h2 {
   margin: 0 auto 24px;
-  font-family: "Iowan Old Style",
-    Baskerville, "Times New Roman", serif;
+  font-family: var(--display);
   font-size: clamp(40px, 4.2vw, 60px);
   font-weight: 400;
   line-height: 1.05;
@@ -14784,7 +14732,7 @@ h1,h2,h3,blockquote {
 
 .story-full-text-link {
   color: #30312d;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -14801,7 +14749,7 @@ h1,h2,h3,blockquote {
   border: 1px solid #30312d;
   color: #30312d;
   background: transparent;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -15080,8 +15028,7 @@ h1,h2,h3,blockquote {
 .lalara-events-hero-text h1 {
   margin: 0 0 12px;
   color: #fff;
-  font-family: "Iowan Old Style", Baskerville,
-    "Times New Roman", serif;
+ font-family: var(--display);
   font-size: clamp(45px, 5vw, 76px);
   font-weight: 400;
   line-height: 1.08;
@@ -15161,8 +15108,7 @@ h1,h2,h3,blockquote {
   margin: 0 0 26px;
   max-width: 410px;
   color: #30312d;
-  font-family: "Iowan Old Style", Baskerville,
-    "Times New Roman", serif;
+  font-family: var(--display);
   font-size: clamp(38px, 4vw, 61px);
   font-weight: 400;
   line-height: 1.03;
@@ -15262,8 +15208,7 @@ h1,h2,h3,blockquote {
 .lalara-events-booking h2 {
   margin: 0 0 14px;
   color: #fff;
-  font-family: "Iowan Old Style", Baskerville,
-    "Times New Roman", serif;
+  font-family: var(--display);
   font-size: clamp(37px, 3.8vw, 56px);
   font-weight: 400;
   line-height: 1.1;
@@ -15611,7 +15556,7 @@ h1,h2,h3,blockquote {
 .lalara-offers-hero-content p {
   margin: 0;
   color: rgba(255, 255, 255, 0.92);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 15px;
   font-weight: 400;
   line-height: 1.5;
@@ -15629,10 +15574,10 @@ h1,h2,h3,blockquote {
 
 .lalara-offer-section {
   display: grid;
-  grid-template-columns: 41% 59%;
+  grid-template-columns: 50% 50%;
   width: 100%;
   min-height: 0;
-  height: clamp(600px, 49vw, 740px);
+  height: clamp(440px, 36vw, 480px);
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -15670,8 +15615,8 @@ h1,h2,h3,blockquote {
   min-width: 0;
   height: 100%;
   margin: 0;
-  padding: clamp(55px, 6vw, 95px)
-    clamp(42px, 5vw, 95px);
+  padding: clamp(30px, 3.5vw, 55px)
+    clamp(32px, 4vw, 75px);
 }
 
 .lalara-offer-copy-inner {
@@ -15684,9 +15629,9 @@ h1,h2,h3,blockquote {
 }
 
 .lalara-offer-eyebrow {
-  margin: 0 0 30px;
+  margin: 0 0 18px;
   color: #30312d;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.3;
@@ -15695,13 +15640,9 @@ h1,h2,h3,blockquote {
 }
 
 .lalara-offer-copy h2 {
-  margin: 0 0 35px;
+  margin: 0 0 22px;
   color: #30312d;
-  font-family:
-    "Iowan Old Style",
-    Baskerville,
-    "Times New Roman",
-    serif;
+  font-family: var(--display);
   font-size: clamp(44px, 4.1vw, 66px);
   font-weight: 400;
   line-height: 1.05;
@@ -15712,7 +15653,7 @@ h1,h2,h3,blockquote {
   width: 100%;
   max-width: 480px;
   color: #41423e;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: clamp(15px, 1.05vw, 18px);
   font-weight: 400;
   line-height: 1.43;
@@ -15728,10 +15669,10 @@ h1,h2,h3,blockquote {
 }
 
 .lalara-offer-schedule {
-  margin-top: auto;
-  padding-top: 36px;
+  margin-top: 18px;
+  padding-top: 0;
   color: #41423e;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 17px;
   font-weight: 400;
   line-height: 1.4;
@@ -15765,7 +15706,7 @@ h1,h2,h3,blockquote {
   justify-content: center;
   background: #d8d6cf;
   color: #77776e;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sans);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -15774,7 +15715,7 @@ h1,h2,h3,blockquote {
 /* Birthday: narrower text area */
 
 #birthday.lalara-offer-section {
-  grid-template-columns: 41% 59%;
+  grid-template-columns: 50% 50%;
 }
 
 #birthday .lalara-offer-copy-inner {
@@ -15784,13 +15725,13 @@ h1,h2,h3,blockquote {
 /* Lunch: image left, sage copy right */
 
 #lunch.lalara-offer-section {
-  grid-template-columns: 41% 59%;
+  grid-template-columns: 50% 50%;
 }
 
 /* Vino: wider text area */
 
 #vino.lalara-offer-section {
-  grid-template-columns: 58% 42%;
+  grid-template-columns: 50% 50%;
 }
 
 #vino .lalara-offer-copy-inner {
@@ -15800,7 +15741,7 @@ h1,h2,h3,blockquote {
 /* Happy Hour: image left, pink copy right */
 
 #happy-hour.lalara-offer-section {
-  grid-template-columns: 39% 61%;
+  grid-template-columns: 50% 50%;
 }
 
 /* Footer directly after last offer */
@@ -15813,7 +15754,7 @@ h1,h2,h3,blockquote {
 
 @media (max-width: 900px) {
   .lalara-offer-section {
-    height: 560px;
+    height: 480px;
   }
 
   .lalara-offer-copy {
@@ -15864,7 +15805,7 @@ h1,h2,h3,blockquote {
     order: 1;
     width: 100%;
     height: auto;
-    min-height: 370px;
+    min-height: 0;
     padding: 45px 26px;
   }
 
@@ -15903,7 +15844,7 @@ h1,h2,h3,blockquote {
   }
 
   .lalara-offer-schedule {
-    margin-top: 30px;
+    margin-top: 18px;
     padding-top: 0;
     font-size: 13px;
   }
@@ -15957,133 +15898,83 @@ h1,h2,h3,blockquote {
   }
 }
 /* =========================================================
-   LA LARA — TEK HERO YUKSEKLIK STANDARDI
-   Header 94px; hero alanlari 720px (desktop)
+   LA LARA — CONSISTENT PHOTO FRAMES
+   Interior page covers: 560 / 440 / 380px
+   Homepage cinematic hero and gallery editorial layout remain independent.
    ========================================================= */
-:root { --lalara-hero-height: 720px; }
+:root {
+  --lalara-page-hero-height: 560px;
+  --lalara-content-photo-height: 480px;
+}
 
-.home-page .hero,
-.home-hero,
+/* Page covers only; do not constrain homepage or text-only gallery header */
 .story-page-hero,
 .story-full-hero,
 .events-page-hero,
 .lalara-events-hero,
 .lalara-offers-hero,
-.gallery-page-hero,
-.gallery-hero,
 .contact-hero,
 .lalara-contact-hero,
 .menu-hero,
-.lalara-menu-hero {
+.lalara-menu-hero,
+.breakfast-page-hero,
+.food-menu-page-hero,
+.drinks-page-hero,
+.breakfast-hero,
+.food-menu-hero,
+.drinks-hero,
+.restaurant-menu-page .restaurant-menu-header-bg {
   position: relative;
   box-sizing: border-box;
-  height: var(--lalara-hero-height) !important;
-  min-height: var(--lalara-hero-height) !important;
-  max-height: var(--lalara-hero-height) !important;
+  height: var(--lalara-page-hero-height) !important;
+  min-height: var(--lalara-page-hero-height) !important;
+  max-height: var(--lalara-page-hero-height) !important;
   overflow: hidden;
 }
 
-.home-page .hero > img,
-.home-hero > img,
+/* Image elements inside actual photographic hero frames */
 .story-page-hero > img,
 .story-full-hero > img,
 .events-page-hero > img,
 .lalara-events-hero > img,
 .lalara-offers-hero > img,
-.gallery-page-hero > img,
-.gallery-hero > img,
 .contact-hero > img,
 .lalara-contact-hero > img,
 .menu-hero > img,
-.lalara-menu-hero > img {
+.lalara-menu-hero > img,
+.breakfast-page-hero > img,
+.food-menu-page-hero > img,
+.drinks-page-hero > img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover !important;
   object-position: center !important;
+  transform: none;
 }
 
-@media (max-width: 900px) {
-  :root { --lalara-hero-height: 540px; }
-}
-@media (max-width: 650px) {
-  :root { --lalara-hero-height: 440px; }
-}
-/* LA LARA — MENU HERO HEIGHT */
-
-@media (min-width: 901px) {
-  .breakfast-page-hero,
-  .food-menu-page-hero,
-  .drinks-page-hero,
-  .breakfast-hero,
-  .food-menu-hero,
-  .drinks-hero {
-    height: 780px !important;
-    min-height: 780px !important;
-    max-height: 780px !important;
-    position: relative;
-    overflow: hidden;
-  }
-}
-
-@media (max-width: 900px) {
-  .breakfast-page-hero,
-  .food-menu-page-hero,
-  .drinks-page-hero,
-  .breakfast-hero,
-  .food-menu-hero,
-  .drinks-hero {
-    height: 560px !important;
-    min-height: 560px !important;
-    max-height: 560px !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .breakfast-page-hero,
-  .food-menu-page-hero,
-  .drinks-page-hero,
-  .breakfast-hero,
-  .food-menu-hero,
-  .drinks-hero {
-    height: 440px !important;
-    min-height: 440px !important;
-    max-height: 440px !important;
-  }
-}
-
-/* ==========================================
-   LA LARA - ALL MENU HERO HEIGHT FIX
-   Breakfast / Food / Drinks
-========================================== */
-
+/* Menu pages use background images, not necessarily <img> elements */
 .restaurant-menu-page .restaurant-menu-header-bg {
-  height:580px !important;
-  min-height: 580px !important;
-  max-height: 580px !important;
-
-  position: relative;
   background-size: cover !important;
-  background-position: center center !important;
+  background-position: center !important;
   background-repeat: no-repeat !important;
-  overflow: hidden;
 }
 
-/* TABLET */
+/* Prevent excessive zoom in Offers hero */
+.lalara-offers-hero .lalara-offers-hero-image-zoom,
+.lalara-offers-hero .lalara-offers-hero-image {
+  object-fit: cover !important;
+  object-position: center 55% !important;
+  transform: none !important;
+}
+
 @media (max-width: 900px) {
-  .restaurant-menu-page .restaurant-menu-header-bg {
-    height: 560px !important;
-    min-height: 560px !important;
-    max-height: 560px !important;
+  :root {
+    --lalara-page-hero-height: 440px;
+    --lalara-content-photo-height: 340px;
   }
 }
-
-/* MOBILE */
 @media (max-width: 600px) {
-  .restaurant-menu-page .restaurant-menu-header-bg {
-    height: 440px !important;
-    min-height: 440px !important;
-    max-height: 440px !important;
-  }
+  :root { --lalara-page-hero-height: 380px; }
 }
 
 /* OUR STORY — 3 FOTOĞRAF DÜZELTMESİ */
@@ -16100,9 +15991,332 @@ h1,h2,h3,blockquote {
   object-position: center center !important;
 }
 
-/* LA LARA — TÜM SAYFALARDA FOTOĞRAF ORANLARINI KORU */
+/* LA LARA - Header rezervasyon butonu hizalama */
+@media (min-width: 901px) {
+  .site-header .header-right {
+    transform: translateX(-65px);
+  }
+}
 
-img:not(.leaflet-marker-icon):not(.leaflet-marker-shadow) {
-  object-fit: contain;
-  object-position: center;
+/* LA LARA - Footer social media alignment */
+.lalara-footer-follow a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lalara-footer-follow a svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+/* LA LARA - Footer sosyal medya yatay hizalama */
+.lalara-footer-2026 .lalara-footer-follow a {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  width: fit-content;
+  text-align: left !important;
+}
+
+.lalara-footer-2026 .lalara-footer-follow a svg {
+  display: block !important;
+  width: 19px !important;
+  height: 19px !important;
+  flex: 0 0 19px !important;
+  margin: 0 !important;
+}
+
+.lalara-footer-2026 .lalara-footer-follow a span {
+  display: inline-block !important;
+  margin: 0 !important;
+  line-height: 19px !important;
+}
+/* LA LARA - GLOBAL FONT SYSTEM */
+:root {
+  --display: var(--font-cormorant), Georgia, serif;
+  --sans: var(--font-avenir), Arial, sans-serif;
+}
+
+/* LA LARA - GLOBAL TYPOGRAPHY */
+
+/* Normal metinler */
+body,
+p,
+a,
+button,
+input,
+textarea,
+select,
+label,
+li {
+  font-family: var(--sans);
+}
+
+/* Başlıklar */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--display);
+}
+/* LA LARA - HOME MENU IMAGE LINK FIX */
+
+.home-menus-section .home-menu-image {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 360px;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.home-menus-section .home-menu-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .home-menus-section .home-menu-image {
+    height: 280px;
+  }
+}
+.story-full-elephant-body p {
+  font-family: var(--sans);
+  border-left: 0;
+  padding-left: 0;
+}
+
+.story-full-elephant-body p::before {
+  content: none;
+}
+
+/* LA LARA - OUR STORY HEADING FONT */
+
+.story-page.story-full h1,
+.story-page.story-full h2 {
+  font-family: var(--font-cormorant), Georgia, serif !important;
+}
+
+/* LA LARA - SPECIAL OFFERS REVISION */
+
+.lalara-offer-description .lalara-offer-schedule {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.lalara-offer-book-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  color: inherit;
+}
+
+.lalara-offer-book-link:hover {
+  opacity: 0.7;
+}
+
+/* SPECIAL OFFERS - HERO TITLE FONT */
+.lalara-offers-page .lalara-offers-hero h1 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+}
+
+/* SPECIAL OFFERS - HERO TYPOGRAPHY */
+
+.lalara-offers-page .lalara-offers-hero h1 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 400;
+}
+
+.lalara-offers-page .lalara-offers-hero p {
+  font-family: var(--font-avenir), Arial, sans-serif;
+  font-weight: 400;
+}
+
+/* LA LARA - UNIFIED INNER PAGE HERO TYPOGRAPHY */
+
+:root {
+  --lalara-hero-title-size: 64px;
+  --lalara-hero-subtitle-size: 17px;
+}
+
+@media (max-width: 800px) {
+  :root {
+    --lalara-hero-title-size: 44px;
+    --lalara-hero-subtitle-size: 15px;
+  }
+}
+
+/* Contact */
+.contact-reference-page .contact-ref-hero-text h1 {
+  font-family: var(--display) !important;
+  font-size: var(--lalara-hero-title-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.08 !important;
+}
+
+.contact-reference-page .contact-ref-hero-text > p:last-child {
+  font-family: var(--sans) !important;
+  font-size: var(--lalara-hero-subtitle-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+
+/* Offers */
+.lalara-offers-page .lalara-offers-hero h1 {
+  font-family: var(--display) !important;
+  font-size: var(--lalara-hero-title-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.08 !important;
+}
+
+.lalara-offers-page .lalara-offers-hero p {
+  font-family: var(--sans) !important;
+  font-size: var(--lalara-hero-subtitle-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+
+/* HOMEPAGE - HERO SUBTITLE */
+
+.home-page .hero-content > p.home-hero-description {
+  font-family: var(--sans) !important;
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+}
+
+@media (max-width: 800px) {
+  .home-page .hero-content > p.home-hero-description {
+    font-size: 15px !important;
+  }
+}
+
+/* HOMEPAGE HERO DESCRIPTION - MOBILE */
+
+@media (max-width: 800px) {
+  .home-page .hero-content .home-hero-description {
+    font-size: 15px !important;
+  }
+}
+
+/* LA LARA — UNIFIED HERO TYPOGRAPHY & CENTERING */
+
+:root {
+  --lalara-hero-title-size: 64px;
+  --lalara-hero-subtitle-size: 17px;
+}
+
+/* Kapak metinlerini yatay ve dikey ortala */
+.home-page .hero,
+.story-full-hero,
+.lalara-events-hero,
+.lalara-offers-hero,
+.contact-reference-page .contact-ref-hero {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Başlık ve açıklamayı tek grup olarak ortala */
+.home-page .hero-content,
+.story-full-hero-content,
+.lalara-events-hero-content,
+.lalara-offers-hero-content,
+.contact-reference-page .contact-ref-hero-text {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 40px, 1000px);
+  margin: 0 auto !important;
+  text-align: center !important;
+  transform: none !important;
+}
+
+/* Tüm kapak başlıkları */
+.home-page .hero-content h1,
+.story-full-hero h1,
+.lalara-events-hero h1,
+.lalara-offers-hero h1,
+.contact-reference-page .contact-ref-hero h1 {
+  font-family: var(--display) !important;
+  font-size: var(--lalara-hero-title-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.035em !important;
+  text-align: center !important;
+}
+
+/* Tüm kapak alt yazıları */
+.home-page .hero-content > p,
+.story-full-hero-content > p,
+.lalara-events-hero-content > p,
+.lalara-offers-hero-content > p,
+.contact-reference-page .contact-ref-hero-text > p {
+  font-family: var(--sans) !important;
+  font-size: var(--lalara-hero-subtitle-size) !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+}
+
+/* Mobil */
+@media (max-width: 800px) {
+  :root {
+    --lalara-hero-title-size: 44px;
+    --lalara-hero-subtitle-size: 15px;
+  }
+
+  .home-page .hero-content,
+  .story-full-hero-content,
+  .lalara-events-hero-content,
+  .lalara-offers-hero-content,
+  .contact-reference-page .contact-ref-hero-text {
+    width: calc(100% - 32px);
+  }
+}
+
+/* HOMEPAGE - HERO HEIGHT ALIGNMENT */
+
+@media (min-width: 901px) {
+  .home-page .hero,
+  .home-page .home-hero {
+    height: var(--lalara-page-hero-height, 560px) !important;
+    min-height: 0 !important;
+    max-height: var(--lalara-page-hero-height, 560px) !important;
+  }
+}
+/* HOME HERO - SADECE MOBİL */
+
+@media (max-width: 900px) {
+  .home-page .hero {
+    height: 45svh !important;
+    min-height: 0 !important;
+  }
+}
+
+/* LA LARA - FIXED HEADER */
+
+.site-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 9999 !important;
 }

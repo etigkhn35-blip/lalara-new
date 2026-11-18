@@ -24,7 +24,7 @@ async function getInitialFoodData() {
 
   if (!projectId) {
     return {
-      heroImage: "/images/home/3.jpg",
+      heroImage: "/images/home/6.jpg",
       initialSettings: fallbackSettings,
     };
   }
@@ -65,7 +65,7 @@ async function getInitialFoodData() {
       mediaDocument?.fields?.fields?.mapValue?.fields
         ?.food?.stringValue ||
       mediaDocument?.fields?.food?.stringValue ||
-      "/images/home/3.jpg";
+      "/images/home/6.jpg";
 
     const fields =
       settingsDocument?.fields;
@@ -103,7 +103,7 @@ async function getInitialFoodData() {
     );
 
     return {
-      heroImage: "/images/home/3.jpg",
+      heroImage: "/images/home/6.jpg",
       initialSettings: fallbackSettings,
     };
   }

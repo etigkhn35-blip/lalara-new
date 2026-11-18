@@ -7,8 +7,8 @@
 
 .contact-ref-hero {
   position: relative;
-  height: 650px;
-  min-height: 650px;
+  height: 560px;
+  min-height: 480px;
   overflow: hidden;
   background: #c5c5bd;
 }
@@ -39,7 +39,7 @@
 }
 
 .contact-ref-hero-text h1 {
-  font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+  font-family: var(--font-cormorant), Georgia, serif;
   font-size: clamp(54px, 5.2vw, 86px);
   font-weight: 400;
   line-height: 1.05;
@@ -62,7 +62,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  min-height: 560px;
+  min-height: 480px;
 }
 
 .contact-ref-copy {
@@ -79,7 +79,7 @@
 
 .contact-ref-eyebrow {
   margin: 0 0 25px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-avenir), Arial, sans-serif;
   font-size: 12px;
   font-weight: 700;
   line-height: 1.4;
@@ -89,7 +89,7 @@
 
 .contact-ref-copy h2 {
   max-width: 580px;
-  font-family: "Iowan Old Style", Baskerville, Georgia, serif;
+  font-family: var(--font-cormorant), Georgia, serif;
   font-size: clamp(45px, 4vw, 72px);
   font-weight: 400;
   line-height: 1.02;
@@ -99,7 +99,7 @@
 
 .contact-ref-description {
   max-width: 475px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-avenir), Arial, sans-serif;
   font-size: 17px;
   font-weight: 400;
   line-height: 1.55;
@@ -111,16 +111,18 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
-  margin-top: auto;
-  padding-top: 45px;
+  margin-top: 0;
+  padding-top: 24px;
 }
 
 .contact-ref-links a {
   display: inline-flex;
   align-items: center;
   gap: 16px;
+  justify-content: space-between;
+  width: min(100%, 240px);
   color: #30312e;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-avenir), Arial, sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -130,12 +132,13 @@
   padding-bottom: 8px;
 }
 
+.contact-ref-links a span { margin-left: auto; flex-shrink: 0; }
 .contact-ref-links a:hover { opacity: 0.65; }
 
 .contact-ref-photo {
   position: relative;
   width: 100%;
-  min-height: 560px;
+  min-height: 480px;
   overflow: hidden;
   background: #dcdad5;
 }
@@ -153,7 +156,7 @@
 
 .contact-ref-map {
   position: relative;
-  min-height: 560px;
+  min-height: 480px;
   background: #e9e7e1;
 }
 
@@ -169,14 +172,14 @@
 .contact-reference-page .contact-ref-location {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 560px;
+  min-height: 480px;
   gap: 0;
 }
 
 .contact-reference-page .contact-ref-location .contact-ref-map {
   position: relative;
   width: 100%;
-  min-height: 560px;
+  min-height: 480px;
 }
 
 .contact-reference-page .contact-ref-location .contact-ref-map iframe {
@@ -188,7 +191,7 @@
 }
 
 .contact-reference-page .contact-ref-location .contact-ref-copy {
-  min-height: 560px;
+  min-height: 480px;
   padding: clamp(45px, 5vw, 95px);
   display: flex;
   flex-direction: column;
@@ -197,8 +200,8 @@
 }
 
 .contact-reference-page .contact-ref-location .contact-ref-links {
-  margin-top: auto;
-  padding-top: 45px;
+  margin-top: 0;
+  padding-top: 24px;
 }
 
 /* MOBİL */
@@ -231,7 +234,7 @@
 .contact-reference-page .contact-ref-map { margin: 0 !important; }
 
 @media (max-width: 800px) {
-  .contact-ref-hero { height: 520px; min-height: 520px; }
+  .contact-ref-hero { height: 380px; min-height: 380px; }
   .contact-ref-gap { height: 45px; }
   .contact-ref-section { grid-template-columns: 1fr; min-height: 0; }
   .contact-ref-copy { min-height: 420px; padding: 55px 28px; }
@@ -247,14 +250,14 @@
   .contact-ref-location .contact-ref-map { min-height: 380px; }
   .contact-ref-location .contact-ref-copy { min-height: 320px; padding: 35px 28px; }
   .contact-ref-location .contact-ref-copy h2 { font-size: clamp(36px, 8vw, 46px); }
-  .contact-ref-location .contact-ref-links { margin-top: auto; }
+  .contact-ref-location .contact-ref-links { margin-top: 0; }
 }
 
 /* FIND US — HARİTAYI SAĞA DOĞRU GENİŞLET */
 
 @media (min-width: 801px) {
   .contact-reference-page .contact-ref-location {
-    grid-template-columns: 65% 35%;
+    grid-template-columns: 1fr 1fr;
   }
 
   .contact-reference-page .contact-ref-location .contact-ref-map {
@@ -264,5 +267,50 @@
 
   .contact-reference-page .contact-ref-location .contact-ref-copy {
     min-width: 0;
+  }
+}
+
+/* Contact: consistent alignment and rhythm across all content blocks */
+@media (min-width: 801px) {
+  .contact-reference-page .contact-ref-section { min-height: 480px; }
+  .contact-reference-page .contact-ref-photo,
+  .contact-reference-page .contact-ref-map,
+  .contact-reference-page .contact-ref-location .contact-ref-map,
+  .contact-reference-page .contact-ref-location .contact-ref-copy { min-height: 480px; }
+  .contact-reference-page .contact-ref-copy { justify-content: center; }
+}
+.contact-reference-page .contact-ref-links { margin-top: 0; padding-top: 24px; }
+.contact-reference-page .contact-ref-links a { justify-content: space-between; width: min(100%, 240px); }
+.contact-reference-page .contact-ref-links a span { margin-left: auto; }
+
+/* CONTACT - ALL SECTION HEADINGS SAME SIZE */
+
+.contact-reference-page .contact-ref-copy h2 {
+  font-family: var(--display) !important;
+  font-size: 52px !important;
+  font-weight: 400 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.035em !important;
+}
+
+@media (max-width: 800px) {
+  .contact-reference-page .contact-ref-copy h2 {
+    font-size: 38px !important;
+  }
+}
+
+/* CONTACT - BODY TYPOGRAPHY */
+
+.contact-reference-page .contact-ref-description {
+  font-family: var(--sans) !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0 !important;
+}
+
+@media (max-width: 800px) {
+  .contact-reference-page .contact-ref-description {
+    font-size: 15px !important;
   }
 }

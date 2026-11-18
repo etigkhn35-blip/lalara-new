@@ -42,7 +42,7 @@ const initialOffers: Offer[] = [
     eyebrow: "BIRTHDAYS AT LA LARA",
     title: "Birthday Special",
     paragraphs: [
-      "Make your birthday a little more special with 25% off your bill at La Lara.",
+      "Make your birthday a little more special with 15% off your bill at La Lara.",
       "Available from one day before your birthday and valid for eight days.",
       "Plenty of time to celebrate with the people you love.",
     ],
@@ -123,6 +123,10 @@ function OfferSection({
       ? live.body.split(/\n\s*\n/).filter(Boolean)
       : offer.paragraphs;
 
+  const birthdayWhatsappHref =
+    "https://wa.me/905458941838?text=" +
+    encodeURIComponent("Hello La Lara, I would like to book a birthday table.\nDate:\nTime:\nNumber of guests:");
+
   const schedule =
     live?.schedule !== undefined
       ? live.schedule
@@ -153,12 +157,20 @@ function OfferSection({
             {paragraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
+            {schedule && (
+              <p className="lalara-offer-schedule">{schedule}</p>
+            )}
           </div>
 
-          {schedule && (
-            <p className="lalara-offer-schedule">
-              {schedule}
-            </p>
+          {offer.id === "birthday" && (
+            <a
+              className="lalara-offer-book-link"
+              href={birthdayWhatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Book Your Birthday Table <span aria-hidden="true">›</span>
+            </a>
           )}
         </div>
       </div>
@@ -267,7 +279,7 @@ export default function OffersContent() {
               fill
               priority
               sizes="100vw"
-              className="lalara-offers-hero-image"
+              className="lalara-offers-hero-image lalara-offers-hero-image-zoom"
             />
           ) : (
             <div className="lalara-offers-hero-placeholder">

@@ -5,7 +5,7 @@ import DrinksMenuContent, {
 
 export { menu };
 
-const FALLBACK_HERO = "/images/home/2.jpg";
+const FALLBACK_HERO = "/images/home/6.jpg";
 
 const FALLBACK_SETTINGS: DrinksInitialSettings = {
   titleEN: "Drinks Menu",
