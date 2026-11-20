@@ -12,7 +12,7 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   display: "swap",
 });
-const avenirFallback = Nunito_Sans({
+const sansFallback = Nunito_Sans({
   subsets: ["latin", "latin-ext"],
   variable: "--font-avenir",
   display: "swap",
@@ -122,7 +122,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${avenirFallback.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${sansFallback.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <script

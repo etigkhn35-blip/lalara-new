@@ -16320,3 +16320,161 @@ h6 {
   width: 100% !important;
   z-index: 9999 !important;
 }
+
+/* LA LARA — HERO TYPOGRAPHY ALIGNMENT | 2026-11-21
+   Five page covers only. No changes to images, header, cover heights or CMS data. */
+.home-page .hero .hero-content,
+.story-page.story-full .story-full-hero .story-full-hero-content,
+.lalara-events-hero .lalara-events-hero-content,
+.lalara-offers-hero .lalara-offers-hero-content,
+.contact-reference-page .contact-ref-hero .contact-ref-hero-text {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  text-align: center !important;
+}
+
+.home-page .hero .hero-content h1,
+.story-page.story-full .story-full-hero h1,
+.lalara-events-hero h1,
+.lalara-offers-hero h1,
+.contact-reference-page .contact-ref-hero h1 {
+  font-family: var(--font-cormorant), Georgia, serif !important;
+  font-size: 64px !important;
+  font-weight: 400 !important;
+  font-synthesis: none !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.035em !important;
+  text-align: center !important;
+  margin: 0 0 20px !important;
+  padding: 0 !important;
+}
+
+.home-page .hero .hero-content > p:not(.eyebrow),
+.story-page.story-full .story-full-hero-content > p,
+.lalara-events-hero-content > p,
+.lalara-offers-hero-content > p,
+.contact-reference-page .contact-ref-hero-text > p {
+  font-family: var(--font-avenir), Arial, sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 800px) {
+  .home-page .hero .hero-content h1,
+  .story-page.story-full .story-full-hero h1,
+  .lalara-events-hero h1,
+  .lalara-offers-hero h1,
+  .contact-reference-page .contact-ref-hero h1 {
+    font-size: 44px !important;
+    margin-bottom: 16px !important;
+  }
+  .home-page .hero .hero-content > p:not(.eyebrow),
+  .story-page.story-full .story-full-hero-content > p,
+  .lalara-events-hero-content > p,
+  .lalara-offers-hero-content > p,
+  .contact-reference-page .contact-ref-hero-text > p {
+    font-size: 15px !important;
+  }
+}
+
+
+/* LA LARA — FIVE HERO COVER HEIGHTS AND VERTICAL ALIGNMENT | 2026-11-21
+   Scope: Home, Our Story, Events, Special Offers, Contact only.
+   This final block overrides conflicting older page-specific heights. */
+.home-page .hero,
+.story-page.story-full .story-full-hero,
+.lalara-events-hero,
+.lalara-offers-hero,
+.contact-reference-page .contact-ref-hero {
+  position: relative !important;
+  box-sizing: border-box !important;
+  height: 560px !important;
+  min-height: 560px !important;
+  max-height: 560px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.home-page .hero .hero-content,
+.story-page.story-full .story-full-hero .story-full-hero-content,
+.lalara-events-hero .lalara-events-hero-content,
+.lalara-offers-hero .lalara-offers-hero-content,
+.contact-reference-page .contact-ref-hero .contact-ref-hero-text {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+@media (max-width: 900px) {
+  .home-page .hero,
+  .story-page.story-full .story-full-hero,
+  .lalara-events-hero,
+  .lalara-offers-hero,
+  .contact-reference-page .contact-ref-hero {
+    height: 440px !important;
+    min-height: 440px !important;
+    max-height: 440px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-page .hero,
+  .story-page.story-full .story-full-hero,
+  .lalara-events-hero,
+  .lalara-offers-hero,
+  .contact-reference-page .contact-ref-hero {
+    height: 380px !important;
+    min-height: 380px !important;
+    max-height: 380px !important;
+  }
+}
+/* LA LARA — HERO CONTENT CENTERING */
+
+.home-page .hero,
+.story-page.story-full .story-full-hero,
+.lalara-events-hero {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.home-page .hero-content,
+.story-page.story-full .story-full-hero-content,
+.lalara-events-hero .lalara-events-hero-text {
+  position: relative;
+  z-index: 2;
+  transform: none !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+/* LA LARA - DESKTOP HOME HERO CENTER FIX */
+@media (min-width: 801px) {
+  .home-page .hero .hero-content {
+    position: relative !important;
+    top: 16px !important;
+  }
+}
+/* OUR STORY - DESKTOP VERTICAL ALIGNMENT */
+@media (min-width: 801px) {
+  .story-full-hero .story-full-hero-content {
+    translate: 0 12px !important;
+  }
+}

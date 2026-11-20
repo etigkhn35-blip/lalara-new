@@ -1524,7 +1524,7 @@ export default function ContentPage() {
           // Existing legacy CMS records are retained, but not used as the
           // initial display for previously hardcoded copy. Typography remains
           // sourced from the saved record.
-          const liveBaseline = page === "Homepage" ? fallback : data;
+         const liveBaseline = data;
 
           setForm({
             eyebrow:

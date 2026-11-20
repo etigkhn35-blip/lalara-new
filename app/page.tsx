@@ -333,19 +333,9 @@ const [galleryIndex, setGalleryIndex] = useState(0);
     "heading"
   )}
 >
-  {hero?.heading ? (
-    <>
-      Feel-good classics
-      <br />
-      with a view.
-    </>
-  ) : (
-    <>
-      Feel-good classics
-      <br />
-      with a view.
-    </>
-  )}
+{hero?.heading
+  ? renderLines(hero.heading)
+  : renderLines("Feel-good classics\nwith a view.")}
 </h1>
 
             

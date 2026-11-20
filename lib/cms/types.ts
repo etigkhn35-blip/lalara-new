@@ -62,10 +62,10 @@ export function cmsRecordStyle(item: CmsRecord | undefined, role: CmsTextRole): 
     role === "button" ? item.buttonSize : item.textSize;
 
   const family =
-    role === "eyebrow" ? item.eyebrowFontFamily ?? item.fontFamily :
-    role === "heading" ? item.headingFontFamily ?? item.fontFamily :
-    role === "button" ? item.buttonFontFamily ?? item.fontFamily :
-    item.textFontFamily ?? item.fontFamily;
+  role === "heading" ? "display" :
+  role === "eyebrow" ? item.eyebrowFontFamily ?? item.fontFamily :
+  role === "button" ? item.buttonFontFamily ?? item.fontFamily :
+  item.textFontFamily ?? item.fontFamily;
 
   const weight =
     role === "eyebrow" ? item.eyebrowFontWeight ?? item.fontWeight :
