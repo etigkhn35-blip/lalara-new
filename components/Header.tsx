@@ -175,8 +175,7 @@ const contactHref = isTR
   ? "/tr/iletisim"
   : "/contact";
 
-const reserveHref =
-  "https://wa.me/905458941838";
+const reserveHref = "/#reserve";
 
   /* =========================================================
      LANGUAGE ROUTES

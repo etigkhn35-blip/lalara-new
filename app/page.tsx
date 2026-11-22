@@ -195,6 +195,34 @@ const [galleryIndex, setGalleryIndex] = useState(0);
     }
   }, [cmsReady]);
 
+
+  // Our Story sayfasından rezervasyon bölümüne geçiş
+  useEffect(() => {
+    if (!cmsReady || window.location.hash !== "#reserve") return;
+
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const scrollToReserve = () => {
+      const section = document.getElementById("reserve");
+
+      if (section) {
+        section.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      } else if (attempts++ < 20) {
+        timer = setTimeout(scrollToReserve, 100);
+      }
+    };
+
+    timer = setTimeout(scrollToReserve, 150);
+
+    return () => clearTimeout(timer);
+  }, [cmsReady]);
+
+
+
   /* =========================================================
      SETTINGS
      ========================================================= */
@@ -377,20 +405,21 @@ const [galleryIndex, setGalleryIndex] = useState(0);
           className="home-menus-section"
         >
           <div className="home-menus-inner">
-            <p className="home-menus-eyebrow">
-              THE MENUS
+            <p className="home-menus-eyebrow" style={cmsStyle("menus", "eyebrow")}>
+              {menus?.eyebrow || "THE MENUS"}
             </p>
 
             <div className="home-menus-grid">
 
               {/* BREAKFAST */}
               <article className="home-menu-card">
-                <h2>
+                <h2 style={cmsStyle("homepage-breakfast-card", "heading")}>
                   {breakfastCard?.heading || "Breakfast"}
                 </h2>
 
                 <a
                   className="home-menu-link"
+                  style={cmsStyle("homepage-breakfast-card", "button")}
                   href={
                     breakfastCard?.buttonLink ||
                     "/breakfast-menu?lang=en"
@@ -419,12 +448,13 @@ const [galleryIndex, setGalleryIndex] = useState(0);
 
               {/* LUNCH & DINNER */}
               <article className="home-menu-card">
-                <h2>
-                  Lunch &amp; Dinner
+                <h2 style={cmsStyle("homepage-food-card", "heading")}>
+                  {foodCard?.heading || "Lunch & Dinner"}
                 </h2>
 
                 <a
                   className="home-menu-link"
+                  style={cmsStyle("homepage-food-card", "button")}
                   href={
                     foodCard?.buttonLink ||
                     "/food-menu?lang=en"
@@ -453,12 +483,13 @@ const [galleryIndex, setGalleryIndex] = useState(0);
 
               {/* DRINKS */}
               <article className="home-menu-card">
-                <h2>
+                <h2 style={cmsStyle("homepage-drinks-card", "heading")}>
                   {drinksCard?.heading || "Drinks"}
                 </h2>
 
                 <a
                   className="home-menu-link"
+                  style={cmsStyle("homepage-drinks-card", "button")}
                   href={
                     drinksCard?.buttonLink ||
                     "/drinks-menu?lang=en"
@@ -512,27 +543,24 @@ const [galleryIndex, setGalleryIndex] = useState(0);
               )}
             </div>
 <div className="home-story-copy">
-  <p className="home-story-eyebrow">
-    OUR STORY
+  <p className="home-story-eyebrow" style={cmsStyle("homepage-our-story", "eyebrow")}>
+    {story?.eyebrow || "OUR STORY"}
   </p>
 
-  <h2>
-    The woman
-    <br />
-    behind the name.
+  <h2 style={cmsStyle("homepage-our-story", "heading")}>
+    {renderLines(story?.heading || "The woman\nbehind the name.")}
   </h2>
 
-  <p className="home-story-text">
-    Every family has someone who brings everyone together.
-    <br />
-    In ours, that person was Lara.
+  <p className="home-story-text" style={cmsStyle("homepage-our-story", "text")}>
+    {renderLines(story?.body || "Every family has someone who brings everyone together.\nIn ours, that person was Lara.")}
   </p>
 
   <a
-    href="/our-story"
+    href={story?.buttonLink || "/our-story"}
     className="home-story-link"
+    style={cmsStyle("homepage-our-story", "button")}
   >
-    READ OUR STORY
+    {story?.buttonLabel || "READ OUR STORY"}
     <span>›</span>
   </a>
 </div>
@@ -553,27 +581,24 @@ const [galleryIndex, setGalleryIndex] = useState(0);
           <div className="home-events-inner">
 
             <div className="home-events-copy">
-              <p className="home-events-eyebrow">
-                EVENTS
+              <p className="home-events-eyebrow" style={cmsStyle("homepage-private-events", "eyebrow")}>
+                {privateEvents?.eyebrow || "EVENTS"}
               </p>
 
-              <h2>
-                Your exclusive
-                <br />
-                venue experience
+              <h2 style={cmsStyle("homepage-private-events", "heading")}>
+                {renderLines(privateEvents?.heading || "Your exclusive\nvenue experience")}
               </h2>
 
-              <p className="home-events-text">
-                Weddings, celebrations and private dinners
-                <br />
-                overlooking Yalıkavak Bay.
+              <p className="home-events-text" style={cmsStyle("homepage-private-events", "text")}>
+                {renderLines(privateEvents?.body || "Weddings, celebrations and private dinners\noverlooking Yalıkavak Bay.")}
               </p>
 
               <a
                 href={privateEvents?.buttonLink || "/private-events"}
                 className="home-events-link"
+                style={cmsStyle("homepage-private-events", "button")}
               >
-                PLAN YOUR EVENT
+                {privateEvents?.buttonLabel || "PLAN YOUR EVENT"}
                 <span>›</span>
               </a>
             </div>
@@ -702,7 +727,9 @@ const [galleryIndex, setGalleryIndex] = useState(0);
           <div className="home-reservation-shade" />
 
           <div className="home-reservation-content">
-            <h2>Reserve your table.</h2>
+            <h2 style={cmsStyle("reservation-contact", "heading")}>
+              {renderLines(reservation?.heading || "Reserve your table.")}
+            </h2>
 
             <div className="home-reservation-buttons">
               <a

@@ -66,6 +66,8 @@ type MenuSettings = {
 
   subtitleEN?: string;
   subtitleTR?: string;
+  navLabelEN?: string;
+  navLabelTR?: string;
 
   visible?: boolean;
   imported?: boolean;
@@ -107,6 +109,8 @@ const defaultSettings: Record<MenuKey, MenuSettings> = {
     titleTR: "Yemek Menüsü",
     subtitleEN: "Restaurant & Bar",
     subtitleTR: "Restaurant & Bar",
+    navLabelEN: "LUNCH & DINNER",
+    navLabelTR: "ÖĞLE & AKŞAM",
     visible: true,
   },
 
@@ -115,6 +119,8 @@ const defaultSettings: Record<MenuKey, MenuSettings> = {
     titleTR: "İçecek Menüsü",
     subtitleEN: "Restaurant & Bar",
     subtitleTR: "Restaurant & Bar",
+    navLabelEN: "DRINKS",
+    navLabelTR: "İÇECEKLER",
     visible: true,
   },
 
@@ -123,6 +129,8 @@ const defaultSettings: Record<MenuKey, MenuSettings> = {
     titleTR: "Kahvaltı",
     subtitleEN: "Take your time.",
     subtitleTR: "Tadını çıkarın.",
+    navLabelEN: "BREAKFAST",
+    navLabelTR: "KAHVALTI",
     visible: true,
   },
 };
@@ -1720,62 +1728,53 @@ export default function MenusPage() {
               }
             </h2>
 
-            <div
-              style={{
-                display: "grid",
-                gap: 16,
-              }}
-            >
-              <label>
-                <span>
-                  Menu title
-                </span>
-
+            <div style={{ display: "grid", gap: 22 }}>
+              {/* Use explicit block wrappers: global label CSS can otherwise
+                  place labels and controls side by side. */}
+              <div style={{ display: "grid", gap: 9, minWidth: 0 }}>
+                <label htmlFor="menu-nav-label" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  Navigation tab label
+                </label>
                 <input
+                  id="menu-nav-label"
+                  type="text"
                   className="admin-input"
-                  value={
-                    language === "EN"
-                      ? currentSettings.titleEN ||
-                        ""
-                      : currentSettings.titleTR ||
-                        ""
-                  }
-                  onChange={(event) =>
-                    updateLocalSetting(
-                      language === "EN"
-                        ? "titleEN"
-                        : "titleTR",
-                      event.target.value
-                    )
-                  }
+                  style={{ display: "block", width: "100%", boxSizing: "border-box", minHeight: 48 }}
+                  value={language === "EN" ? currentSettings.navLabelEN || "" : currentSettings.navLabelTR || ""}
+                  onChange={(event) => updateLocalSetting(language === "EN" ? "navLabelEN" : "navLabelTR", event.target.value)}
                 />
-              </label>
+                <small style={{ display: "block", opacity: 0.6, lineHeight: 1.5 }}>
+                  Shown in the Breakfast / Lunch &amp; Dinner / Drinks navigation.
+                </small>
+              </div>
 
-              <label>
-                <span>
+              <div style={{ display: "grid", gap: 9, minWidth: 0 }}>
+                <label htmlFor="menu-page-title" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  Menu title
+                </label>
+                <input
+                  id="menu-page-title"
+                  type="text"
+                  className="admin-input"
+                  style={{ display: "block", width: "100%", boxSizing: "border-box", minHeight: 48 }}
+                  value={language === "EN" ? currentSettings.titleEN || "" : currentSettings.titleTR || ""}
+                  onChange={(event) => updateLocalSetting(language === "EN" ? "titleEN" : "titleTR", event.target.value)}
+                />
+              </div>
+
+              <div style={{ display: "grid", gap: 9, minWidth: 0 }}>
+                <label htmlFor="menu-page-subtitle" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
                   Subtitle
-                </span>
-
+                </label>
                 <textarea
+                  id="menu-page-subtitle"
                   className="admin-input"
                   rows={3}
-                  value={
-                    language === "EN"
-                      ? currentSettings.subtitleEN ||
-                        ""
-                      : currentSettings.subtitleTR ||
-                        ""
-                  }
-                  onChange={(event) =>
-                    updateLocalSetting(
-                      language === "EN"
-                        ? "subtitleEN"
-                        : "subtitleTR",
-                      event.target.value
-                    )
-                  }
+                  style={{ display: "block", width: "100%", boxSizing: "border-box", minHeight: 100, resize: "vertical" }}
+                  value={language === "EN" ? currentSettings.subtitleEN || "" : currentSettings.subtitleTR || ""}
+                  onChange={(event) => updateLocalSetting(language === "EN" ? "subtitleEN" : "subtitleTR", event.target.value)}
                 />
-              </label>
+              </div>
 
               <label
                 style={{

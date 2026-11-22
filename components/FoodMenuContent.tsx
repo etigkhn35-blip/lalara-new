@@ -637,6 +637,12 @@ export default function FoodMenuContent({
      FIRESTORE MENU
      ========================================================= */
 
+  const [navLabels, setNavLabels] = useState<Record<"breakfast" | "food" | "drinks", Record<Locale, string>>>(() => ({
+    breakfast: { en: "BREAKFAST", tr: "KAHVALTI" },
+    food: { en: "LUNCH & DINNER", tr: "ÖĞLE & AKŞAM" },
+    drinks: { en: "DRINKS", tr: "İÇECEKLER" },
+  }));
+
   useEffect(() => {
     async function loadMenu() {
       try {
@@ -666,6 +672,20 @@ export default function FoodMenuContent({
             )
           ),
         ]);
+
+        setNavLabels((previous) => {
+          const next = { ...previous };
+          settingsSnapshot.docs.forEach((entry) => {
+            const key = entry.id as "breakfast" | "food" | "drinks";
+            if (key !== "breakfast" && key !== "food" && key !== "drinks") return;
+            const data = entry.data();
+            next[key] = {
+              en: typeof data.navLabelEN === "string" && data.navLabelEN.trim() ? data.navLabelEN : previous[key].en,
+              tr: typeof data.navLabelTR === "string" && data.navLabelTR.trim() ? data.navLabelTR : previous[key].tr,
+            };
+          });
+          return next;
+        });
 
         const categories =
           categorySnapshot.docs
@@ -867,11 +887,11 @@ export default function FoodMenuContent({
           setMenuSubtitle({
             en:
               settings.subtitleEN ||
-              "Restaurant & Bar",
+              "A REASON TO GATHER.",
 
             tr:
               settings.subtitleTR ||
-              "Restaurant & Bar",
+              "BİR ARAYA GELMEK İÇİN BİR NEDEN.",
           });
         }
 
@@ -1002,9 +1022,9 @@ export default function FoodMenuContent({
       {/* FOOD / DRINKS / BREAKFAST */}
 
       <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
-        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
-        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="active">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
-        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
+        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="">{navLabels.breakfast[locale]}</Link>
+        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="active">{navLabels.food[locale]}</Link>
+        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -1024,8 +1044,8 @@ export default function FoodMenuContent({
       {/* TITLE */}
 
       <section className="restaurant-menu-heading">
-        <h1>{isTR ? "Öğle & Akşam Menüsü" : "Lunch & Dinner Menu"}</h1>
-        <span>{isTR ? "BİR ARAYA GELMEK İÇİN BİR NEDEN." : "A REASON TO GATHER."}</span>
+        <h1>{menuTitle[locale]}</h1>
+        <span>{menuSubtitle[locale]}</span>
       </section>
 
       {/* MENU */}
@@ -1125,9 +1145,9 @@ export default function FoodMenuContent({
 
       {/* BOTTOM MENU NAVIGATION */}
 <nav className="restaurant-menu-tabs" aria-label="More menus">
-        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="">{isTR ? "KAHVALTI" : "BREAKFAST"}</Link>
-        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="active">{isTR ? "ÖĞLE & AKŞAM" : "LUNCH & DINNER"}</Link>
-        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="">{isTR ? "İÇECEKLER" : "DRINKS"}</Link>
+        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="">{navLabels.breakfast[locale]}</Link>
+        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="active">{navLabels.food[locale]}</Link>
+        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
       </nav>
 
       <Footer

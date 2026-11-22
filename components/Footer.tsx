@@ -236,15 +236,27 @@ export default function Footer({
     };
   }, []);
 
-  const visible = (key: string) =>
-    cms[key]?.visible !== false;
+  const visible = (key: string) => cms[key]?.visible !== false;
+
+  // Admin Site Editor keys: Footer Opening Times -> footer-opening-times, etc.
+  const footerText = (key: string, field: "eyebrow" | "heading" | "body", fallback: string) =>
+    cms[key]?.[field] ?? fallback;
+  const footerLines = (value: string) => value.split(/\r?\n/).filter(Boolean);
+  const footerAddress = footerText("footer-address", "body", settings.address);
+  const footerNavLines = footerLines(cms["footer-navigation"]?.body ?? "");
+  // Some older CMS records contain six links (including Home).
+  // The live footer has five links: Menu, Our Story, Events, Offers, Contact.
+  const navLabels = footerNavLines.length === 6
+    ? footerNavLines.slice(1)
+    : footerNavLines;
+  const footerSocialLines = footerLines(cms["footer-social"]?.body ?? "");
 
   const telHref = `tel:${settings.phone.replace(/[^+\d]/g, "")}`;
   const emailHref = `mailto:${settings.email}`;
 
   const mapsHref =
     "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent(settings.address.replace(/\n/g, ", "));
+    encodeURIComponent(footerAddress.replace(/\n/g, ", "));
 
   // Actual application routes
   const links = {
@@ -278,12 +290,12 @@ export default function Footer({
               <Link
                 href={links.home}
                 scroll={true}
-                aria-label={isTR ? "La Lara ana sayfa" : "La Lara home"}
+                aria-label={cms["footer-brand"]?.body || (isTR ? "La Lara ana sayfa" : "La Lara home")}
                 onClick={() => handleNavigation(links.home)}
               >
                 <Image
                   src="/lalara-logo.png"
-                  alt="La Lara Restaurant & Bar"
+                  alt={footerText("footer-brand", "heading", "La Lara Restaurant & Bar")}
                   width={320}
                   height={118}
                 />
@@ -291,27 +303,26 @@ export default function Footer({
             </div>
           )}
 
-          {/* OPENING TIMES */}
+          {/* OPENING TIMES / PARTNERS — CMS controlled */}
           <div className="lalara-footer-info">
-            <div>
-              <h2>{isTR ? "AÇILIŞ SAATLERİ" : "OPENING TIMES"}</h2>
-              <p>
-                {isTR ? "Pzt–Paz" : "Mon–Sun"}
-                <br />
-                8:00 – 22:00
-              </p>
-            </div>
-
-            <div className="lalara-footer-partners">
-              <h2>{isTR ? "İŞ ORTAKLARIMIZ" : "PARTNERS"}</h2>
-              <a
-                href="https://spektr-hotel.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Spektr Boutique Hotel
-              </a>
-            </div>
+            {visible("footer-opening-times") && (
+              <div>
+                <h2>{footerText("footer-opening-times", "eyebrow", isTR ? "AÇILIŞ SAATLERİ" : "OPENING TIMES")}</h2>
+                <p>
+                  {footerLines(footerText("footer-opening-times", "body", isTR ? "Pzt–Paz\n8:00 – 22:00" : "Mon–Sun\n8:00 – 22:00")).map((line, index) => (
+                    <span key={index}>{index > 0 && <br />}{line}</span>
+                  ))}
+                </p>
+              </div>
+            )}
+            {visible("footer-partners") && (
+              <div className="lalara-footer-partners">
+                <h2>{footerText("footer-partners", "eyebrow", isTR ? "İŞ ORTAKLARIMIZ" : "PARTNERS")}</h2>
+                <a href={cms["footer-partners"]?.buttonLink || "https://spektr-hotel.com/"} target="_blank" rel="noopener noreferrer">
+                  {cms["footer-partners"]?.buttonLabel || footerText("footer-partners", "body", "Spektr Boutique Hotel")}
+                </a>
+              </div>
+            )}
           </div>
 
           {/* NAVIGATION */}
@@ -330,7 +341,7 @@ export default function Footer({
                 scroll={true}
                 onClick={() => handleNavigation(links.menu)}
               >
-                {isTR ? "Menü" : "Menu"}
+                {navLabels.length === 5 ? navLabels[0] : (isTR ? "Menü" : "Menu")}
               </Link>
 
               <Link
@@ -338,7 +349,7 @@ export default function Footer({
                 scroll={true}
                 onClick={() => handleNavigation(links.story)}
               >
-                {isTR ? "Hikâyemiz" : "Our Story"}
+                {navLabels.length === 5 ? navLabels[1] : (isTR ? "Hikâyemiz" : "Our Story")}
               </Link>
 
               <Link
@@ -346,7 +357,7 @@ export default function Footer({
                 scroll={true}
                 onClick={() => handleNavigation(links.events)}
               >
-                {isTR ? "Etkinlikler" : "Events"}
+                {navLabels.length === 5 ? navLabels[2] : (isTR ? "Etkinlikler" : "Events")}
               </Link>
 
               <Link
@@ -354,7 +365,7 @@ export default function Footer({
                 scroll={true}
                 onClick={() => handleNavigation(links.offers)}
               >
-                {isTR ? "Teklifler" : "Offers"}
+                {navLabels.length === 5 ? navLabels[3] : (isTR ? "Teklifler" : "Offers")}
               </Link>
 
               <Link
@@ -362,7 +373,7 @@ export default function Footer({
                 scroll={true}
                 onClick={() => handleNavigation(links.contact)}
               >
-                {isTR ? "İletişim" : "Contact"}
+                {navLabels.length === 5 ? navLabels[4] : (isTR ? "İletişim" : "Contact")}
               </Link>
             </nav>
           )}
@@ -370,7 +381,7 @@ export default function Footer({
           {/* CONTACT */}
           {visible("footer-address") && (
             <div className="lalara-footer-contact">
-              <h2>{isTR ? "İLETİŞİM" : "CONTACT"}</h2>
+              <h2>{footerText("footer-address", "eyebrow", isTR ? "İLETİŞİM" : "CONTACT")}</h2>
 
               <a href={telHref}>{settings.phone}</a>
               <a href={emailHref}>{settings.email}</a>
@@ -381,7 +392,7 @@ export default function Footer({
                 rel="noopener noreferrer"
                 className="lalara-footer-address"
               >
-                {settings.address}
+                {footerAddress}
               </a>
             </div>
           )}
@@ -402,7 +413,7 @@ export default function Footer({
                   aria-label="Instagram"
                 >
                   <SocialIcon type="instagram" />
-                  <span>Instagram</span>
+                  <span>{footerSocialLines[0] || "Instagram"}</span>
                 </a>
               )}
 
@@ -414,7 +425,7 @@ export default function Footer({
                   aria-label="Facebook"
                 >
                   <SocialIcon type="facebook" />
-                  <span>Facebook</span>
+                  <span>{footerSocialLines[1] || "Facebook"}</span>
                 </a>
               )}
 
@@ -426,7 +437,7 @@ export default function Footer({
                   aria-label="Tripadvisor"
                 >
                   <SocialIcon type="tripadvisor" />
-                  <span>Tripadvisor</span>
+                  <span>{footerSocialLines[2] || "Tripadvisor"}</span>
                 </a>
               )}
             </div>
@@ -437,7 +448,7 @@ export default function Footer({
         {visible("footer-bottom") && (
           <div className="lalara-footer-bottom">
             <span>
-              {cms["footer-bottom"]?.body ||
+              {cms["footer-bottom"]?.body ??
                 "© 2026 LA LARA RESTAURANT & BAR"}
             </span>
           </div>

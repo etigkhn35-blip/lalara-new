@@ -8,8 +8,8 @@ export { menu };
 const fallbackSettings: FoodInitialSettings = {
   titleEN: "Food Menu",
   titleTR: "Yemek Menüsü",
-  subtitleEN: "Restaurant & Bar",
-  subtitleTR: "Restaurant & Bar",
+  subtitleEN: "A REASON TO GATHER.",
+  subtitleTR: "BİR ARAYA GELMEK İÇİN BİR NEDEN.",
 };
 
 function getStringValue(field: any, fallback: string) {

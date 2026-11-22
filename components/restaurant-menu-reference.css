@@ -69,3 +69,22 @@
   letter-spacing: 0 !important;
   font-variant-numeric: tabular-nums;
 }
+
+/* =========================================
+   LA LARA — MENU HEADER 555PX
+   BREAKFAST / FOOD / DRINKS
+========================================= */
+
+@media (min-width: 901px) {
+  .restaurant-menu-page .restaurant-menu-header-bg {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+
+    position: relative;
+  }
+}

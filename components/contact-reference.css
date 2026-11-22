@@ -314,3 +314,57 @@
     font-size: 15px !important;
   }
 }
+
+/* =========================================
+   LA LARA CONTACT — 555PX STANDARD
+   DESKTOP ONLY
+========================================= */
+
+@media (min-width: 901px) {
+
+  /* TÜM İÇERİK BLOKLARI */
+  .contact-reference-page .contact-ref-section {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+    align-items: stretch !important;
+  }
+
+  /* METİN ALANLARI */
+  .contact-reference-page .contact-ref-copy,
+  .contact-reference-page .contact-ref-location .contact-ref-copy {
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+
+  /* FOTOĞRAFLAR */
+  .contact-reference-page .contact-ref-photo {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .contact-reference-page .contact-ref-photo .contact-ref-image {
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  /* HARİTA */
+  .contact-reference-page .contact-ref-map,
+  .contact-reference-page .contact-ref-location .contact-ref-map {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+  }
+
+  /* HERO / KAPAK FOTOĞRAFI */
+  .contact-reference-page .contact-ref-hero {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+  }
+}

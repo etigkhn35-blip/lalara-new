@@ -10,8 +10,8 @@ const FALLBACK_HERO = "/images/home/6.jpg";
 const FALLBACK_SETTINGS: DrinksInitialSettings = {
   titleEN: "Drinks Menu",
   titleTR: "İçecek Menüsü",
-  subtitleEN: "Restaurant & Bar",
-  subtitleTR: "Restaurant & Bar",
+  subtitleEN: "HERE’S TO GOOD TIMES.",
+  subtitleTR: "GÜZEL ANLARA.",
 };
 
 function stringValue(field: any): string {

@@ -124,24 +124,68 @@ async function uploadToCloudinary(file: File) {
 }
 
 
+
 /* =========================================================
    PAGE DEFINITIONS
    ========================================================= */
 
 const PAGE_DEFINITIONS: PageDefinition[] = [
   {
-    key: "homepage", label: "Homepage", eyebrow: "Homepage photography",
-    description: "Homepage images in website order. The six-photo homepage slider uses Gallery → Gallery Photos; the reservation banner reuses the Hero image.",
+    key: "homepage",
+    label: "Homepage",
+    eyebrow: "Homepage photography",
+
+    description:
+      "To add or remove an unlimited number of photos, please go to Gallery → Gallery Photos. " +
+      "You can manage your homepage gallery images directly from the Gallery section. " +
+      "IMPORTANT: After selecting or updating your photos, please remember to click the Save button at the bottom of the page to save your changes.",
+
     fields: [
-      { type: "single", key: "hero", label: "01 · Homepage Hero / Reservation Banner", description: "Used in the opening Hero and again behind Reserve Your Table." },
-      { type: "single", key: "breakfast", label: "02 · Menus — Breakfast", description: "First card in the three-column menu section." },
-      { type: "single", key: "food", label: "03 · Menus — Lunch & Dinner", description: "Second card in the menu section." },
-      { type: "single", key: "drinks", label: "04 · Menus — Drinks", description: "Third card in the menu section." },
-      { type: "single", key: "atmosphere", label: "05 · Our Story", description: "Photo beside The Woman Behind the Name." },
-      { type: "single", key: "sunset", label: "06 · Private Events", description: "Photo beside Your Exclusive Venue Experience." },
-      { type: "single", key: "moments", label: "07 · Gallery Slider Fallback", description: "Only used as a fallback if Gallery → Gallery Photos is empty; the homepage slider primarily uses up to six images from the Gallery section." },
+      {
+        type: "single",
+        key: "hero",
+        label: "01 · Homepage Hero / Reservation Banner",
+        description: "Used in the opening Hero and again behind Reserve Your Table.",
+      },
+      {
+        type: "single",
+        key: "breakfast",
+        label: "02 · Menus — Breakfast",
+        description: "First card in the three-column menu section.",
+      },
+      {
+        type: "single",
+        key: "food",
+        label: "03 · Menus — Lunch & Dinner",
+        description: "Second card in the menu section.",
+      },
+      {
+        type: "single",
+        key: "drinks",
+        label: "04 · Menus — Drinks",
+        description: "Third card in the menu section.",
+      },
+      {
+        type: "single",
+        key: "atmosphere",
+        label: "05 · Our Story",
+        description: "Photo beside The Woman Behind the Name.",
+      },
+      {
+        type: "single",
+        key: "sunset",
+        label: "06 · Private Events",
+        description: "Photo beside Your Exclusive Venue Experience.",
+      },
+      {
+        type: "single",
+        key: "moments",
+        label: "07 · Gallery Slider Fallback",
+        description: "Only used as a fallback if Gallery → Gallery Photos is empty; the homepage slider primarily uses up to six images from the Gallery section.",
+      },
     ],
   },
+
   {
     key: "story", label: "Our Story", eyebrow: "Our Story photography",
     description: "Manage all seven photographs in their actual website order.",

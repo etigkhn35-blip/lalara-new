@@ -28,8 +28,8 @@ async function getInitialMenuData(): Promise<InitialMenuData> {
       tr: "Kahvaltı Menüsü",
     },
     initialMenuSubtitle: {
-      en: "Restaurant & Bar",
-      tr: "Restaurant & Bar",
+      en: "TAKE YOUR TIME",
+      tr: "ACELE ETMEYİN",
     },
   };
 

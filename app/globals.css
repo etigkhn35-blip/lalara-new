@@ -16478,3 +16478,387 @@ h6 {
     translate: 0 12px !important;
   }
 }
+/* LA LARA - HEADER VERTICAL CENTER FIX */
+@media (min-width: 901px) {
+
+  .site-header,
+  .home-page .site-header {
+    height: 94px !important;
+    min-height: 0 !important;
+    align-items: center !important;
+    transition: height 0.3s ease !important;
+  }
+
+  .site-header.is-scrolled,
+  .home-page .site-header.is-scrolled {
+    height: 70px !important;
+  }
+
+  /* Üç ana bölüm aynı dikey merkezde */
+  .site-header > .brand,
+  .site-header > .desktop-nav,
+  .site-header > .header-right {
+    align-self: center !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    transform: none !important;
+  }
+
+  /* Logo kapsayıcısını navbar yüksekliğinden bağımsız tut */
+  .site-header > .brand {
+    height: 70px !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: visible !important;
+  }
+
+  /* Logonun orijinal genişliğini koru */
+  .site-header > .brand img {
+    width: 250px !important;
+    max-width: 250px !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* Menü ve rezervasyon butonu */
+  .site-header > .desktop-nav,
+  .site-header > .header-right {
+    display: flex !important;
+    align-items: center !important;
+  }
+}
+/* BOOK A TABLE - SOLA KAYDIR */
+@media (min-width: 901px) {
+  .site-header .header-reserve {
+    transform: translateX(-65px) !important;
+  }
+}
+
+/* LA LARA — EVENTS BLOK YÜKSEKLİKLERİ */
+
+@media (min-width: 901px) {
+  .lalara-events-redesign .lalara-event-section {
+    height: 580px !important;
+    min-height: 580px !important;
+    max-height: 580px !important;
+    align-items: stretch !important;
+  }
+
+  .lalara-events-redesign .lalara-event-copy {
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image-frame {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+}
+
+/* TABLET */
+@media (min-width: 651px) and (max-width: 900px) {
+  .lalara-events-redesign .lalara-event-section {
+    min-height: 540px !important;
+    height: auto !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image-frame {
+    min-height: 540px !important;
+    height: auto !important;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 650px) {
+  .lalara-events-redesign .lalara-event-section {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .lalara-events-redesign .lalara-event-copy {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image-frame {
+    height: 340px !important;
+    min-height: 340px !important;
+    max-height: 340px !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image {
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+}
+
+/* EVENTS — HERO SONRASI BOŞLUK */
+.lalara-events-redesign .lalara-events-spacer {
+  height: 75px !important;
+}
+
+/* =========================================
+   LA LARA — 555PX CONTENT BLOCK STANDARD
+   Desktop only
+========================================= */
+
+@media (min-width: 901px) {
+
+  /* HOME — OUR STORY / EVENTS / OFFERS */
+  .home-page .home-story-section,
+  .home-page .home-events-section,
+  .home-page .home-offers-section {
+    height: 555px !important;
+    min-height: 555px !important;
+    box-sizing: border-box;
+  }
+
+  .home-page .home-story-inner,
+  .home-page .home-events-inner {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .home-page .home-story-image,
+  .home-page .home-events-image {
+    height: 100%;
+    min-height: 0 !important;
+  }
+
+  /* OUR STORY — PHOTO & TEXT SECTIONS */
+  .story-full-beginning,
+  .story-full-inspiration,
+  .story-full-elephant,
+  .story-full-people {
+    height: 555px !important;
+    min-height: 555px !important;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  .story-full-beginning > .story-full-container,
+  .story-full-inspiration > .story-full-container,
+  .story-full-elephant > .story-full-container,
+  .story-full-people > .story-full-container {
+    width: min(1180px, calc(100% - 88px));
+  }
+
+  /* EVENTS — ALL FOUR BLOCKS */
+  .lalara-events-redesign .lalara-event-section {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image-frame {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image {
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+}
+
+/* TABLET & MOBILE — CONTENT SAFE */
+@media (max-width: 900px) {
+  .home-page .home-story-section,
+  .home-page .home-events-section,
+  .home-page .home-offers-section,
+  .story-full-beginning,
+  .story-full-inspiration,
+  .story-full-elephant,
+  .story-full-people {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+}
+
+/* =========================================
+   LA LARA — OFFERS 555PX STANDARD
+========================================= */
+
+@media (min-width: 901px) {
+
+  .lalara-offers-page .lalara-offer-section {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+    align-items: stretch !important;
+  }
+
+  .lalara-offers-page .lalara-offer-copy {
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .lalara-offers-page .lalara-offer-image-frame {
+    position: relative !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .lalara-offers-page .lalara-offer-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+}
+
+/* TABLET & MOBILE */
+
+@media (max-width: 900px) {
+
+  .lalara-offers-page .lalara-offer-section {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .lalara-offers-page .lalara-offer-copy {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+}
+
+/* =========================================
+   LA LARA — ALL PAGE HERO HEIGHTS 555PX
+========================================= */
+
+@media (min-width: 901px) {
+
+  /* HOME */
+  .home-page .hero {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+  }
+
+  /* OUR STORY */
+  .story-page.story-full .story-full-hero {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+  }
+
+  /* EVENTS */
+  .lalara-events-hero {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+  }
+
+  /* OFFERS */
+  .lalara-offers-page .lalara-offers-hero {
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+  }
+
+  
+}
+
+/* =========================================
+   LA LARA — EVENTS / OFFERS ALIGNMENT
+   Desktop only
+========================================= */
+
+@media (min-width: 901px) {
+
+  /* Tüm Events blokları 50 / 50 */
+  .lalara-events-redesign #weddings,
+  .lalara-events-redesign #celebrations,
+  .lalara-events-redesign #corporate-events,
+  .lalara-events-redesign #private-lounge {
+    display: grid !important;
+    grid-template-columns: 50% 50% !important;
+    height: 555px !important;
+    min-height: 555px !important;
+    max-height: 555px !important;
+    align-items: stretch !important;
+  }
+
+  /* Metin alanı — Offers ile aynı */
+  .lalara-events-redesign .lalara-event-copy {
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: clamp(30px, 3.5vw, 55px)
+             clamp(32px, 4vw, 75px) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Metin içeriği */
+  .lalara-events-redesign .lalara-event-copy-inner {
+    width: 100% !important;
+    max-width: 510px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    align-items: flex-start !important;
+  }
+
+  /* Butonun aşağı itilmesini kaldır */
+  .lalara-events-redesign .lalara-event-enquiry {
+    margin-top: 30px !important;
+    padding-top: 0 !important;
+  }
+
+  /* Görsel alanı */
+  .lalara-events-redesign .lalara-event-image-frame {
+    position: relative !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .lalara-events-redesign .lalara-event-image-frame img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  /* Alternatif sağ-sol yerleşim korunur */
+  .lalara-events-redesign
+  .lalara-event-image-left .lalara-event-image-frame {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  .lalara-events-redesign
+  .lalara-event-image-left .lalara-event-copy {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+  }
+
+  /* Bölümler arası boşluk Offers ile aynı */
+  .lalara-events-redesign
+  .lalara-event-section + .lalara-event-section {
+    margin-top: 75px !important;
+  }
+}

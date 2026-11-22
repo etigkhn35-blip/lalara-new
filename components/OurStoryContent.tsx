@@ -451,33 +451,18 @@ export default function OurStoryContent({
 
               <div className="story-full-cta-actions">
                 <Link
-                  href="/#menus"
+                  href="/food-menu"
                   className="story-full-text-link"
                 >
                   VIEW OUR MENUS
                 </Link>
-
-                <a
-                  href={ctaLink}
-                  className="story-full-cta-button"
-                  style={styleFor(
-                    "story-cta",
-                    "button"
-                  )}
-                  target={
-                    ctaLink.startsWith("http")
-                      ? "_blank"
-                      : undefined
-                  }
-                  rel={
-                    ctaLink.startsWith("http")
-                      ? "noopener noreferrer"
-                      : undefined
-                  }
-                >
-                  {cta?.buttonLabel ||
-                    "RESERVE A TABLE"}
-                </a>
+<a
+  href="/#reserve"
+  className="story-full-cta-button"
+  style={styleFor("story-cta", "button")}
+>
+  {cta?.buttonLabel || "RESERVE A TABLE"}
+</a>
               </div>
             </div>
           </section>

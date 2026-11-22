@@ -1754,7 +1754,7 @@ export default function ContentPage() {
   ) => {
     const family =
       role === "eyebrow" ? form.eyebrowFontFamily :
-      role === "heading" ? form.headingFontFamily :
+      role === "heading" ? "display" :
       role === "text" ? form.textFontFamily : form.buttonFontFamily;
 
     const size =
@@ -1780,8 +1780,8 @@ export default function ContentPage() {
     return {
       fontFamily:
         family === "sans"
-          ? '"Helvetica Neue", Helvetica, Arial, sans-serif'
-          : '"Iowan Old Style", Baskerville, "Times New Roman", serif',
+          ? 'var(--font-avenir), Arial, sans-serif'
+          : 'var(--font-cormorant), Georgia, serif',
       fontSize: `${size}px`,
       fontWeight: weight,
       lineHeight,
@@ -2020,8 +2020,8 @@ export default function ContentPage() {
                 <label className="admin-field">
                   <span>Font family</span>
                   <select value={form.eyebrowFontFamily} onChange={(e) => updateField("eyebrowFontFamily", e.target.value as FormData["eyebrowFontFamily"])}>
-                    <option value="display">Display / Serif</option>
-                    <option value="sans">Sans Serif</option>
+                    <option value="display">Cormorant Garamond</option>
+                    <option value="sans">Avenir / Sans Serif</option>
                   </select>
                 </label>
                 <label className="admin-field">
@@ -2051,9 +2051,8 @@ export default function ContentPage() {
               <div className="admin-field-grid">
                 <label className="admin-field">
                   <span>Font family</span>
-                  <select value={form.headingFontFamily} onChange={(e) => updateField("headingFontFamily", e.target.value as FormData["headingFontFamily"])}>
-                    <option value="display">Display / Serif</option>
-                    <option value="sans">Sans Serif</option>
+                  <select value="display" disabled aria-label="Heading font is fixed to Cormorant Garamond on the website">
+                    <option value="display">Cormorant Garamond (site font)</option>
                   </select>
                 </label>
                 <label className="admin-field">
@@ -2084,8 +2083,8 @@ export default function ContentPage() {
                 <label className="admin-field">
                   <span>Font family</span>
                   <select value={form.textFontFamily} onChange={(e) => updateField("textFontFamily", e.target.value as FormData["textFontFamily"])}>
-                    <option value="display">Display / Serif</option>
-                    <option value="sans">Sans Serif</option>
+                    <option value="display">Cormorant Garamond</option>
+                    <option value="sans">Avenir / Sans Serif</option>
                   </select>
                 </label>
                 <label className="admin-field">
@@ -2116,8 +2115,8 @@ export default function ContentPage() {
                 <label className="admin-field">
                   <span>Font family</span>
                   <select value={form.buttonFontFamily} onChange={(e) => updateField("buttonFontFamily", e.target.value as FormData["buttonFontFamily"])}>
-                    <option value="display">Display / Serif</option>
-                    <option value="sans">Sans Serif</option>
+                    <option value="display">Cormorant Garamond</option>
+                    <option value="sans">Avenir / Sans Serif</option>
                   </select>
                 </label>
                 <label className="admin-field">
@@ -2181,7 +2180,7 @@ export default function ContentPage() {
         <aside className="editor-preview admin-panel-card">
           <div className="preview-toolbar">
             <span>
-              Live preview
+              Typography preview
             </span>
 
             <strong>
@@ -2191,6 +2190,9 @@ export default function ContentPage() {
             </strong>
           </div>
 
+          <p style={{ fontSize: "11px", lineHeight: 1.5, color: "#74736e", margin: "12px 0" }}>
+            This preview uses the website fonts. Actual text size and wrapping may differ on the live page because of responsive CSS and section layout.
+          </p>
           <div
             className={`preview-canvas ${
               !form.visible
