@@ -16862,3 +16862,133 @@ h6 {
     margin-top: 75px !important;
   }
 }
+
+
+/* ============================================================
+   LA LARA — SECTION TYPOGRAPHY CONSISTENCY (2026-11-22)
+   Only equivalent content headings and body text are aligned.
+   CMS inline typography settings retain precedence.
+   Hero, menu product rows, images and layouts are untouched.
+   ============================================================ */
+@media (min-width: 901px) {
+  .home-page .home-menu-card h2,
+  .home-page .home-story-copy h2,
+  .home-page .home-events-copy h2,
+  .story-page .story-full-copy h2 {
+    font-family: var(--display);
+    font-size: 52px;
+    font-weight: 400;
+  }
+
+  .home-page .home-story-text,
+  .home-page .home-events-text,
+  .story-page .story-full-body {
+    font-family: var(--sans);
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 900px) {
+  .home-page .home-menu-card h2,
+  .home-page .home-story-copy h2,
+  .home-page .home-events-copy h2,
+  .story-page .story-full-copy h2 {
+    font-family: var(--display);
+    font-size: 38px;
+    font-weight: 400;
+  }
+
+  .home-page .home-story-text,
+  .home-page .home-events-text,
+  .story-page .story-full-body {
+    font-family: var(--sans);
+    font-size: 15px;
+  }
+}
+
+
+/* LA LARA — EVENTS & OFFERS SECTION TYPOGRAPHY ALIGNMENT
+   Scoped to content sections; hero, images, spacing, menu products untouched.
+   CMS inline styles remain authoritative where provided. */
+@media (min-width: 901px) {
+  .lalara-events-redesign .lalara-event-copy h2,
+  .lalara-offer-copy h2 {
+    font-family: var(--display);
+    font-size: 52px;
+    font-weight: 400;
+  }
+  .lalara-events-redesign .lalara-event-description,
+  .lalara-offer-description {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+}
+@media (max-width: 900px) {
+  .lalara-events-redesign .lalara-event-copy h2,
+  .lalara-offer-copy h2 {
+    font-family: var(--display);
+    font-size: 38px;
+    font-weight: 400;
+  }
+  .lalara-events-redesign .lalara-event-description,
+  .lalara-offer-description {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+}
+
+
+/* LA LARA — FINAL LOCKED TYPOGRAPHY 2026-11-22
+   !important intentionally overrides CMS inline font choices.
+   Keep menu products and hero layout unchanged. */
+@media (min-width: 901px) {
+  .home-page .home-menu-card h2, .home-page .home-story-copy h2,
+  .home-page .home-events-copy h2, .story-page .story-full-copy h2,
+  .lalara-events-redesign .lalara-event-copy h2,
+  .lalara-events-redesign .lalara-events-booking h2,
+  .lalara-offer-copy h2, .contact-reference-page .contact-ref-copy h2 {
+    font-family: var(--display) !important; font-size: 52px !important; font-weight: 400 !important;
+  }
+  .home-page .home-story-text, .home-page .home-events-text,
+  .story-page .story-full-body, .lalara-events-redesign .lalara-event-description,
+  .lalara-events-redesign .lalara-events-booking > p,
+  .lalara-offer-description, .contact-reference-page .contact-ref-description {
+    font-family: var(--sans) !important; font-size: 16px !important; font-weight: 400 !important; line-height: 1.6 !important;
+  }
+}
+@media (max-width: 900px) {
+  .home-page .home-menu-card h2, .home-page .home-story-copy h2,
+  .home-page .home-events-copy h2, .story-page .story-full-copy h2,
+  .lalara-events-redesign .lalara-event-copy h2,
+  .lalara-events-redesign .lalara-events-booking h2,
+  .lalara-offer-copy h2, .contact-reference-page .contact-ref-copy h2 {
+    font-family: var(--display) !important; font-size: 38px !important; font-weight: 400 !important;
+  }
+  .home-page .home-story-text, .home-page .home-events-text,
+  .story-page .story-full-body, .lalara-events-redesign .lalara-event-description,
+  .lalara-events-redesign .lalara-events-booking > p,
+  .lalara-offer-description, .contact-reference-page .contact-ref-description {
+    font-family: var(--sans) !important; font-size: 15px !important; font-weight: 400 !important; line-height: 1.6 !important;
+  }
+}
+/* Consistent small labels and calls-to-action, without affecting menu navigation */
+.home-page .home-story-eyebrow, .home-page .home-events-eyebrow,
+.story-page .story-full-eyebrow, .lalara-events-redesign .lalara-event-eyebrow,
+.lalara-offer-eyebrow, .contact-reference-page .contact-ref-eyebrow {
+  font-family: var(--sans) !important; font-size: 12px !important; font-weight: 700 !important;
+  line-height: 1.4 !important; letter-spacing: .1em !important;
+}
+.lalara-events-redesign .lalara-event-enquiry,
+.lalara-events-redesign .lalara-events-email-button,
+.lalara-offer-book-link, .contact-reference-page .contact-ref-links a {
+  font-family: var(--sans) !important; font-size: 12px !important; font-weight: 700 !important;
+}
+@media (max-width: 900px) {
+  .home-page .home-story-eyebrow, .home-page .home-events-eyebrow,
+  .story-page .story-full-eyebrow, .lalara-events-redesign .lalara-event-eyebrow,
+  .lalara-offer-eyebrow, .contact-reference-page .contact-ref-eyebrow { font-size: 11px !important; }
+}

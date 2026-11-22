@@ -789,9 +789,9 @@ const isTR = locale === "tr";
       {/* FOOD / DRINKS / BREAKFAST */}
 
       <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
-        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="active">{navLabels.breakfast[locale]}</Link>
-        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="">{navLabels.food[locale]}</Link>
-        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
+        <Link href={`/breakfast-menu?lang=${locale}`} className="active">{navLabels.breakfast[locale]}</Link>
+        <Link href={`/food-menu?lang=${locale}`} className="">{navLabels.food[locale]}</Link>
+        <Link href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -892,9 +892,9 @@ const isTR = locale === "tr";
 
       {/* BOTTOM MENU NAVIGATION */}
 <nav className="restaurant-menu-tabs" aria-label="More menus">
-        <Link scroll={false} href={`/breakfast-menu?lang=${locale}`} className="active">{navLabels.breakfast[locale]}</Link>
-        <Link scroll={false} href={`/food-menu?lang=${locale}`} className="">{navLabels.food[locale]}</Link>
-        <Link scroll={false} href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
+        <Link href={`/breakfast-menu?lang=${locale}`} className="active">{navLabels.breakfast[locale]}</Link>
+        <Link href={`/food-menu?lang=${locale}`} className="">{navLabels.food[locale]}</Link>
+        <Link href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
       </nav>
 
       <Footer locale={locale} />

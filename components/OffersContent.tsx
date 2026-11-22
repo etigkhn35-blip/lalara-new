@@ -5,8 +5,9 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { cmsRecordStyle, type CmsRecord } from "@/lib/cms/types";
 
-type RecordData = {
+type RecordData = CmsRecord & {
   eyebrow?: string;
   heading?: string;
   body?: string;
@@ -147,13 +148,13 @@ function OfferSection({
     >
       <div className="lalara-offer-copy">
         <div className="lalara-offer-copy-inner">
-          <p className="lalara-offer-eyebrow">
+          <p className="lalara-offer-eyebrow" style={cmsRecordStyle(live, "eyebrow")}>
             {live?.eyebrow ?? offer.eyebrow}
           </p>
 
-          <h2>{live?.heading ?? offer.title}</h2>
+          <h2 style={cmsRecordStyle(live, "heading")}>{live?.heading ?? offer.title}</h2>
 
-          <div className="lalara-offer-description">
+          <div className="lalara-offer-description" style={cmsRecordStyle(live, "text")}>
             {paragraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
@@ -290,8 +291,8 @@ export default function OffersContent() {
           <div className="lalara-offers-hero-overlay" />
 
           <div className="lalara-offers-hero-content">
-            <h1>{hero?.heading ?? "Special Offers"}</h1>
-            <p>
+            <h1 style={cmsRecordStyle(hero, "heading")}>{hero?.heading ?? "Special Offers"}</h1>
+            <p style={cmsRecordStyle(hero, "text")}>
               {hero?.body ?? "A little something extra."}
             </p>
           </div>
