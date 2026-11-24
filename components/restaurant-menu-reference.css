@@ -88,3 +88,12 @@
     position: relative;
   }
 }
+
+/* Shared menu typography and bottom-tab anchor */
+.restaurant-menu-page #menu-heading { scroll-margin-top: 110px; }
+.restaurant-menu-page .restaurant-menu-item h3 { font-size: 16px !important; }
+.restaurant-menu-page .restaurant-menu-item p,
+.restaurant-menu-page .restaurant-menu-item .restaurant-menu-extra { font-size: 14px !important; }
+@media (max-width: 800px) {
+  .restaurant-menu-page #menu-heading { scroll-margin-top: 90px; }
+}

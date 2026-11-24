@@ -1412,6 +1412,14 @@ export default function DrinksMenuContent({
     });
   }
 
+  useEffect(() => {
+    if (window.location.hash !== "#menu-heading") return;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById("menu-heading")?.scrollIntoView({ block: "start", behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [locale]);
+
   return (
    <main
   className="restaurant-menu-page"
@@ -1458,7 +1466,7 @@ export default function DrinksMenuContent({
 
       {/* TITLE */}
 
-      <section className="restaurant-menu-heading">
+      <section id="menu-heading" className="restaurant-menu-heading">
         <h1>{menuTitle[locale]}</h1>
         <span>{menuSubtitle[locale]}</span>
       </section>
@@ -1621,9 +1629,9 @@ export default function DrinksMenuContent({
 
       {/* BOTTOM MENU NAVIGATION */}
 <nav className="restaurant-menu-tabs" aria-label="More menus">
-        <Link href={`/breakfast-menu?lang=${locale}`} className="">{navLabels.breakfast[locale]}</Link>
-        <Link href={`/food-menu?lang=${locale}`} className="">{navLabels.food[locale]}</Link>
-        <Link href={`/drinks-menu?lang=${locale}`} className="active">{navLabels.drinks[locale]}</Link>
+        <Link href={`/breakfast-menu?lang=${locale}#menu-heading`} className="">{navLabels.breakfast[locale]}</Link>
+        <Link href={`/food-menu?lang=${locale}#menu-heading`} className="">{navLabels.food[locale]}</Link>
+        <Link href={`/drinks-menu?lang=${locale}#menu-heading`} className="active">{navLabels.drinks[locale]}</Link>
       </nav>
 
       <Footer

@@ -296,264 +296,285 @@ export const menu: Record<Locale, MenuSection[]> = {
 
   en: [
     {
-      title: "Starters",
-      items: [
+      "title": "Cold Starters",
+      "items": [
         {
-          name: "Falafel",
-          description: "yoghurt tahini dip",
-          price: "550",
+          "name": "La Lara Meze Selection",
+          "price": "590",
+          "description": "A trio of Turkish favourites: Spicy Ezme, Haydari and Atom."
         },
         {
-          name: "Mini Lahmacun",
-          description:
-            "three mini beef lahmacun, rocket, fresh parsley, lemon",
-          price: "650",
+          "name": "Spicy Ezme",
+          "price": "390",
+          "description": "Turkish tomato and red pepper salsa"
         },
         {
-          name: "Hummus",
-          description:
-            "nachos, vegetable sticks",
-          price: "450",
+          "name": "Haydari",
+          "price": "390",
+          "description": "Thick yoghurt dip with white cheese, garlic and mint"
         },
         {
-          name: "Crispy Chicken Bites",
-          description:
-            "sweet chili sauce, cheddar sauce",
-          price: "790",
+          "name": "Hummus",
+          "price": "450",
+          "description": "Served with toasted bread and vegetable sticks"
         },
         {
-          name: "Fried Calamari Rings",
-          description:
-            "tartar sauce, rocket salad",
-          price: "830",
-        },
-      ],
+          "name": "Atom",
+          "price": "420",
+          "description": "Creamy yoghurt dip with dried chillis and chilli oil"
+        }
+      ]
     },
-
     {
-      title: "Soups",
-      items: [
+      "title": "Hot Starters",
+      "items": [
         {
-          name: "Spicy Tomato Soup",
-          description:
-            "parmesan, croutons",
-          price: "420",
+          "name": "Falafel",
+          "price": "550",
+          "description": "Served with tahini yoghurt and fresh rocket"
         },
         {
-          name: "Lentil Soup",
-          description:
-            "spices mix, lemon",
-          price: "390",
+          "name": "Marinated Artichoke",
+          "price": "590",
+          "description": "Grilled marinated artichoke served with tahini yoghurt"
         },
-      ],
+        {
+          "name": "Mini Lahmacun",
+          "price": "650",
+          "description": "Three mini beef lahmacun served with fresh rocket, parsley and lemon wedges"
+        },
+        {
+          "name": "Fried Calamari Rings",
+          "price": "830",
+          "description": "Served with tartare sauce and fresh rocket"
+        },
+        {
+          "name": "Crispy Chicken Bites",
+          "price": "790",
+          "description": "Served with sweet chilli and Cheddar sauces"
+        }
+      ]
     },
-
     {
-      title: "Pizza & Burgers",
-      items: [
+      "title": "Soup",
+      "items": [
         {
-          name: "Pizza Margherita",
-          description:
-            "mozzarella, tomato sauce, basil",
-          price: "890",
+          "name": "Lentil Soup",
+          "price": "390",
+          "description": "Served with spices and lemon wedges"
         },
         {
-          name: "Pizza Capricciosa",
-          description:
-            "beef ham, artichoke, olives",
-          price: "950",
-        },
-        {
-          name: "Steak Sandwich",
-          description:
-            "beef tenderloin, lettuce, onion, garlic mayonnaise",
-          price: "1200",
-        },
-        {
-          name: "Lamburghini Burger",
-          description:
-            "lamb patty, Ezine cheese, sun-dried tomatoes, rocket, fries",
-          price: "1100",
-        },
-        {
-          name: "Mini Burger Trio",
-          description:
-            "three mini cheeseburgers, fries",
-          price: "1050",
-        },
-      ],
+          "name": "Spicy Tomato Soup",
+          "price": "420",
+          "description": "Served with parmesan and croutons"
+        }
+      ]
     },
-
     {
-      title: "Salads",
-      items: [
+      "title": "Salads",
+      "items": [
         {
-          name: "Greek Salad",
-          description:
-            "tomato, cucumber, green pepper, Ezine cheese, olives, onion",
-          price: "870",
+          "name": "Caesar Salad",
+          "price": "650",
+          "description": "Lettuce, cherry tomatoes, boiled egg, croutons and Parmesan dressing",
+          "extras": [
+            "Add grilled chicken breast strips +300"
+          ]
         },
         {
-          name: "Garden Salad",
-          description:
-            "mixed greens, seasonal vegetables, avocado, seed mix",
-          price: "720",
+          "name": "Garden Salad",
+          "price": "590",
+          "description": "Fresh seasonal vegetables with a light vinaigrette"
         },
         {
-          name: "Seafood Salad",
-          description:
-            "calamari, octopus, shrimps, potato, mixed greens, tomato, onion",
-          price: "1290",
-        },
-        {
-          name: "Scallops Salad",
-          description:
-            "scallops, mixed greens, tomato, strawberry, orange",
-          price: "1450",
-        },
-        {
-          name: "Caesar Salad",
-          price: "690",
-          extras: [
-            "+ chicken 300",
-            "+ shrimps 350",
-          ],
-        },
-      ],
+          "name": "Greek Salad",
+          "price": "870",
+          "description": "Tomatoes, cucumbers, red onions, green bell peppers, Kalamata olives and white cheese"
+        }
+      ]
     },
-
     {
-      title: "Pasta",
-      items: [
+      "title": "Pizza",
+      "items": [
         {
-          name: "Spaghetti Pomodoro",
-          description:
-            "tomato sauce, basil, parmesan",
-          price: "730",
+          "name": "Pizza Margherita",
+          "price": "890",
+          "description": "Mozzarella, tomato sauce and fresh basil"
         },
         {
-          name: "Salmon Tagliatelle",
-          description:
-            "salmon, cherry tomatoes, creamy sauce",
-          price: "1050",
-        },
-        {
-          name: "Bolognese Pappardelle",
-          description:
-            "ground beef, Bolognese sauce, parmesan",
-          price: "920",
-        },
-      ],
+          "name": "Pizza Capricciosa",
+          "price": "950",
+          "description": "Mozzarella, tomato sauce, marinated artichokes, beef ham and olives"
+        }
+      ]
     },
-
     {
-      title: "Sides",
-      items: [
+      "title": "Burger",
+      "items": [
         {
-          name: "Sides",
-          description:
-            "Baby potatoes · French fries · Grilled vegetables",
-          price: "380",
+          "name": "Lamburghini Burger",
+          "price": "1100",
+          "description": "Lamb Patty with Ezine cheese, sun-dried tomatoes and fresh rocket, served with fries"
         },
-      ],
+        {
+          "name": "Mini Burger Trio",
+          "price": "1050",
+          "description": "Three classic mini cheeseburgers, served with fries"
+        }
+      ]
     },
-
     {
-      title: "Sauces",
-      items: [
+      "title": "Pasta",
+      "items": [
         {
-          name: "Sauces",
-          description:
-            "Black pepper · Acuka · Tzatziki · Roquefort · Mayonnaise & Ketchup",
-          price: "180",
+          "name": "Spaghetti Pomodoro",
+          "price": "730",
+          "description": "With a tomato sauce and fresh basil"
         },
-      ],
+        {
+          "name": "Bolognese Pappardelle",
+          "price": "920",
+          "description": "With ground beef in a Bolognese sauce"
+        },
+        {
+          "name": "Salmon Tagliatelle",
+          "price": "1050",
+          "description": "With flaked salmon and cherry tomatoes in a creamy sauce"
+        }
+      ]
     },
-
     {
-      title: "From the Sea",
-      items: [
+      "title": "From the Land",
+      "items": [
         {
-          name: "Dorado",
-          description:
-            "whole dorado, baby potatoes, tzatziki",
-          price: "1550",
+          "name": "Köfte",
+          "price": "890",
+          "description": "Turkish beef and lamb meatballs served with sumac onions, grilled vegetables, rice, fries and acuka"
         },
         {
-          name: "Grilled Salmon",
-          description:
-            "salmon fillet, honey-glazed carrots",
-          price: "1250",
+          "name": "Chicken Skewer",
+          "price": "690",
+          "description": "Grilled marinated chicken chunks served with sumac onions, grilled vegetables, fries and acuka"
         },
         {
-          name: "Jumbo Shrimps",
-          description:
-            "grilled jumbo shrimps, flamed lime",
-          price: "1150",
+          "name": "Grilled Chicken",
+          "price": "950",
+          "description": "Grilled sous-vide chicken breast served with grilled vegetables"
         },
-      ],
+        {
+          "name": "Çökertme Kebab",
+          "price": "1250",
+          "description": "Seared beef strips over crispy straw potatoes, topped with warm tomato sauce and yoghurt"
+        },
+        {
+          "name": "Beef Cheek",
+          "price": "1450",
+          "description": "Slow-braised beef cheek served with creamy mashed potatoes"
+        },
+        {
+          "name": "Beef Tenderloin",
+          "price": "1950",
+          "description": "Sous-vide beef tenderloin, cooked to your liking, served with roasted baby potatoes and pepper sauce"
+        },
+        {
+          "name": "Lamb Chops",
+          "price": "2290",
+          "description": "Grilled lamb chops served with fries"
+        },
+        {
+          "name": "Mixed Grill Serves Two",
+          "price": "3590",
+          "description": "Lamb chops, chicken skewers and grilled köfte served with sumac onions, grilled vegetables, fries, ketchup, mayonnaise and acuka"
+        }
+      ]
     },
-
     {
-      title: "From the Land",
-      items: [
+      "title": "From the Sea",
+      "items": [
         {
-          name: "Lamb Chops",
-          description: "french fries",
-          price: "2290",
+          "name": "Grilled Salmon",
+          "price": "1250",
+          "description": "Seared salmon fillet complemented by sweet honey-glazed carrots"
         },
         {
-          name: "Beef Tenderloin",
-          description: "baby potatoes",
-          price: "1950",
+          "name": "Jumbo Prawns",
+          "price": "1150",
+          "description": "Charred jumbo prawns, served with flame-grilled lime"
         },
         {
-          name: "Beef Stroganoff",
-          description:
-            "beef strips, creamy onion sauce, potato purée, pickled cucumbers",
-          price: "1290",
-        },
-        {
-          name: "Grilled Chicken",
-          description:
-            "grilled vegetables",
-          price: "950",
-        },
-      ],
+          "name": "Dorado",
+          "price": "1550",
+          "description": "Grilled whole dorado served with roasted baby potatoes and tzatziki"
+        }
+      ]
     },
-
     {
-      title: "Dessert",
-      items: [
+      "title": "Sides",
+      "items": [
         {
-          name: "Lara's Pavlova",
-          description:
-            "meringue, whipped cream, raspberry",
-          price: "590",
+          "name": "French Fries",
+          "price": "380"
         },
         {
-          name: "Panna Cotta",
-          price: "450",
+          "name": "Grilled Vegetables",
+          "price": "380"
         },
         {
-          name: "Cheesecake",
-          description: "fruit purée",
-          price: "490",
-        },
-        {
-          name: "Fruit Plate",
-          description:
-            "seasonal fruits",
-          price: "970",
-        },
-        {
-          name: "Ice Cream & Sorbet",
-          description:
-            "Choose your flavour: ice cream vanilla · chocolate · sorbet lemon · raspberry",
-          price: "230",
-        },
-      ],
+          "name": "Roasted Baby Potatoes",
+          "price": "380"
+        }
+      ]
     },
+    {
+      "title": "Sauces",
+      "items": [
+        {
+          "name": "Black Pepper Sauce",
+          "price": "180"
+        },
+        {
+          "name": "Roquefort Sauce",
+          "price": "180"
+        },
+        {
+          "name": "Tzatziki",
+          "price": "180"
+        },
+        {
+          "name": "Acuka",
+          "price": "180"
+        },
+        {
+          "name": "Mayonnaise & Ketchup",
+          "price": "180"
+        }
+      ]
+    },
+    {
+      "title": "Dessert",
+      "items": [
+        {
+          "name": "Lara’s Pavlova",
+          "price": "590",
+          "description": "Delicate meringue with whipped cream and a raspberry sorbet centre"
+        },
+        {
+          "name": "Black Forrest Brownie",
+          "price": "520",
+          "description": "Chocolate brownie topped with sour cherries and whipped cream"
+        },
+        {
+          "name": "Apple Crumble",
+          "price": "490",
+          "description": "Spiced baked apple chunks with a buttery crumble"
+        },
+        {
+          "name": "Fruit Plate",
+          "price": "970",
+          "description": "A selection of seasonal fruits, perfect for sharing"
+        }
+      ]
+    }
   ],
 };
 
@@ -709,6 +730,7 @@ export default function FoodMenuContent({
                 order:
                   data.order ?? 0,
 
+                contentLocale: data.contentLocale,
                 visible:
                   data.visible !==
                   false,
@@ -792,7 +814,7 @@ export default function FoodMenuContent({
         const buildSections = (
           targetLocale: Locale
         ): MenuSection[] => {
-          return categories.map(
+          return categories.filter(category => !category.contentLocale || category.contentLocale === targetLocale.toUpperCase()).map(
             (category) => {
               const categoryItems =
                 allItems
@@ -987,12 +1009,17 @@ export default function FoodMenuContent({
    * Firestore hazırsa CMS.
    * Değilse mevcut hardcoded menü.
    */
-  const sections =
-    cmsReady
-      ? firestoreSections[
-          locale
-        ]
-      : menu[locale];
+const sections = cmsReady
+  ? firestoreSections[locale]
+  : menu[locale];
+
+  useEffect(() => {
+    if (window.location.hash !== "#menu-heading") return;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById("menu-heading")?.scrollIntoView({ block: "start", behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [locale, menuLoaded]);
 
   return (
     <main
@@ -1043,7 +1070,7 @@ export default function FoodMenuContent({
 
       {/* TITLE */}
 
-      <section className="restaurant-menu-heading">
+      <section id="menu-heading" className="restaurant-menu-heading">
         <h1>{menuTitle[locale]}</h1>
         <span>{menuSubtitle[locale]}</span>
       </section>
@@ -1145,9 +1172,9 @@ export default function FoodMenuContent({
 
       {/* BOTTOM MENU NAVIGATION */}
 <nav className="restaurant-menu-tabs" aria-label="More menus">
-        <Link href={`/breakfast-menu?lang=${locale}`} className="">{navLabels.breakfast[locale]}</Link>
-        <Link href={`/food-menu?lang=${locale}`} className="active">{navLabels.food[locale]}</Link>
-        <Link href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
+        <Link href={`/breakfast-menu?lang=${locale}#menu-heading`} className="">{navLabels.breakfast[locale]}</Link>
+        <Link href={`/food-menu?lang=${locale}#menu-heading`} className="active">{navLabels.food[locale]}</Link>
+        <Link href={`/drinks-menu?lang=${locale}#menu-heading`} className="">{navLabels.drinks[locale]}</Link>
       </nav>
 
       <Footer

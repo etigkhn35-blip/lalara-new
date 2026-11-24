@@ -16992,3 +16992,8 @@ h6 {
   .story-page .story-full-eyebrow, .lalara-events-redesign .lalara-event-eyebrow,
   .lalara-offer-eyebrow, .contact-reference-page .contact-ref-eyebrow { font-size: 11px !important; }
 }
+
+/* Menu admin editable fields */
+.lalara-menu-admin .admin-input { width:100%; box-sizing:border-box; border:1px solid rgba(48,49,47,.35) !important; border-radius:0; background:#fff !important; color:var(--ink); padding:12px 14px; min-height:48px; }
+.lalara-menu-admin textarea.admin-input { min-height:96px; resize:vertical; line-height:1.65; }
+.lalara-menu-admin .admin-input:focus { outline:2px solid #c8545d; outline-offset:1px; }

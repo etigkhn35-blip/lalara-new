@@ -10,8 +10,10 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
+  writeBatch,
 } from "firebase/firestore";
 
+import { menu as foodMenu } from "@/components/FoodMenuContent";
 import AdminShell from "@/components/admin/AdminShell";
 import { auth, db } from "@/lib/firebase";
 import {
@@ -23,6 +25,7 @@ import {
 type Language = "EN" | "TR";
 
 type MenuCategory = {
+  contentLocale?: Language;
   id: string;
   menu: MenuKey;
 
@@ -152,6 +155,7 @@ function arrayToLines(value: string[]): string {
   return value.join("\n");
 }
 
+
 export default function MenusPage() {
   const [activeMenu, setActiveMenu] =
     useState<MenuKey>("food");
@@ -235,6 +239,7 @@ export default function MenusPage() {
 
           return {
             id: item.id,
+            contentLocale: data.contentLocale === "EN" || data.contentLocale === "TR" ? data.contentLocale : undefined,
 
             menu:
               data.menu as MenuKey,
@@ -391,6 +396,40 @@ export default function MenusPage() {
      IMPORT CURRENT MENUS
      ========================================================= */
 
+  async function importEnglishFood() {
+    const user = auth.currentUser;
+    if (!user || importing) return;
+    if (!confirm("Import the new English Lunch & Dinner menu? Previously imported English food records will be replaced. Existing Turkish food records will be retained. Breakfast and Drinks will not change.")) return;
+    setImporting(true);
+    try {
+      const snapshot = await getDocs(collection(db, "menuCategories"));
+      const old = snapshot.docs.filter(d => d.data().menu === "food");
+      const previousEN = old.filter(d => d.data().contentLocale === "EN");
+      const legacy = old.filter(d => !d.data().contentLocale);
+      const itemSnapshot = await getDocs(collection(db, "menuItems"));
+      const previousIds = new Set(previousEN.map(d => d.id));
+      const previousItems = itemSnapshot.docs.filter(d => d.data().menu === "food" && previousIds.has(d.data().categoryId));
+      if (!old.some(d => d.data().contentLocale !== "EN")) throw new Error("Existing food categories not found. Import cancelled to protect Turkish content.");
+      const batch = writeBatch(db);
+      const sections: { title: string; items: { name: string; price: string; description?: string; extras?: string[] }[] }[] = foodMenu.en;
+      if (legacy.length + previousEN.length + previousItems.length + sections.length + sections.reduce((n,s) => n+s.items.length,0) > 500) throw new Error("Too many records for one atomic import.");
+      legacy.forEach(d => batch.update(d.ref, { contentLocale: "TR" }));
+      previousItems.forEach(d => batch.delete(d.ref));
+      previousEN.forEach(d => batch.delete(d.ref));
+      sections.forEach((section, order) => {
+        const category = doc(collection(db, "menuCategories"));
+        batch.set(category, { menu: "food", contentLocale: "EN", nameEN: section.title, nameTR: "", noteEN: "", noteTR: "", columnsEN: [], columnsTR: [], order, visible: true, updatedAt: serverTimestamp(), updatedBy: user.uid });
+        section.items.forEach((item, order) => {
+          batch.set(doc(collection(db, "menuItems")), { menu: "food", categoryId: category.id, nameEN: item.name, nameTR: "", descriptionEN: item.description || "", descriptionTR: "", price: item.price, prices: [], extrasEN: item.extras || [], extrasTR: [], order, visible: true, updatedAt: serverTimestamp(), updatedBy: user.uid });
+        });
+      });
+      await batch.commit();
+      await loadMenus();
+      setState("English Lunch & Dinner menu imported successfully.");
+    } catch (error) { console.error(error); setState(error instanceof Error ? error.message : "Import failed."); }
+    finally { setImporting(false); }
+  }
+
   async function importCurrentMenus() {
     const user =
       auth.currentUser;
@@ -455,7 +494,7 @@ export default function MenusPage() {
         .filter(
           (category) =>
             category.menu ===
-            activeMenu
+            activeMenu && (!category.contentLocale || category.contentLocale === language)
         )
         .sort(
           (a, b) =>
@@ -464,6 +503,7 @@ export default function MenusPage() {
     }, [
       categories,
       activeMenu,
+      language,
     ]);
 
   function categoryItems(
@@ -616,8 +656,10 @@ export default function MenusPage() {
           ) + 1
         : 0;
 
+    const localeFields = activeMenu === "food" && categories.some(c => c.menu === "food" && c.contentLocale) ? { contentLocale: language } : {};
     try {
       const payload = {
+        ...localeFields,
         menu:
           activeMenu,
 
@@ -664,6 +706,7 @@ export default function MenusPage() {
         );
 
       const created: MenuCategory = {
+        ...localeFields,
         id: result.id,
 
         menu:
@@ -1451,6 +1494,7 @@ export default function MenusPage() {
       eyebrow="Website"
       title="Menus"
     >
+      <div className="lalara-menu-admin">
       <div className="admin-page-heading">
         <div>
           <p className="admin-eyebrow">
@@ -1700,6 +1744,11 @@ export default function MenusPage() {
         </p>
       ) : (
         <>
+          {activeMenu === "food" && language === "EN" && (
+            <button type="button" className="admin-button" disabled={importing} onClick={() => void importEnglishFood()} style={{ marginBottom: 24 }}>
+              {importing ? "Importing..." : "Import New English Lunch & Dinner Menu"}
+            </button>
+          )}
           {/* MENU SETTINGS */}
 
           <section
@@ -1764,10 +1813,10 @@ export default function MenusPage() {
 
               <div style={{ display: "grid", gap: 9, minWidth: 0 }}>
                 <label htmlFor="menu-page-subtitle" style={{ display: "block", fontSize: 12, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-                  Subtitle
+                  Subtitle / Small text below menu title
                 </label>
                 <textarea
-                  id="menu-page-subtitle"
+                  id="menu-page-subtitle" placeholder="Enter the text displayed below the menu title"
                   className="admin-input"
                   rows={3}
                   style={{ display: "block", width: "100%", boxSizing: "border-box", minHeight: 100, resize: "vertical" }}
@@ -2877,6 +2926,7 @@ export default function MenusPage() {
           </div>
         </>
       )}
+      </div>
     </AdminShell>
   );
 }
