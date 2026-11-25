@@ -1048,10 +1048,10 @@ const sections = cmsReady
 
       {/* FOOD / DRINKS / BREAKFAST */}
 
-      <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
-        <Link href={`/breakfast-menu?lang=${locale}`} className="">{navLabels.breakfast[locale]}</Link>
-        <Link href={`/food-menu?lang=${locale}`} className="active">{navLabels.food[locale]}</Link>
-        <Link href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
+      <nav id="menu-heading" className="restaurant-menu-tabs" aria-label="Menu navigation">
+        <Link href={`/breakfast-menu?lang=${locale}#menu-heading`} className="">{navLabels.breakfast[locale]}</Link>
+        <Link href={`/food-menu?lang=${locale}#menu-heading`} className="active">{navLabels.food[locale]}</Link>
+        <Link href={`/drinks-menu?lang=${locale}#menu-heading`} className="">{navLabels.drinks[locale]}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -1070,7 +1070,7 @@ const sections = cmsReady
 
       {/* TITLE */}
 
-      <section id="menu-heading" className="restaurant-menu-heading">
+      <section className="restaurant-menu-heading">
         <h1>{menuTitle[locale]}</h1>
         <span>{menuSubtitle[locale]}</span>
       </section>

@@ -368,3 +368,32 @@
     max-height: 555px !important;
   }
 }
+/* CONTACT — MOBILE TYPOGRAPHY */
+
+@media (max-width: 900px) {
+
+  .contact-reference-page .contact-ref-hero-text h1 {
+    font-size: 44px !important;
+  }
+
+  .contact-reference-page .contact-ref-hero-text > p:last-child {
+    font-size: 15px !important;
+  }
+
+  .contact-reference-page .contact-ref-copy h2 {
+    font-size: 38px !important;
+  }
+
+  .contact-reference-page .contact-ref-description {
+    font-size: 15px !important;
+  }
+
+  .contact-reference-page .contact-ref-eyebrow {
+    font-size: 11px !important;
+  }
+
+  .contact-reference-page .contact-ref-links a {
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+}

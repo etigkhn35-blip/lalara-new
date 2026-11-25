@@ -764,6 +764,14 @@ const isTR = locale === "tr";
       ? firestoreSections[locale]
       : menu[locale];
 
+  useEffect(() => {
+    if (window.location.hash !== "#menu-heading") return;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById("menu-heading")?.scrollIntoView({ block: "start", behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [locale]);
+
   return (
     <main
   className="restaurant-menu-page"
@@ -788,10 +796,10 @@ const isTR = locale === "tr";
 
       {/* FOOD / DRINKS / BREAKFAST */}
 
-      <nav className="restaurant-menu-tabs" aria-label="Menu navigation">
-        <Link href={`/breakfast-menu?lang=${locale}`} className="active">{navLabels.breakfast[locale]}</Link>
-        <Link href={`/food-menu?lang=${locale}`} className="">{navLabels.food[locale]}</Link>
-        <Link href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
+      <nav id="menu-heading" className="restaurant-menu-tabs" aria-label="Menu navigation">
+        <Link href={`/breakfast-menu?lang=${locale}#menu-heading`} className="active">{navLabels.breakfast[locale]}</Link>
+        <Link href={`/food-menu?lang=${locale}#menu-heading`} className="">{navLabels.food[locale]}</Link>
+        <Link href={`/drinks-menu?lang=${locale}#menu-heading`} className="">{navLabels.drinks[locale]}</Link>
       </nav>
 
       {/* PINK ELEPHANT WATERMARK */}
@@ -810,10 +818,10 @@ const isTR = locale === "tr";
 
       {/* TITLE */}
 
-      <section className="restaurant-menu-heading">
-        <h1>{menuTitle[locale]}</h1>
-        <span>{menuSubtitle[locale]}</span>
-      </section>
+     <section className="restaurant-menu-heading">
+  <h1>{menuTitle[locale]}</h1>
+  <span>{menuSubtitle[locale]}</span>
+</section>
 
       {/* MENU */}
 
@@ -892,10 +900,21 @@ const isTR = locale === "tr";
 
       {/* BOTTOM MENU NAVIGATION */}
 <nav className="restaurant-menu-tabs" aria-label="More menus">
-        <Link href={`/breakfast-menu?lang=${locale}`} className="active">{navLabels.breakfast[locale]}</Link>
-        <Link href={`/food-menu?lang=${locale}`} className="">{navLabels.food[locale]}</Link>
-        <Link href={`/drinks-menu?lang=${locale}`} className="">{navLabels.drinks[locale]}</Link>
-      </nav>
+  <Link
+    href={`/breakfast-menu?lang=${locale}#menu-heading`}
+    className="active"
+  >
+    {navLabels.breakfast[locale]}
+  </Link>
+
+  <Link href={`/food-menu?lang=${locale}#menu-heading`}>
+    {navLabels.food[locale]}
+  </Link>
+
+  <Link href={`/drinks-menu?lang=${locale}#menu-heading`}>
+    {navLabels.drinks[locale]}
+  </Link>
+</nav>
 
       <Footer locale={locale} />
     </main>

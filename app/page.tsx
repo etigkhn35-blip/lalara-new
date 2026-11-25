@@ -77,6 +77,7 @@ export default function Home() {
 
 
 const [galleryIndex, setGalleryIndex] = useState(0);
+  const galleryTouch = useRef<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     async function loadSettingsAndMedia() {
@@ -670,15 +671,33 @@ const [galleryIndex, setGalleryIndex] = useState(0);
                   />
                 </button>
 
-                <div className="home-gallery-main">
+                <div className="home-gallery-main"
+                  onTouchStart={(event) => {
+                    const touch = event.touches[0];
+                    galleryTouch.current = { x: touch.clientX, y: touch.clientY };
+                  }}
+                  onTouchCancel={() => { galleryTouch.current = null; }}
+                  onTouchEnd={(event) => {
+                    const start = galleryTouch.current;
+                    galleryTouch.current = null;
+                    if (!start || slides.length < 2) return;
+                    const touch = event.changedTouches[0];
+                    const dx = touch.clientX - start.x;
+                    const dy = touch.clientY - start.y;
+                    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+                      setGalleryIndex((index) => (index + (dx < 0 ? 1 : -1) + slides.length) % slides.length);
+                    }
+                  }}
+                >
                   <Image
                     key={slides[current]}
                     src={slides[current]}
                     alt={`La Lara Restaurant gallery photo ${current + 1}`}
                     fill
-                    sizes="(max-width: 900px) 82vw, 62vw"
+                    sizes="(max-width: 900px) 100vw, 62vw"
                     className="cover"
                   />
+
                 </div>
 
                 <button
@@ -699,6 +718,16 @@ const [galleryIndex, setGalleryIndex] = useState(0);
                     className="cover"
                   />
                 </button>
+                {slides.length > 1 && (
+                  <div className="home-gallery-pagination" aria-label="Gallery navigation">
+                    <button type="button" className="gallery-pagination-arrow previous" aria-label="Previous photo" onClick={() => setGalleryIndex((current - 1 + slides.length) % slides.length)} />
+                    {Array.from({ length: Math.min(5, slides.length) }, (_, offset) => {
+                      const index = Math.max(0, Math.min(current - 2, slides.length - 5)) + offset;
+                      return <button key={index} type="button" className="gallery-pagination-dot" aria-label={`Show photo ${index + 1}`} aria-current={index === current ? "true" : undefined} onClick={() => setGalleryIndex(index)} />;
+                    })}
+                    <button type="button" className="gallery-pagination-arrow next" aria-label="Next photo" onClick={() => setGalleryIndex((current + 1) % slides.length)} />
+                  </div>
+                )}
               </div>
             );
           })()}

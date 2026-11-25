@@ -36,7 +36,6 @@ type NavigationItem = {
 
 export default function Header({
   locale,
-  onLocaleChange,
 }: HeaderProps) {
   const [menuOpen, setMenuOpen] =
     useState(false);
@@ -50,8 +49,6 @@ export default function Header({
   const pathname = usePathname();
 
   const isTR = locale === "tr";
-
-const LANGUAGE_STORAGE_KEY = "lalara-locale";
 
   /* =========================================================
      LOAD NAVIGATION CMS
@@ -178,74 +175,6 @@ const contactHref = isTR
 const reserveHref = "/#reserve";
 
   /* =========================================================
-     LANGUAGE ROUTES
-     ========================================================= */
-
-  const languageRoutes: Record<
-    string,
-    {
-      en: string;
-      tr: string;
-    }
-  > = {
-    "/": {
-      en: "/",
-      tr: "/tr",
-    },
-
-    "/tr": {
-      en: "/",
-      tr: "/tr",
-    },
-
-    "/our-story": {
-      en: "/our-story",
-      tr: "/tr/hikayemiz",
-    },
-
-    "/tr/hikayemiz": {
-      en: "/our-story",
-      tr: "/tr/hikayemiz",
-    },
-
-    "/gallery": {
-      en: "/gallery",
-      tr: "/tr/galeri",
-    },
-
-    "/tr/galeri": {
-      en: "/gallery",
-      tr: "/tr/galeri",
-    },
-
-    "/private-events": {
-      en: "/private-events",
-      tr: "/tr/ozel-etkinlikler",
-    },
-
-    "/tr/ozel-etkinlikler": {
-      en: "/private-events",
-      tr: "/tr/ozel-etkinlikler",
-    },
-
-    "/contact": {
-      en: "/contact",
-      tr: "/tr/iletisim",
-    },
-
-    "/tr/iletisim": {
-      en: "/contact",
-      tr: "/tr/iletisim",
-    },
-  };
-
-  const currentLanguageRoutes =
-    languageRoutes[pathname] || {
-      en: "/",
-      tr: "/tr",
-    };
-
-  /* =========================================================
      CMS HELPERS
      ========================================================= */
 
@@ -338,28 +267,6 @@ const navigation: NavigationItem[] = [
     setMenuOpen(false);
   };
 
- const handleLocaleClick = (
-  event: React.MouseEvent<HTMLAnchorElement>,
-  nextLocale: Locale
-) => {
-  localStorage.setItem(
-    LANGUAGE_STORAGE_KEY,
-    nextLocale
-  );
-
-  if (onLocaleChange) {
-    event.preventDefault();
-
-    onLocaleChange(nextLocale);
-
-    setMenuOpen(false);
-
-    return;
-  }
-
-  setMenuOpen(false);
-};
-
   return (
     <>
       {/* =====================================================
@@ -435,66 +342,6 @@ const navigation: NavigationItem[] = [
             =================================================== */}
 
         <div className="header-right">
-          {/* LANGUAGE */}
-
-          <div
-            className="language"
-            aria-label={
-              isTR
-                ? "Dil seçimi"
-                : "Language selection"
-            }
-          >
-            <a
-              className={
-                !isTR
-                  ? "active"
-                  : undefined
-              }
-              href={
-                currentLanguageRoutes.en
-              }
-              aria-current={
-                !isTR
-                  ? "page"
-                  : undefined
-              }
-              onClick={(event) =>
-                handleLocaleClick(
-                  event,
-                  "en"
-                )
-              }
-            >
-              EN
-            </a>
-
-            <span>/</span>
-
-            <a
-              className={
-                isTR
-                  ? "active"
-                  : undefined
-              }
-              href={
-                currentLanguageRoutes.tr
-              }
-              aria-current={
-                isTR
-                  ? "page"
-                  : undefined
-              }
-              onClick={(event) =>
-                handleLocaleClick(
-                  event,
-                  "tr"
-                )
-              }
-            >
-              TR
-            </a>
-          </div>
 
           {/* RESERVATION */}
 
@@ -596,49 +443,6 @@ const navigation: NavigationItem[] = [
         {/* MOBILE BOTTOM */}
 
         <div className="mobile-menu-bottom">
-          {/* LANGUAGE */}
-
-          <div className="mobile-menu-language">
-            <a
-              className={
-                !isTR
-                  ? "active"
-                  : undefined
-              }
-              href={
-                currentLanguageRoutes.en
-              }
-              onClick={(event) =>
-                handleLocaleClick(
-                  event,
-                  "en"
-                )
-              }
-            >
-              EN
-            </a>
-
-            <span>/</span>
-
-            <a
-              className={
-                isTR
-                  ? "active"
-                  : undefined
-              }
-              href={
-                currentLanguageRoutes.tr
-              }
-              onClick={(event) =>
-                handleLocaleClick(
-                  event,
-                  "tr"
-                )
-              }
-            >
-              TR
-            </a>
-          </div>
 
           {/* MOBILE RESERVATION */}
 

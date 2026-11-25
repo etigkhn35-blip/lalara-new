@@ -97,3 +97,41 @@
 @media (max-width: 800px) {
   .restaurant-menu-page #menu-heading { scroll-margin-top: 90px; }
 }
+/* MENU — MOBILE CONSISTENCY */
+
+@media (max-width: 900px) {
+  .restaurant-menu-page .restaurant-menu-heading h1 {
+    font-size: 38px !important;
+  }
+
+  .restaurant-menu-page .restaurant-menu-heading span {
+    font-size: 15px !important;
+  }
+
+  .restaurant-menu-page #menu-heading {
+    scroll-margin-top: 90px;
+  }
+}
+/* ALL MENUS — UNIFIED PRICE TYPOGRAPHY */
+
+.restaurant-menu-page .restaurant-menu-item strong,
+.restaurant-menu-page .restaurant-menu-item-main strong,
+.restaurant-menu-page .drinks-menu-groups .restaurant-menu-item strong,
+.restaurant-menu-page .drinks-menu-groups .restaurant-menu-multi-price strong {
+  font-family: var(--sans) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+/* DRINKS — PRICE COLUMN HEADINGS */
+
+.restaurant-menu-page .drinks-menu-groups .restaurant-menu-price-head,
+.restaurant-menu-page .drinks-menu-groups .restaurant-menu-price-head span {
+  font-family: var(--sans) !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+}

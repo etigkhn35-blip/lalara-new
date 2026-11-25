@@ -16997,3 +16997,427 @@ h6 {
 .lalara-menu-admin .admin-input { width:100%; box-sizing:border-box; border:1px solid rgba(48,49,47,.35) !important; border-radius:0; background:#fff !important; color:var(--ink); padding:12px 14px; min-height:48px; }
 .lalara-menu-admin textarea.admin-input { min-height:96px; resize:vertical; line-height:1.65; }
 .lalara-menu-admin .admin-input:focus { outline:2px solid #c8545d; outline-offset:1px; }
+
+
+/* HOME — approved typography, 2026-11-24 */
+.home-page .home-menus-eyebrow {
+  font-size: 12px !important;
+}
+.home-page .home-reservation-content h2 {
+  font-size: 52px !important;
+}
+.home-page .home-menu-link,
+.home-page .home-story-link,
+.home-page .home-events-link,
+.home-page .home-reservation-buttons a {
+  font-size: 12px !important;
+}
+@media (max-width: 900px) {
+  .home-page .hero .hero-content h1 {
+    font-size: 44px !important;
+  }
+  .home-page .hero .hero-content > p.home-hero-description {
+    font-size: 15px !important;
+  }
+  .home-page .hero .hero-content > .eyebrow,
+  .home-page .home-story-eyebrow,
+  .home-page .home-events-eyebrow {
+    font-size: 11px !important;
+  }
+  .home-page .home-menu-card h2,
+  .home-page .home-story-copy h2,
+  .home-page .home-events-copy h2,
+  .home-page .home-reservation-content h2 {
+    font-size: 38px !important;
+  }
+  .home-page .home-story-text,
+  .home-page .home-events-text {
+    font-size: 15px !important;
+  }
+}
+/* HOME — CTA tek satır */
+.home-page .home-story-link,
+.home-page .home-events-link {
+  width: max-content;
+  white-space: nowrap;
+  align-items: center;
+  gap: 24px;
+}
+
+.home-page .home-story-link span,
+.home-page .home-events-link span {
+  margin-left: 0;
+  flex-shrink: 0;
+}
+/* =========================================================
+   EVENTS — TYPOGRAPHY
+   ========================================================= */
+
+.lalara-events-redesign .lalara-events-hero-text p {
+  font-size: 17px !important;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+
+  .lalara-events-redesign .lalara-events-hero-text h1 {
+    font-size: 44px !important;
+  }
+
+  .lalara-events-redesign .lalara-events-hero-text p {
+    font-size: 15px !important;
+  }
+
+  .lalara-events-redesign .lalara-event-copy h2,
+  .lalara-events-redesign .lalara-events-booking h2 {
+    font-size: 38px !important;
+  }
+
+  .lalara-events-redesign .lalara-event-description,
+  .lalara-events-redesign .lalara-event-description p,
+  .lalara-events-redesign .lalara-events-booking p {
+    font-size: 15px !important;
+  }
+
+  .lalara-events-redesign .lalara-event-eyebrow {
+    font-size: 11px !important;
+  }
+
+  .lalara-events-redesign .lalara-event-enquiry,
+  .lalara-events-redesign .lalara-events-email-button {
+    font-size: 12px !important;
+  }
+}
+
+/* CTA — SINGLE LINE */
+
+.lalara-events-redesign .lalara-event-enquiry {
+  width: max-content;
+  white-space: nowrap;
+  align-items: center;
+  gap: 24px;
+}
+
+.lalara-events-redesign .lalara-event-enquiry span {
+  margin-left: 0;
+  flex-shrink: 0;
+}
+/* =========================================================
+   OUR STORY — TYPOGRAPHY
+   ========================================================= */
+
+.story-full .story-full-cta h2 {
+  font-size: 52px !important;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+
+  .story-full .story-full-hero-content h1 {
+    font-size: 44px !important;
+  }
+
+  .story-full .story-full-hero-content p {
+    font-size: 15px !important;
+  }
+
+  .story-full .story-full-copy h2,
+  .story-full .story-full-cta h2 {
+    font-size: 38px !important;
+  }
+
+  .story-full .story-full-body,
+  .story-full .story-full-body p,
+  .story-full .story-full-cta-description {
+    font-size: 15px !important;
+  }
+
+  .story-full .story-full-eyebrow {
+    font-size: 11px !important;
+  }
+
+  .story-full .story-full-text-link,
+  .story-full .story-full-cta-button {
+    font-size: 12px !important;
+  }
+}
+
+/* CTA — SINGLE LINE */
+
+.story-full .story-full-text-link,
+.story-full .story-full-cta-button {
+  white-space: nowrap;
+}
+/* OFFERS — MOBILE TYPOGRAPHY */
+
+@media (max-width: 900px) {
+
+  .lalara-offers-hero-content h1 {
+    font-size: 44px !important;
+  }
+
+  .lalara-offers-hero-content p {
+    font-size: 15px !important;
+  }
+
+  .lalara-offer-copy h2 {
+    font-size: 38px !important;
+  }
+
+  .lalara-offer-description,
+  .lalara-offer-description p {
+    font-size: 15px !important;
+  }
+
+  .lalara-offer-eyebrow {
+    font-size: 11px !important;
+  }
+
+  .lalara-offer-book-link {
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+}
+/* OFFERS — BIRTHDAY CTA STANDARD */
+
+.lalara-offer-book-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: max-content !important;
+  gap: 24px !important;
+
+  font-family: var(--font-avenir), Arial, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+
+  color: #30312e !important;
+  border-bottom: 1px solid currentColor !important;
+  padding-bottom: 8px !important;
+}
+
+.lalara-offer-book-link span {
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
+  text-decoration: none !important;
+}
+/* OUR STORY — FINAL CONSISTENCY */
+
+.story-page.story-full .story-full-text-link,
+.story-page.story-full .story-full-cta-button {
+  font-size: 12px !important;
+}
+
+@media (min-width: 901px) {
+  .story-page.story-full .story-full-cta-description {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .story-page.story-full .story-full-hero h1 {
+    font-size: 44px !important;
+  }
+
+  .story-page.story-full .story-full-hero-content > p {
+    font-size: 15px !important;
+  }
+}
+/* MOBILE NAVIGATION — FINAL TYPOGRAPHY */
+
+@media (max-width: 900px) {
+  #mobile-navigation .mobile-menu-nav a {
+    font-size: 16px !important;
+  }
+
+  #mobile-navigation .mobile-menu-reserve {
+    font-size: 12px !important;
+  }
+}
+/* LA LARA — MOBILE GALLERY ONLY */
+.home-page .home-gallery-mobile-arrow,
+.home-page .home-gallery-mobile-dots {
+  display: none;
+}
+@media (max-width: 900px) {
+  .home-page .home-gallery-slider { padding: 32px 0 !important; }
+  .home-page .home-gallery-track {
+    display: flex !important;
+    flex-direction: column;
+    gap: 14px !important;
+    padding: 0 12px;
+    box-sizing: border-box;
+  }
+  .home-page .home-gallery-side { display: none !important; }
+  .home-page .home-gallery-main {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3 / 2;
+    touch-action: pan-y;
+  }
+  .home-page .home-gallery-mobile-arrow {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.85);
+    color: #30312e;
+    font: 400 28px/1 Arial, sans-serif;
+    cursor: pointer;
+    padding: 0;
+  }
+  .home-page .home-gallery-mobile-arrow.prev { left: 10px; }
+  .home-page .home-gallery-mobile-arrow.next { right: 10px; }
+  .home-page .home-gallery-mobile-dots {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+  }
+  .home-page .home-gallery-mobile-dots button {
+    width: 20px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .home-page .home-gallery-mobile-dots button::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d3d3d3;
+  }
+  .home-page .home-gallery-mobile-dots button[aria-current='true']::after {
+    background: #c8545d;
+  }
+}
+/* MOBILE GALLERY — MINIMAL ARROWS */
+
+@media (max-width: 900px) {
+  .home-page .home-gallery-mobile-dots {
+    display: none !important;
+  }
+
+  .home-page .home-gallery-mobile-arrow {
+    width: 40px !important;
+    height: 44px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    font-size: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .home-page .home-gallery-mobile-arrow::after {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-top: 1.5px solid #fff;
+    border-right: 1.5px solid #fff;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,.7));
+  }
+
+  .home-page .home-gallery-mobile-arrow.prev::after {
+    transform: rotate(-135deg);
+  }
+
+  .home-page .home-gallery-mobile-arrow.next::after {
+    transform: rotate(45deg);
+  }
+
+  .home-page .home-gallery-mobile-arrow.prev {
+    left: 4px !important;
+  }
+
+  .home-page .home-gallery-mobile-arrow.next {
+    right: 4px !important;
+  }
+}
+/* LA LARA — MOBILE GALLERY PAGINATION */
+.home-page .home-gallery-pagination { display: none; }
+@media (max-width: 900px) {
+  .home-page .home-gallery-slider { padding: 32px 0 !important; }
+  .home-page .home-gallery-track { display: flex !important; flex-direction: column; gap: 12px !important; padding: 0 12px; box-sizing: border-box; }
+  .home-page .home-gallery-side { display: none !important; }
+  .home-page .home-gallery-main { width: 100% !important; height: auto !important; aspect-ratio: 3 / 2; touch-action: pan-y; }
+  .home-page .home-gallery-pagination { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+  .home-page .home-gallery-pagination button { display: grid; place-items: center; position: static; padding: 0; border: 0; background: transparent; box-shadow: none; cursor: pointer; }
+  .home-page .gallery-pagination-arrow { width: 40px; height: 44px; }
+  .home-page .gallery-pagination-arrow::after { content: ""; width: 13px; height: 13px; border-top: 1.5px solid #c8545d; border-right: 1.5px solid #c8545d; transform: rotate(45deg); }
+  .home-page .gallery-pagination-arrow.previous::after { transform: rotate(-135deg); }
+  .home-page .gallery-pagination-dot { width: 24px; height: 44px; }
+  .home-page .gallery-pagination-dot::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #c9c9c9; }
+  .home-page .gallery-pagination-dot[aria-current="true"]::after { background: #c8545d; }
+}
+/* DESKTOP GALLERY — NAVIGATION ARROWS */
+
+@media (min-width: 901px) {
+  .home-page .home-gallery-track {
+    position: relative;
+    margin-bottom: 60px !important;
+  }
+
+  .home-page .home-gallery-pagination {
+    display: flex !important;
+    position: absolute;
+    bottom: -55px;
+    left: 0;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .home-page .gallery-pagination-dot {
+    display: none !important;
+  }
+
+  .home-page .gallery-pagination-arrow {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  .home-page .gallery-pagination-arrow::after {
+    content: "";
+    width: 13px;
+    height: 13px;
+    border-top: 1.5px solid #c8545d;
+    border-right: 1.5px solid #c8545d;
+    transform: rotate(45deg);
+  }
+
+  .home-page .gallery-pagination-arrow.previous::after {
+    transform: rotate(-135deg);
+  }
+}
+/* DESKTOP GALLERY — ARROW SPACING */
+
+@media (min-width: 901px) {
+  .home-page .home-gallery-pagination {
+    gap: 150px !important;
+  }
+}

@@ -170,7 +170,7 @@ function OfferSection({
               target="_blank"
               rel="noopener noreferrer"
             >
-              Book Your Birthday Table <span aria-hidden="true">›</span>
+              BOOK YOUR BIRTHDAY TABLE <span aria-hidden="true">→</span>
             </a>
           )}
         </div>
